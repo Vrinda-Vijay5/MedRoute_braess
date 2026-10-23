@@ -1,0 +1,105 @@
+{
+  "configuration": {
+    "model": "canonical-braess",
+    "demand": 4000,
+    "edge_costs": {
+      "S-A": "flow / 100",
+      "B-T": "flow / 100",
+      "A-T": 45,
+      "S-B": 45,
+      "A-B": 0
+    },
+    "decision_threshold": 0.05,
+    "live_network_measurement": false
+  },
+  "analytical": {
+    "demand": 4000,
+    "baseline": {
+      "shortcut": false,
+      "demand": 4000,
+      "flows": {
+        "upper": 2000,
+        "lower": 2000,
+        "zigzag": 0
+      },
+      "latencies": {
+        "upper": 65,
+        "lower": 65,
+        "zigzag": null
+      },
+      "averageCost": 65,
+      "totalCost": 260000
+    },
+    "shortcut": {
+      "shortcut": true,
+      "demand": 4000,
+      "flows": {
+        "upper": 0,
+        "lower": 0,
+        "zigzag": 4000
+      },
+      "latencies": {
+        "upper": 85,
+        "lower": 85,
+        "zigzag": 80
+      },
+      "averageCost": 80,
+      "totalCost": 320000
+    },
+    "deltaAverageCost": 15,
+    "relativeChange": 0.23076923076923078,
+    "wardrop": {
+      "baseline": true,
+      "shortcut": true
+    },
+    "paradox": true,
+    "verdict": "harmful"
+  },
+  "guard": {
+    "demand": 4000,
+    "baseline": {
+      "shortcut": false,
+      "demand": 4000,
+      "flows": {
+        "upper": 2000,
+        "lower": 2000,
+        "zigzag": 0
+      },
+      "latencies": {
+        "upper": 65,
+        "lower": 65,
+        "zigzag": null
+      },
+      "averageCost": 65,
+      "totalCost": 260000
+    },
+    "shortcut": {
+      "shortcut": true,
+      "demand": 4000,
+      "flows": {
+        "upper": 0,
+        "lower": 0,
+        "zigzag": 4000
+      },
+      "latencies": {
+        "upper": 85,
+        "lower": 85,
+        "zigzag": 80
+      },
+      "averageCost": 80,
+      "totalCost": 320000
+    },
+    "deltaAverageCost": 15,
+    "relativeChange": 0.23076923076923078,
+    "wardrop": {
+      "baseline": true,
+      "shortcut": true
+    },
+    "paradox": true,
+    "verdict": "harmful",
+    "decision": "reject",
+    "reason": "analytical equilibrium predicts a harmful shortcut"
+  },
+  "outcome": "shortcut_rejected_analytically",
+  "limitation": "This run proves the Wardrop model only; it is not Mininet forwarding evidence."
+}
