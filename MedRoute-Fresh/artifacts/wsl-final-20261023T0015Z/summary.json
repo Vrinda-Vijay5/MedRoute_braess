@@ -1,0 +1,129 @@
+{
+  "live_experiment": "harmful_shortcut_prevented",
+  "live_prevention_verified": true,
+  "failure_recovery": {
+    "enabled": true,
+    "failed_link": [
+      "s1-eth2",
+      "s2-eth1"
+    ],
+    "selected_route": "recovery",
+    "connectivity": {
+      "received": 3,
+      "probe": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\r\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=10.8 ms\r\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=6.56 ms\r\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=7.02 ms\r\n\r\n--- 10.0.0.2 ping statistics ---\r\n3 packets transmitted, 3 received, 0% packet loss, time 1999ms\r\nrtt min/avg/max/mdev = 6.556/8.119/10.778/1.889 ms\r\n"
+    },
+    "flows_verified": true,
+    "complete": true
+  },
+  "dataset_used": true,
+  "dataset_profile_version": null,
+  "dataset_profile_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+  "shortcut_verdict": "harmful",
+  "all_flow_rules_verified": true,
+  "all_telemetry_complete": true,
+  "baseline_metrics": {
+    "complete": true,
+    "latency_ms": 133.0,
+    "jitter_ms": 19.525,
+    "packet_loss_pct": 0.0,
+    "cost": 3.518333333333333
+  },
+  "shortcut_metrics": {
+    "complete": true,
+    "latency_ms": 144.0,
+    "jitter_ms": 24.224999999999998,
+    "packet_loss_pct": 0.0,
+    "cost": 4.015
+  },
+  "prevention_metrics": {
+    "complete": true,
+    "latency_ms": 120.0,
+    "jitter_ms": 22.015,
+    "packet_loss_pct": 0.0,
+    "cost": 3.4676666666666667
+  },
+  "route_decision": {
+    "repetition": 1,
+    "verdict": "harmful",
+    "selected_route": "baseline",
+    "reason": "shortcut cost exceeded baseline by more than 5% threshold",
+    "threshold_fraction": 0.05,
+    "metrics_used": {
+      "baseline": {
+        "complete": true,
+        "latency_ms": 133.0,
+        "jitter_ms": 19.525,
+        "packet_loss_pct": 0.0,
+        "cost": 3.518333333333333
+      },
+      "shortcut": {
+        "complete": true,
+        "latency_ms": 144.0,
+        "jitter_ms": 24.224999999999998,
+        "packet_loss_pct": 0.0,
+        "cost": 4.015
+      }
+    },
+    "sample_timestamps": {
+      "baseline": [
+        1792696849.8532407,
+        1792696850.0145514,
+        1792696850.20234,
+        1792696850.4925382,
+        1792696850.7967548
+      ],
+      "shortcut": [
+        1792696854.83643,
+        1792696855.0008807,
+        1792696855.196356,
+        1792696855.4984937,
+        1792696855.812356
+      ]
+    },
+    "prevention_verified": true,
+    "route_selection_verified": true,
+    "flows_verified": true,
+    "prevention_metrics": {
+      "complete": true,
+      "latency_ms": 120.0,
+      "jitter_ms": 22.015,
+      "packet_loss_pct": 0.0,
+      "cost": 3.4676666666666667
+    },
+    "controller_recorded": true
+  },
+  "decision_metrics_used": {
+    "baseline": {
+      "complete": true,
+      "latency_ms": 133.0,
+      "jitter_ms": 19.525,
+      "packet_loss_pct": 0.0,
+      "cost": 3.518333333333333
+    },
+    "shortcut": {
+      "complete": true,
+      "latency_ms": 144.0,
+      "jitter_ms": 24.224999999999998,
+      "packet_loss_pct": 0.0,
+      "cost": 4.015
+    }
+  },
+  "selected_route": "baseline",
+  "scenario_repetitions": {
+    "baseline_no_prioritization": 3,
+    "class_prioritization_no_congestion": 3,
+    "heavy_background_no_prioritization": 3,
+    "heavy_background_with_prioritization": 3
+  },
+  "braess_repetitions": 3,
+  "scenario_validation_passed": true,
+  "scenario_validation_errors": [],
+  "scenario_statistics_file": "scenario_results.json",
+  "braess_prevention_verified_repetitions": 2,
+  "final_repeated_route": "baseline",
+  "final_route_verified": true,
+  "controller_metrics_published": true,
+  "per_class_metrics_complete": true,
+  "link_utilization_complete": true,
+  "evidence_database": "evidence.sqlite"
+}

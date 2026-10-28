@@ -1,0 +1,129 @@
+{
+  "started_utc": "2026-10-22T14:56:08.768Z",
+  "platform": "linux",
+  "mathematical_verification": "passed",
+  "automated_tests": "passed",
+  "node_tests": "passed",
+  "class_policy_validation": "passed",
+  "python_metric_tests": "passed",
+  "required_root": true,
+  "root_available": true,
+  "wsl_status": "not applicable",
+  "live_experiment": "scenario_validation_failed",
+  "live_prevention_verified": false,
+  "dataset_used": true,
+  "dataset_profile_version": "ciciomt-benign-v1",
+  "dataset_profile_sha256": "151ed44e4b6f085fff97f56e15448653defcefb912b5663e9c8dbc5213e8ff19",
+  "shortcut_verdict": "harmful",
+  "all_flow_rules_verified": true,
+  "all_telemetry_complete": true,
+  "baseline_metrics": {
+    "complete": true,
+    "latency_ms": 141,
+    "jitter_ms": 17.5,
+    "packet_loss_pct": 0,
+    "cost": 3.516666666666667
+  },
+  "shortcut_metrics": {
+    "complete": true,
+    "latency_ms": 148,
+    "jitter_ms": 37.35,
+    "packet_loss_pct": 0,
+    "cost": 4.956666666666667
+  },
+  "prevention_metrics": {
+    "complete": true,
+    "latency_ms": 155,
+    "jitter_ms": 18.5,
+    "packet_loss_pct": 0,
+    "cost": 3.8166666666666664
+  },
+  "route_decision": {
+    "repetition": 1,
+    "verdict": "harmful",
+    "selected_route": "baseline",
+    "reason": "shortcut cost exceeded baseline by more than 5% threshold",
+    "threshold_fraction": 0.05,
+    "metrics_used": {
+      "baseline": {
+        "complete": true,
+        "latency_ms": 141,
+        "jitter_ms": 17.5,
+        "packet_loss_pct": 0,
+        "cost": 3.516666666666667
+      },
+      "shortcut": {
+        "complete": true,
+        "latency_ms": 148,
+        "jitter_ms": 37.35,
+        "packet_loss_pct": 0,
+        "cost": 4.956666666666667
+      }
+    },
+    "sample_timestamps": {
+      "baseline": [
+        1792680766.018701,
+        1792680766.180449,
+        1792680766.4604986,
+        1792680766.7572534,
+        1792680767.0689564
+      ],
+      "shortcut": [
+        1792680771.436728,
+        1792680771.6014478,
+        1792680771.8494008,
+        1792680772.1526546,
+        1792680772.4741547
+      ]
+    },
+    "prevention_verified": false,
+    "route_selection_verified": true,
+    "prevention_metrics": {
+      "complete": true,
+      "latency_ms": 155,
+      "jitter_ms": 18.5,
+      "packet_loss_pct": 0,
+      "cost": 3.8166666666666664
+    },
+    "controller_recorded": true
+  },
+  "decision_metrics_used": {
+    "baseline": {
+      "complete": true,
+      "latency_ms": 141,
+      "jitter_ms": 17.5,
+      "packet_loss_pct": 0,
+      "cost": 3.516666666666667
+    },
+    "shortcut": {
+      "complete": true,
+      "latency_ms": 148,
+      "jitter_ms": 37.35,
+      "packet_loss_pct": 0,
+      "cost": 4.956666666666667
+    }
+  },
+  "selected_route": "baseline",
+  "scenario_repetitions": {
+    "baseline_no_prioritization": 3,
+    "class_prioritization_no_congestion": 3,
+    "heavy_background_no_prioritization": 3,
+    "heavy_background_with_prioritization": 3
+  },
+  "braess_repetitions": 3,
+  "scenario_validation_passed": false,
+  "scenario_validation_errors": [
+    "coordinator did not validate the required Stage 5 scenarios"
+  ],
+  "scenario_statistics_file": null,
+  "braess_prevention_verified_repetitions": 1,
+  "final_repeated_route": "shortcut",
+  "final_route_verified": true,
+  "controller_metrics_published": true,
+  "per_class_metrics_complete": true,
+  "link_utilization_complete": true,
+  "coordinator_exit_code": 2,
+  "stage6_plots_generated": false,
+  "stage6_artifact_files": [],
+  "stage6_generation_error": "Stage 5 measurements are unavailable"
+}

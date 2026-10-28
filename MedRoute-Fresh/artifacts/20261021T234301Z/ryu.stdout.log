@@ -1,0 +1,83 @@
+loading app sdn/controller.py
+loading app ryu.controller.ofp_handler
+creating context wsgi
+instantiating app sdn/controller.py of MedRoute
+instantiating app ryu.controller.ofp_handler of OFPHandler
+(8518) wsgi starting up on http://0.0.0.0:8080
+(8518) accepted ('127.0.0.1', 42850)
+127.0.0.1 - - [21/Oct/2026 23:43:03] "GET /medroute/mode HTTP/1.1" 200 167 0.000733
+MedRoute: Exception occurred during handler processing. Backtrace from offending handler [switch_features] servicing event [EventOFPSwitchFeatures] follows.
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 45, in _get_field_info_by_name
+    f = name_to_field[name]
+KeyError: 'ipv4_dscp'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/base/app_manager.py", line 290, in _event_loop
+    handler(ev)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 59, in switch_features
+    self.install_routes(dp)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 77, in install_routes
+    match = parser.OFPMatch(**spec["match"])
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in __init__
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in <listcomp>
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 63, in _from_user
+    (num, t) = _get_field_info_by_name(oxx, name_to_field, name)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 53, in _get_field_info_by_name
+    raise KeyError('unknown %s field: %s' % (oxx.upper(), name))
+KeyError: 'unknown OXM field: ipv4_dscp'
+MedRoute: Exception occurred during handler processing. Backtrace from offending handler [switch_features] servicing event [EventOFPSwitchFeatures] follows.
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 45, in _get_field_info_by_name
+    f = name_to_field[name]
+KeyError: 'ipv4_dscp'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/base/app_manager.py", line 290, in _event_loop
+    handler(ev)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 59, in switch_features
+    self.install_routes(dp)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 77, in install_routes
+    match = parser.OFPMatch(**spec["match"])
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in __init__
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in <listcomp>
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 63, in _from_user
+    (num, t) = _get_field_info_by_name(oxx, name_to_field, name)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 53, in _get_field_info_by_name
+    raise KeyError('unknown %s field: %s' % (oxx.upper(), name))
+KeyError: 'unknown OXM field: ipv4_dscp'
+MedRoute: Exception occurred during handler processing. Backtrace from offending handler [switch_features] servicing event [EventOFPSwitchFeatures] follows.
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 45, in _get_field_info_by_name
+    f = name_to_field[name]
+KeyError: 'ipv4_dscp'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/base/app_manager.py", line 290, in _event_loop
+    handler(ev)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 59, in switch_features
+    self.install_routes(dp)
+  File "/mnt/c/Users/VICTUS/Downloads/MedRoute-Fresh/sdn/controller.py", line 77, in install_routes
+    match = parser.OFPMatch(**spec["match"])
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in __init__
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/ofproto_v1_3_parser.py", line 894, in <listcomp>
+    fields = [ofproto.oxm_from_user(k, v) for (k, v)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 63, in _from_user
+    (num, t) = _get_field_info_by_name(oxx, name_to_field, name)
+  File "/home/victus323/.pyenv/versions/medroute-ryu/lib/python3.10/site-packages/ryu/ofproto/oxx_fields.py", line 53, in _get_field_info_by_name
+    raise KeyError('unknown %s field: %s' % (oxx.upper(), name))
+KeyError: 'unknown OXM field: ipv4_dscp'
+MEDROUTE {"timestamp": 1792626184.86578, "event": "switch_connected", "dpid": 3, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s3-eth1", "s3-eth2", "s3-eth3"]}
+(8518) accepted ('127.0.0.1', 42864)
+127.0.0.1 - - [21/Oct/2026 23:43:04] "GET /medroute/mode HTTP/1.1" 200 177 0.000209

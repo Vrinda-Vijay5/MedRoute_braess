@@ -1,0 +1,270 @@
+{
+  "acceptance": "if harmful, verify the selected baseline route using complete follow-up telemetry, the recorded controller decision, and matching baseline OpenFlow actions; retain measured follow-up cost separately. For neutral or beneficial decisions, verify the actual route matches the selected mode",
+  "cost_formula": "(latency_ms/20 + jitter_ms/5 + packet_loss_pct/1)/3; relative stage cost threshold 5%",
+  "cost_references": {
+    "jitter_ms": 5.0,
+    "latency_ms": 20.0,
+    "packet_loss_pct": 1.0
+  },
+  "dataset_interpretation": "training-derived aggregate benign traffic profiles shape synthetic scenario offered rates and UDP packet sizes; raw packet replay and healthcare labels are not inferred",
+  "dataset_used": true,
+  "dataset_workload": {
+    "dataset": "CICIoMT2024",
+    "limitations": [
+      "Rows are CICIoMT aggregate feature records, not patient measurements or packet replay traces.",
+      "No clinical priority labels are present; existing MedRoute class labels remain an explicit synthetic policy.",
+      "The publisher does not specify Rate units on the dataset page; Rate*AVG is used only as a relative score whose quantile ratios are scaled to a synthetic 500 kbit/s median engineering load.",
+      "IAT units are not assumed and IAT is not used to configure packet timing."
+    ],
+    "profile_version": "ciciomt-benign-v1",
+    "source_file": "data/CICIoMT2024/processed/workload_profiles.json",
+    "source_kind": "benign IoMT traffic characterization",
+    "source_sha256": "151ed44e4b6f085fff97f56e15448653defcefb912b5663e9c8dbc5213e8ff19",
+    "test_source_files_excluded_from_workload_derivation": [
+      "Benign_test.pcap.csv"
+    ],
+    "train_source_files": [
+      "Benign_train.pcap.csv"
+    ]
+  },
+  "demand": "synthetic iperf3 TCP plus 5 route probes and 50 per-class scenario probes",
+  "max_sample_age_seconds": 30.0,
+  "metric_methods": {
+    "jitter_ms": "median absolute difference for adjacent successful RTT pairs; at least two pairs",
+    "latency_ms": "median successful one-packet ping RTT",
+    "packet_loss_pct": "100 * lost probes / 5"
+  },
+  "required_repetitions_per_scenario": 3,
+  "required_samples": 5,
+  "required_scenarios": {
+    "baseline_no_prioritization": {
+      "heavy_background": false,
+      "qos_enabled": false
+    },
+    "class_prioritization_no_congestion": {
+      "heavy_background": false,
+      "qos_enabled": true
+    },
+    "heavy_background_no_prioritization": {
+      "heavy_background": true,
+      "qos_enabled": false
+    },
+    "heavy_background_with_prioritization": {
+      "heavy_background": true,
+      "qos_enabled": true
+    }
+  },
+  "scenario_workload": {
+    "congestion_bottleneck": {
+      "active_only_in_heavy_background_scenarios": true,
+      "capacity_mbps": 20,
+      "port": "s1-eth2"
+    },
+    "dataset_profile_file": "data/CICIoMT2024/processed/workload_profiles.json",
+    "dataset_profile_version": "ciciomt-benign-v1",
+    "heavy_background_rate_policy": "configured bottleneck capacity plus the other classes' nominal training-profile offered rates; the resulting synthetic rate is scaled from the selected training-derived high profile rate",
+    "measurement": "per-class median RTT, adjacent RTT jitter, iperf UDP loss and received throughput; OpenFlow port-counter link utilization",
+    "scenario_ping_probe_count": 100,
+    "traffic": "simultaneous DSCP-marked UDP flows using CICIoMT2024 training-derived synthetic rate and packet-size profiles",
+    "workload_by_scenario_and_class": {
+      "baseline_no_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "class_prioritization_no_congestion": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "heavy_background_no_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 700000,
+          "dataset_packet_size_bytes": 109,
+          "dataset_profile": "ciciomt-benign-train-high",
+          "offered_load_mbps": 21.5,
+          "offered_rate_bps": 21500000,
+          "scenario_scale_factor": 30.714285714285715
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "heavy_background_with_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 700000,
+          "dataset_packet_size_bytes": 109,
+          "dataset_profile": "ciciomt-benign-train-high",
+          "offered_load_mbps": 21.5,
+          "offered_rate_bps": 21500000,
+          "scenario_scale_factor": 30.714285714285715
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 83,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      }
+    }
+  },
+  "stages": [
+    "baseline",
+    "shortcut",
+    "prevention"
+  ],
+  "threshold_fraction": 0.05,
+  "topology": "4-switch diamond; S2-S3 shortcut physically down at baseline, enabled for candidate and prevention",
+  "traffic_classes": {
+    "classes": {
+      "BACKGROUND": {
+        "dscp": 0,
+        "latency_sensitivity": 0.1,
+        "loss_sensitivity": 0.1,
+        "max_rate_mbps": 20,
+        "min_rate_mbps": 5,
+        "queue_id": 4,
+        "tcp_port": 5104,
+        "udp_port": 5104
+      },
+      "ECG": {
+        "dscp": 46,
+        "latency_sensitivity": 1.0,
+        "loss_sensitivity": 1.0,
+        "max_rate_mbps": 50,
+        "min_rate_mbps": 20,
+        "queue_id": 1,
+        "tcp_port": 5101,
+        "udp_port": 5101
+      },
+      "ICU": {
+        "dscp": 34,
+        "latency_sensitivity": 0.9,
+        "loss_sensitivity": 0.9,
+        "max_rate_mbps": 80,
+        "min_rate_mbps": 30,
+        "queue_id": 2,
+        "tcp_port": 5102,
+        "udp_port": 5102
+      },
+      "WEARABLE": {
+        "dscp": 18,
+        "latency_sensitivity": 0.6,
+        "loss_sensitivity": 0.55,
+        "max_rate_mbps": 50,
+        "min_rate_mbps": 10,
+        "queue_id": 3,
+        "tcp_port": 5103,
+        "udp_port": 5103
+      }
+    },
+    "classification": {
+      "precedence": [
+        "transport_port",
+        "ipv4_dscp",
+        "default"
+      ],
+      "transport_port_direction": "source_or_destination",
+      "unknown_class": "BACKGROUND"
+    },
+    "link_capacity_mbps": 100,
+    "version": 2
+  }
+}

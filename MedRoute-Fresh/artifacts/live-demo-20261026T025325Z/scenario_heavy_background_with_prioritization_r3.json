@@ -1,0 +1,1981 @@
+{
+  "bottleneck": {
+    "capacity_mbps": 20,
+    "port": "s1-eth2",
+    "verified": true
+  },
+  "complete": true,
+  "duration_seconds": 4,
+  "flow_evidence": {
+    "class_traffic_usage": {
+      "classes": {
+        "BACKGROUND": {
+          "bytes": 18956853,
+          "complete": true,
+          "expected_queue_id": 4,
+          "observed_queue_ids": [
+            4
+          ],
+          "packets": 195432
+        },
+        "ECG": {
+          "bytes": 440911,
+          "complete": true,
+          "expected_queue_id": 1,
+          "observed_queue_ids": [
+            1
+          ],
+          "packets": 4546
+        },
+        "ICU": {
+          "bytes": 440911,
+          "complete": true,
+          "expected_queue_id": 2,
+          "observed_queue_ids": [
+            2
+          ],
+          "packets": 4546
+        },
+        "WEARABLE": {
+          "bytes": 440911,
+          "complete": true,
+          "expected_queue_id": 3,
+          "observed_queue_ids": [
+            3
+          ],
+          "packets": 4546
+        }
+      },
+      "complete": true
+    },
+    "htb_ports_verified": 16,
+    "mode": "baseline",
+    "qos_enabled": true,
+    "queue_actions_verified": true,
+    "queue_ids_seen": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "s2_h1_egress": 2,
+    "verified": true
+  },
+  "heavy_background": true,
+  "latency_probe_count": 100,
+  "link_utilization": {
+    "capacity_mbps": 100,
+    "complete": true,
+    "interval_seconds": 9.254374265670776,
+    "links": [
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth1 <-> h1",
+        "peer": "h1",
+        "port": 1,
+        "rx_mbps": 17.570138761641534,
+        "rx_utilization_pct": 17.570138761641534,
+        "switch": "s1",
+        "tx_mbps": 0.0411290908572749,
+        "tx_utilization_pct": 0.0411290908572749
+      },
+      {
+        "capacity_mbps": 20,
+        "complete": true,
+        "name": "s1-eth2 <-> s2-eth1",
+        "peer": "s2-eth1",
+        "port": 2,
+        "rx_mbps": 0.0411290908572749,
+        "rx_utilization_pct": 0.20564545428637448,
+        "switch": "s1",
+        "tx_mbps": 17.570199273566374,
+        "tx_utilization_pct": 87.85099636783187
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth3 <-> s3-eth1",
+        "peer": "s3-eth1",
+        "port": 3,
+        "rx_mbps": 6.0511924839405664e-05,
+        "rx_utilization_pct": 6.0511924839405664e-05,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth6 <-> h3",
+        "peer": "h3",
+        "port": 6,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth7 <-> h4",
+        "peer": "h4",
+        "port": 7,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth1 <-> s1-eth2",
+        "peer": "s1-eth2",
+        "port": 1,
+        "rx_mbps": 17.570199273566374,
+        "rx_utilization_pct": 17.570199273566374,
+        "switch": "s2",
+        "tx_mbps": 0.0411290908572749,
+        "tx_utilization_pct": 0.0411290908572749
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth2 <-> s4-eth1",
+        "peer": "s4-eth1",
+        "port": 2,
+        "rx_mbps": 0.0411290908572749,
+        "rx_utilization_pct": 0.0411290908572749,
+        "switch": "s2",
+        "tx_mbps": 17.570199273566374,
+        "tx_utilization_pct": 17.570199273566374
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth3 <-> s3-eth3",
+        "peer": "s3-eth3",
+        "port": 3,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s2",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth1 <-> s1-eth3",
+        "peer": "s1-eth3",
+        "port": 1,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s3",
+        "tx_mbps": 6.0511924839405664e-05,
+        "tx_utilization_pct": 6.0511924839405664e-05
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth2 <-> s4-eth2",
+        "peer": "s4-eth2",
+        "port": 2,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s3",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth3 <-> s2-eth3",
+        "peer": "s2-eth3",
+        "port": 3,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s3",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth1 <-> s2-eth2",
+        "peer": "s2-eth2",
+        "port": 1,
+        "rx_mbps": 17.570199273566374,
+        "rx_utilization_pct": 17.570199273566374,
+        "switch": "s4",
+        "tx_mbps": 0.0411290908572749,
+        "tx_utilization_pct": 0.0411290908572749
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth2 <-> s3-eth2",
+        "peer": "s3-eth2",
+        "port": 2,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth3 <-> h2",
+        "peer": "h2",
+        "port": 3,
+        "rx_mbps": 0.0411290908572749,
+        "rx_utilization_pct": 0.0411290908572749,
+        "switch": "s4",
+        "tx_mbps": 17.570138761641534,
+        "tx_utilization_pct": 17.570138761641534
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth4 <-> h5",
+        "peer": "h5",
+        "port": 4,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth5 <-> h6",
+        "peer": "h6",
+        "port": 5,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      }
+    ]
+  },
+  "per_class_metrics": {
+    "BACKGROUND": {
+      "complete": true,
+      "dataset_base_rate_bps": 20000000,
+      "dataset_packet_size_bytes": 55,
+      "dataset_profile": "ciciomt-benign-train-high",
+      "dscp": 0,
+      "error": null,
+      "metrics": {
+        "complete": true,
+        "cost": 0.15891666666666662,
+        "jitter_ms": 0.10999999999999943,
+        "latency_ms": 9.094999999999999,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0
+      },
+      "offered_load_mbps": 21.5,
+      "offered_rate_bps": 21500000,
+      "ping_samples": [
+        {
+          "rtt_ms": 8.97,
+          "timestamp": 1792983458.8837798
+        },
+        {
+          "rtt_ms": 9.07,
+          "timestamp": 1792983458.9837797
+        },
+        {
+          "rtt_ms": 8.17,
+          "timestamp": 1792983459.0837798
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983459.1837797
+        },
+        {
+          "rtt_ms": 8.28,
+          "timestamp": 1792983459.2837799
+        },
+        {
+          "rtt_ms": 8.18,
+          "timestamp": 1792983459.3837798
+        },
+        {
+          "rtt_ms": 8.13,
+          "timestamp": 1792983459.4837797
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983459.5837798
+        },
+        {
+          "rtt_ms": 8.15,
+          "timestamp": 1792983459.6837797
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983459.7837799
+        },
+        {
+          "rtt_ms": 8.15,
+          "timestamp": 1792983459.8837798
+        },
+        {
+          "rtt_ms": 8.33,
+          "timestamp": 1792983459.9837797
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983460.0837798
+        },
+        {
+          "rtt_ms": 8.25,
+          "timestamp": 1792983460.1837797
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983460.2837799
+        },
+        {
+          "rtt_ms": 8.17,
+          "timestamp": 1792983460.3837798
+        },
+        {
+          "rtt_ms": 8.32,
+          "timestamp": 1792983460.4837797
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983460.5837798
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983460.6837797
+        },
+        {
+          "rtt_ms": 8.13,
+          "timestamp": 1792983460.7837799
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983460.8837798
+        },
+        {
+          "rtt_ms": 8.22,
+          "timestamp": 1792983460.9837797
+        },
+        {
+          "rtt_ms": 8.26,
+          "timestamp": 1792983461.0837798
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983461.1837797
+        },
+        {
+          "rtt_ms": 8.18,
+          "timestamp": 1792983461.2837799
+        },
+        {
+          "rtt_ms": 8.18,
+          "timestamp": 1792983461.3837798
+        },
+        {
+          "rtt_ms": 8.16,
+          "timestamp": 1792983461.4837797
+        },
+        {
+          "rtt_ms": 8.21,
+          "timestamp": 1792983461.5837798
+        },
+        {
+          "rtt_ms": 8.2,
+          "timestamp": 1792983461.6837797
+        },
+        {
+          "rtt_ms": 8.45,
+          "timestamp": 1792983461.7837799
+        },
+        {
+          "rtt_ms": 8.34,
+          "timestamp": 1792983461.8837798
+        },
+        {
+          "rtt_ms": 8.11,
+          "timestamp": 1792983461.9837797
+        },
+        {
+          "rtt_ms": 8.21,
+          "timestamp": 1792983462.0837798
+        },
+        {
+          "rtt_ms": 8.54,
+          "timestamp": 1792983462.1837797
+        },
+        {
+          "rtt_ms": 8.26,
+          "timestamp": 1792983462.2837799
+        },
+        {
+          "rtt_ms": 8.2,
+          "timestamp": 1792983462.3837798
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983462.4837797
+        },
+        {
+          "rtt_ms": 8.19,
+          "timestamp": 1792983462.5837798
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983462.6837797
+        },
+        {
+          "rtt_ms": 8.43,
+          "timestamp": 1792983462.7837799
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983462.8837798
+        },
+        {
+          "rtt_ms": 9.75,
+          "timestamp": 1792983462.9837797
+        },
+        {
+          "rtt_ms": 10.0,
+          "timestamp": 1792983463.0837798
+        },
+        {
+          "rtt_ms": 9.61,
+          "timestamp": 1792983463.1837797
+        },
+        {
+          "rtt_ms": 10.2,
+          "timestamp": 1792983463.2837799
+        },
+        {
+          "rtt_ms": 10.4,
+          "timestamp": 1792983463.3837798
+        },
+        {
+          "rtt_ms": 10.3,
+          "timestamp": 1792983463.4837797
+        },
+        {
+          "rtt_ms": 9.98,
+          "timestamp": 1792983463.5837798
+        },
+        {
+          "rtt_ms": 9.58,
+          "timestamp": 1792983463.6837797
+        },
+        {
+          "rtt_ms": 9.66,
+          "timestamp": 1792983463.7837799
+        },
+        {
+          "rtt_ms": 9.35,
+          "timestamp": 1792983463.8837798
+        },
+        {
+          "rtt_ms": 9.56,
+          "timestamp": 1792983463.9837797
+        },
+        {
+          "rtt_ms": 9.6,
+          "timestamp": 1792983464.0837798
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983464.1837797
+        },
+        {
+          "rtt_ms": 9.58,
+          "timestamp": 1792983464.2837799
+        },
+        {
+          "rtt_ms": 9.91,
+          "timestamp": 1792983464.3837798
+        },
+        {
+          "rtt_ms": 9.17,
+          "timestamp": 1792983464.4837797
+        },
+        {
+          "rtt_ms": 9.79,
+          "timestamp": 1792983464.5837798
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983464.6837797
+        },
+        {
+          "rtt_ms": 9.91,
+          "timestamp": 1792983464.7837799
+        },
+        {
+          "rtt_ms": 9.65,
+          "timestamp": 1792983464.8837798
+        },
+        {
+          "rtt_ms": 10.0,
+          "timestamp": 1792983464.9837797
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983465.0837798
+        },
+        {
+          "rtt_ms": 9.6,
+          "timestamp": 1792983465.1837797
+        },
+        {
+          "rtt_ms": 9.23,
+          "timestamp": 1792983465.2837799
+        },
+        {
+          "rtt_ms": 9.33,
+          "timestamp": 1792983465.3837798
+        },
+        {
+          "rtt_ms": 9.72,
+          "timestamp": 1792983465.4837797
+        },
+        {
+          "rtt_ms": 9.63,
+          "timestamp": 1792983465.5837798
+        },
+        {
+          "rtt_ms": 9.78,
+          "timestamp": 1792983465.6837797
+        },
+        {
+          "rtt_ms": 9.85,
+          "timestamp": 1792983465.7837799
+        },
+        {
+          "rtt_ms": 9.85,
+          "timestamp": 1792983465.8837798
+        },
+        {
+          "rtt_ms": 9.65,
+          "timestamp": 1792983465.9837797
+        },
+        {
+          "rtt_ms": 10.2,
+          "timestamp": 1792983466.0837798
+        },
+        {
+          "rtt_ms": 9.84,
+          "timestamp": 1792983466.1837797
+        },
+        {
+          "rtt_ms": 10.2,
+          "timestamp": 1792983466.2837799
+        },
+        {
+          "rtt_ms": 9.16,
+          "timestamp": 1792983466.3837798
+        },
+        {
+          "rtt_ms": 8.72,
+          "timestamp": 1792983466.4837797
+        },
+        {
+          "rtt_ms": 8.73,
+          "timestamp": 1792983466.5837798
+        },
+        {
+          "rtt_ms": 9.19,
+          "timestamp": 1792983466.6837797
+        },
+        {
+          "rtt_ms": 9.03,
+          "timestamp": 1792983466.7837799
+        },
+        {
+          "rtt_ms": 8.97,
+          "timestamp": 1792983466.8837798
+        },
+        {
+          "rtt_ms": 9.03,
+          "timestamp": 1792983466.9837797
+        },
+        {
+          "rtt_ms": 8.94,
+          "timestamp": 1792983467.0837798
+        },
+        {
+          "rtt_ms": 8.75,
+          "timestamp": 1792983467.1837797
+        },
+        {
+          "rtt_ms": 8.92,
+          "timestamp": 1792983467.2837799
+        },
+        {
+          "rtt_ms": 9.0,
+          "timestamp": 1792983467.3837798
+        },
+        {
+          "rtt_ms": 9.2,
+          "timestamp": 1792983467.4837797
+        },
+        {
+          "rtt_ms": 9.12,
+          "timestamp": 1792983467.5837798
+        },
+        {
+          "rtt_ms": 9.21,
+          "timestamp": 1792983467.6837797
+        },
+        {
+          "rtt_ms": 9.47,
+          "timestamp": 1792983467.7837799
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983467.8837798
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983467.9837797
+        },
+        {
+          "rtt_ms": 9.31,
+          "timestamp": 1792983468.0837798
+        },
+        {
+          "rtt_ms": 9.42,
+          "timestamp": 1792983468.1837797
+        },
+        {
+          "rtt_ms": 9.42,
+          "timestamp": 1792983468.2837799
+        },
+        {
+          "rtt_ms": 9.43,
+          "timestamp": 1792983468.3837798
+        },
+        {
+          "rtt_ms": 9.33,
+          "timestamp": 1792983468.4837797
+        },
+        {
+          "rtt_ms": 9.45,
+          "timestamp": 1792983468.5837798
+        },
+        {
+          "rtt_ms": 9.45,
+          "timestamp": 1792983468.6837797
+        },
+        {
+          "rtt_ms": 9.06,
+          "timestamp": 1792983468.7837799
+        }
+      ],
+      "queue_id": 4,
+      "scenario_scale_factor": 1.075,
+      "throughput_mbps": 21.2,
+      "udp_port": 5104
+    },
+    "ECG": {
+      "complete": true,
+      "dataset_base_rate_bps": 500000,
+      "dataset_packet_size_bytes": 55,
+      "dataset_profile": "ciciomt-benign-train-typical",
+      "dscp": 46,
+      "error": null,
+      "metrics": {
+        "complete": true,
+        "cost": 0.1639999999999999,
+        "jitter_ms": 0.1399999999999988,
+        "latency_ms": 9.28,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0
+      },
+      "offered_load_mbps": 0.5,
+      "offered_rate_bps": 500000,
+      "ping_samples": [
+        {
+          "rtt_ms": 8.93,
+          "timestamp": 1792983458.8760762
+        },
+        {
+          "rtt_ms": 8.45,
+          "timestamp": 1792983458.9760761
+        },
+        {
+          "rtt_ms": 8.22,
+          "timestamp": 1792983459.0760763
+        },
+        {
+          "rtt_ms": 8.32,
+          "timestamp": 1792983459.1760762
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983459.2760763
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983459.3760762
+        },
+        {
+          "rtt_ms": 8.21,
+          "timestamp": 1792983459.4760761
+        },
+        {
+          "rtt_ms": 8.25,
+          "timestamp": 1792983459.5760763
+        },
+        {
+          "rtt_ms": 8.47,
+          "timestamp": 1792983459.6760762
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983459.7760763
+        },
+        {
+          "rtt_ms": 8.28,
+          "timestamp": 1792983459.8760762
+        },
+        {
+          "rtt_ms": 8.27,
+          "timestamp": 1792983459.9760761
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983460.0760763
+        },
+        {
+          "rtt_ms": 8.27,
+          "timestamp": 1792983460.1760762
+        },
+        {
+          "rtt_ms": 8.26,
+          "timestamp": 1792983460.2760763
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983460.3760762
+        },
+        {
+          "rtt_ms": 8.32,
+          "timestamp": 1792983460.4760761
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983460.5760763
+        },
+        {
+          "rtt_ms": 8.17,
+          "timestamp": 1792983460.6760762
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983460.7760763
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983460.8760762
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983460.9760761
+        },
+        {
+          "rtt_ms": 8.23,
+          "timestamp": 1792983461.0760763
+        },
+        {
+          "rtt_ms": 8.18,
+          "timestamp": 1792983461.1760762
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983461.2760763
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983461.3760762
+        },
+        {
+          "rtt_ms": 0.0,
+          "timestamp": 1792983461.4760761
+        },
+        {
+          "rtt_ms": 8.27,
+          "timestamp": 1792983461.5760763
+        },
+        {
+          "rtt_ms": 8.39,
+          "timestamp": 1792983461.6760762
+        },
+        {
+          "rtt_ms": 8.87,
+          "timestamp": 1792983461.7760763
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983461.8760762
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983461.9760761
+        },
+        {
+          "rtt_ms": 8.32,
+          "timestamp": 1792983462.0760763
+        },
+        {
+          "rtt_ms": 8.15,
+          "timestamp": 1792983462.1760762
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983462.2760763
+        },
+        {
+          "rtt_ms": 8.44,
+          "timestamp": 1792983462.3760762
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983462.4760761
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983462.5760763
+        },
+        {
+          "rtt_ms": 8.32,
+          "timestamp": 1792983462.6760762
+        },
+        {
+          "rtt_ms": 8.26,
+          "timestamp": 1792983462.7760763
+        },
+        {
+          "rtt_ms": 9.04,
+          "timestamp": 1792983462.8760762
+        },
+        {
+          "rtt_ms": 9.57,
+          "timestamp": 1792983462.9760761
+        },
+        {
+          "rtt_ms": 9.98,
+          "timestamp": 1792983463.0760763
+        },
+        {
+          "rtt_ms": 9.16,
+          "timestamp": 1792983463.1760762
+        },
+        {
+          "rtt_ms": 10.2,
+          "timestamp": 1792983463.2760763
+        },
+        {
+          "rtt_ms": 9.86,
+          "timestamp": 1792983463.3760762
+        },
+        {
+          "rtt_ms": 9.72,
+          "timestamp": 1792983463.4760761
+        },
+        {
+          "rtt_ms": 9.56,
+          "timestamp": 1792983463.5760763
+        },
+        {
+          "rtt_ms": 9.31,
+          "timestamp": 1792983463.6760762
+        },
+        {
+          "rtt_ms": 9.48,
+          "timestamp": 1792983463.7760763
+        },
+        {
+          "rtt_ms": 9.36,
+          "timestamp": 1792983463.8760762
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983463.9760761
+        },
+        {
+          "rtt_ms": 9.8,
+          "timestamp": 1792983464.0760763
+        },
+        {
+          "rtt_ms": 9.42,
+          "timestamp": 1792983464.1760762
+        },
+        {
+          "rtt_ms": 9.12,
+          "timestamp": 1792983464.2760763
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983464.3760762
+        },
+        {
+          "rtt_ms": 9.13,
+          "timestamp": 1792983464.4760761
+        },
+        {
+          "rtt_ms": 9.55,
+          "timestamp": 1792983464.5760763
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983464.6760762
+        },
+        {
+          "rtt_ms": 9.7,
+          "timestamp": 1792983464.7760763
+        },
+        {
+          "rtt_ms": 9.86,
+          "timestamp": 1792983464.8760762
+        },
+        {
+          "rtt_ms": 9.84,
+          "timestamp": 1792983464.9760761
+        },
+        {
+          "rtt_ms": 9.68,
+          "timestamp": 1792983465.0760763
+        },
+        {
+          "rtt_ms": 9.94,
+          "timestamp": 1792983465.1760762
+        },
+        {
+          "rtt_ms": 9.82,
+          "timestamp": 1792983465.2760763
+        },
+        {
+          "rtt_ms": 9.81,
+          "timestamp": 1792983465.3760762
+        },
+        {
+          "rtt_ms": 9.63,
+          "timestamp": 1792983465.4760761
+        },
+        {
+          "rtt_ms": 9.59,
+          "timestamp": 1792983465.5760763
+        },
+        {
+          "rtt_ms": 9.41,
+          "timestamp": 1792983465.6760762
+        },
+        {
+          "rtt_ms": 9.47,
+          "timestamp": 1792983465.7760763
+        },
+        {
+          "rtt_ms": 9.67,
+          "timestamp": 1792983465.8760762
+        },
+        {
+          "rtt_ms": 9.63,
+          "timestamp": 1792983465.9760761
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983466.0760763
+        },
+        {
+          "rtt_ms": 9.63,
+          "timestamp": 1792983466.1760762
+        },
+        {
+          "rtt_ms": 9.63,
+          "timestamp": 1792983466.2760763
+        },
+        {
+          "rtt_ms": 9.4,
+          "timestamp": 1792983466.3760762
+        },
+        {
+          "rtt_ms": 8.73,
+          "timestamp": 1792983466.4760761
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983466.5760763
+        },
+        {
+          "rtt_ms": 9.28,
+          "timestamp": 1792983466.6760762
+        },
+        {
+          "rtt_ms": 9.3,
+          "timestamp": 1792983466.7760763
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983466.8760762
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983466.9760761
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983467.0760763
+        },
+        {
+          "rtt_ms": 9.35,
+          "timestamp": 1792983467.1760762
+        },
+        {
+          "rtt_ms": 9.36,
+          "timestamp": 1792983467.2760763
+        },
+        {
+          "rtt_ms": 9.19,
+          "timestamp": 1792983467.3760762
+        },
+        {
+          "rtt_ms": 9.38,
+          "timestamp": 1792983467.4760761
+        },
+        {
+          "rtt_ms": 9.19,
+          "timestamp": 1792983467.5760763
+        },
+        {
+          "rtt_ms": 9.46,
+          "timestamp": 1792983467.6760762
+        },
+        {
+          "rtt_ms": 9.28,
+          "timestamp": 1792983467.7760763
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983467.8760762
+        },
+        {
+          "rtt_ms": 9.61,
+          "timestamp": 1792983467.9760761
+        },
+        {
+          "rtt_ms": 9.31,
+          "timestamp": 1792983468.0760763
+        },
+        {
+          "rtt_ms": 9.19,
+          "timestamp": 1792983468.1760762
+        },
+        {
+          "rtt_ms": 9.38,
+          "timestamp": 1792983468.2760763
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983468.3760762
+        },
+        {
+          "rtt_ms": 9.28,
+          "timestamp": 1792983468.4760761
+        },
+        {
+          "rtt_ms": 9.45,
+          "timestamp": 1792983468.5760763
+        },
+        {
+          "rtt_ms": 9.53,
+          "timestamp": 1792983468.6760762
+        },
+        {
+          "rtt_ms": 9.1,
+          "timestamp": 1792983468.7760763
+        }
+      ],
+      "queue_id": 1,
+      "scenario_scale_factor": 1.0,
+      "throughput_mbps": 0.494,
+      "udp_port": 5101
+    },
+    "ICU": {
+      "complete": true,
+      "dataset_base_rate_bps": 500000,
+      "dataset_packet_size_bytes": 55,
+      "dataset_profile": "ciciomt-benign-train-typical",
+      "dscp": 34,
+      "error": null,
+      "metrics": {
+        "complete": true,
+        "cost": 0.1653333333333333,
+        "jitter_ms": 0.1999999999999993,
+        "latency_ms": 9.120000000000001,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0
+      },
+      "offered_load_mbps": 0.5,
+      "offered_rate_bps": 500000,
+      "ping_samples": [
+        {
+          "rtt_ms": 8.64,
+          "timestamp": 1792983458.8785665
+        },
+        {
+          "rtt_ms": 8.66,
+          "timestamp": 1792983458.9785664
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983459.0785666
+        },
+        {
+          "rtt_ms": 8.38,
+          "timestamp": 1792983459.1785665
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983459.2785666
+        },
+        {
+          "rtt_ms": 8.37,
+          "timestamp": 1792983459.3785665
+        },
+        {
+          "rtt_ms": 8.63,
+          "timestamp": 1792983459.4785664
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983459.5785666
+        },
+        {
+          "rtt_ms": 8.6,
+          "timestamp": 1792983459.6785665
+        },
+        {
+          "rtt_ms": 8.41,
+          "timestamp": 1792983459.7785666
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983459.8785665
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983459.9785664
+        },
+        {
+          "rtt_ms": 8.25,
+          "timestamp": 1792983460.0785666
+        },
+        {
+          "rtt_ms": 8.56,
+          "timestamp": 1792983460.1785665
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983460.2785666
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983460.3785665
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983460.4785664
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983460.5785666
+        },
+        {
+          "rtt_ms": 8.17,
+          "timestamp": 1792983460.6785665
+        },
+        {
+          "rtt_ms": 8.47,
+          "timestamp": 1792983460.7785666
+        },
+        {
+          "rtt_ms": 8.37,
+          "timestamp": 1792983460.8785665
+        },
+        {
+          "rtt_ms": 8.34,
+          "timestamp": 1792983460.9785664
+        },
+        {
+          "rtt_ms": 8.28,
+          "timestamp": 1792983461.0785666
+        },
+        {
+          "rtt_ms": 8.2,
+          "timestamp": 1792983461.1785665
+        },
+        {
+          "rtt_ms": 8.43,
+          "timestamp": 1792983461.2785666
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983461.3785665
+        },
+        {
+          "rtt_ms": 0.0,
+          "timestamp": 1792983461.4785664
+        },
+        {
+          "rtt_ms": 8.46,
+          "timestamp": 1792983461.5785666
+        },
+        {
+          "rtt_ms": 8.36,
+          "timestamp": 1792983461.6785665
+        },
+        {
+          "rtt_ms": 8.67,
+          "timestamp": 1792983461.7785666
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983461.8785665
+        },
+        {
+          "rtt_ms": 8.45,
+          "timestamp": 1792983461.9785664
+        },
+        {
+          "rtt_ms": 8.45,
+          "timestamp": 1792983462.0785666
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983462.1785665
+        },
+        {
+          "rtt_ms": 8.51,
+          "timestamp": 1792983462.2785666
+        },
+        {
+          "rtt_ms": 8.39,
+          "timestamp": 1792983462.3785665
+        },
+        {
+          "rtt_ms": 8.48,
+          "timestamp": 1792983462.4785664
+        },
+        {
+          "rtt_ms": 8.37,
+          "timestamp": 1792983462.5785666
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983462.6785665
+        },
+        {
+          "rtt_ms": 8.47,
+          "timestamp": 1792983462.7785666
+        },
+        {
+          "rtt_ms": 9.16,
+          "timestamp": 1792983462.8785665
+        },
+        {
+          "rtt_ms": 9.72,
+          "timestamp": 1792983462.9785664
+        },
+        {
+          "rtt_ms": 10.0,
+          "timestamp": 1792983463.0785666
+        },
+        {
+          "rtt_ms": 9.4,
+          "timestamp": 1792983463.1785665
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983463.2785666
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983463.3785665
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983463.4785664
+        },
+        {
+          "rtt_ms": 9.68,
+          "timestamp": 1792983463.5785666
+        },
+        {
+          "rtt_ms": 9.01,
+          "timestamp": 1792983463.6785665
+        },
+        {
+          "rtt_ms": 9.27,
+          "timestamp": 1792983463.7785666
+        },
+        {
+          "rtt_ms": 9.22,
+          "timestamp": 1792983463.8785665
+        },
+        {
+          "rtt_ms": 9.29,
+          "timestamp": 1792983463.9785664
+        },
+        {
+          "rtt_ms": 9.8,
+          "timestamp": 1792983464.0785666
+        },
+        {
+          "rtt_ms": 9.07,
+          "timestamp": 1792983464.1785665
+        },
+        {
+          "rtt_ms": 9.13,
+          "timestamp": 1792983464.2785666
+        },
+        {
+          "rtt_ms": 9.65,
+          "timestamp": 1792983464.3785665
+        },
+        {
+          "rtt_ms": 8.78,
+          "timestamp": 1792983464.4785664
+        },
+        {
+          "rtt_ms": 9.1,
+          "timestamp": 1792983464.5785666
+        },
+        {
+          "rtt_ms": 9.91,
+          "timestamp": 1792983464.6785665
+        },
+        {
+          "rtt_ms": 9.89,
+          "timestamp": 1792983464.7785666
+        },
+        {
+          "rtt_ms": 9.92,
+          "timestamp": 1792983464.8785665
+        },
+        {
+          "rtt_ms": 10.0,
+          "timestamp": 1792983464.9785664
+        },
+        {
+          "rtt_ms": 9.9,
+          "timestamp": 1792983465.0785666
+        },
+        {
+          "rtt_ms": 10.1,
+          "timestamp": 1792983465.1785665
+        },
+        {
+          "rtt_ms": 9.87,
+          "timestamp": 1792983465.2785666
+        },
+        {
+          "rtt_ms": 9.17,
+          "timestamp": 1792983465.3785665
+        },
+        {
+          "rtt_ms": 9.72,
+          "timestamp": 1792983465.4785664
+        },
+        {
+          "rtt_ms": 9.07,
+          "timestamp": 1792983465.5785666
+        },
+        {
+          "rtt_ms": 9.89,
+          "timestamp": 1792983465.6785665
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983465.7785666
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983465.8785665
+        },
+        {
+          "rtt_ms": 9.8,
+          "timestamp": 1792983465.9785664
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983466.0785666
+        },
+        {
+          "rtt_ms": 9.79,
+          "timestamp": 1792983466.1785665
+        },
+        {
+          "rtt_ms": 9.83,
+          "timestamp": 1792983466.2785666
+        },
+        {
+          "rtt_ms": 9.36,
+          "timestamp": 1792983466.3785665
+        },
+        {
+          "rtt_ms": 9.13,
+          "timestamp": 1792983466.4785664
+        },
+        {
+          "rtt_ms": 9.07,
+          "timestamp": 1792983466.5785666
+        },
+        {
+          "rtt_ms": 9.61,
+          "timestamp": 1792983466.6785665
+        },
+        {
+          "rtt_ms": 9.33,
+          "timestamp": 1792983466.7785666
+        },
+        {
+          "rtt_ms": 9.25,
+          "timestamp": 1792983466.8785665
+        },
+        {
+          "rtt_ms": 9.54,
+          "timestamp": 1792983466.9785664
+        },
+        {
+          "rtt_ms": 9.46,
+          "timestamp": 1792983467.0785666
+        },
+        {
+          "rtt_ms": 9.3,
+          "timestamp": 1792983467.1785665
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983467.2785666
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983467.3785665
+        },
+        {
+          "rtt_ms": 9.26,
+          "timestamp": 1792983467.4785664
+        },
+        {
+          "rtt_ms": 9.0,
+          "timestamp": 1792983467.5785666
+        },
+        {
+          "rtt_ms": 9.17,
+          "timestamp": 1792983467.6785665
+        },
+        {
+          "rtt_ms": 9.35,
+          "timestamp": 1792983467.7785666
+        },
+        {
+          "rtt_ms": 9.28,
+          "timestamp": 1792983467.8785665
+        },
+        {
+          "rtt_ms": 9.33,
+          "timestamp": 1792983467.9785664
+        },
+        {
+          "rtt_ms": 9.3,
+          "timestamp": 1792983468.0785666
+        },
+        {
+          "rtt_ms": 9.76,
+          "timestamp": 1792983468.1785665
+        },
+        {
+          "rtt_ms": 9.03,
+          "timestamp": 1792983468.2785666
+        },
+        {
+          "rtt_ms": 9.46,
+          "timestamp": 1792983468.3785665
+        },
+        {
+          "rtt_ms": 9.38,
+          "timestamp": 1792983468.4785664
+        },
+        {
+          "rtt_ms": 8.96,
+          "timestamp": 1792983468.5785666
+        },
+        {
+          "rtt_ms": 9.4,
+          "timestamp": 1792983468.6785665
+        },
+        {
+          "rtt_ms": 9.11,
+          "timestamp": 1792983468.7785666
+        }
+      ],
+      "queue_id": 2,
+      "scenario_scale_factor": 1.0,
+      "throughput_mbps": 0.494,
+      "udp_port": 5102
+    },
+    "WEARABLE": {
+      "complete": true,
+      "dataset_base_rate_bps": 500000,
+      "dataset_packet_size_bytes": 55,
+      "dataset_profile": "ciciomt-benign-train-typical",
+      "dscp": 18,
+      "error": null,
+      "metrics": {
+        "complete": true,
+        "cost": 0.16150000000000003,
+        "jitter_ms": 0.15000000000000036,
+        "latency_ms": 9.09,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0
+      },
+      "offered_load_mbps": 0.5,
+      "offered_rate_bps": 500000,
+      "ping_samples": [
+        {
+          "rtt_ms": 9.25,
+          "timestamp": 1792983458.8812342
+        },
+        {
+          "rtt_ms": 8.79,
+          "timestamp": 1792983458.981234
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983459.0812342
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983459.1812341
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983459.2812343
+        },
+        {
+          "rtt_ms": 8.33,
+          "timestamp": 1792983459.3812342
+        },
+        {
+          "rtt_ms": 8.46,
+          "timestamp": 1792983459.481234
+        },
+        {
+          "rtt_ms": 8.48,
+          "timestamp": 1792983459.5812342
+        },
+        {
+          "rtt_ms": 8.56,
+          "timestamp": 1792983459.6812341
+        },
+        {
+          "rtt_ms": 8.39,
+          "timestamp": 1792983459.7812343
+        },
+        {
+          "rtt_ms": 8.5,
+          "timestamp": 1792983459.8812342
+        },
+        {
+          "rtt_ms": 8.57,
+          "timestamp": 1792983459.981234
+        },
+        {
+          "rtt_ms": 8.28,
+          "timestamp": 1792983460.0812342
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983460.1812341
+        },
+        {
+          "rtt_ms": 8.31,
+          "timestamp": 1792983460.2812343
+        },
+        {
+          "rtt_ms": 8.41,
+          "timestamp": 1792983460.3812342
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983460.481234
+        },
+        {
+          "rtt_ms": 8.46,
+          "timestamp": 1792983460.5812342
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983460.6812341
+        },
+        {
+          "rtt_ms": 8.38,
+          "timestamp": 1792983460.7812343
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983460.8812342
+        },
+        {
+          "rtt_ms": 8.27,
+          "timestamp": 1792983460.981234
+        },
+        {
+          "rtt_ms": 8.52,
+          "timestamp": 1792983461.0812342
+        },
+        {
+          "rtt_ms": 8.19,
+          "timestamp": 1792983461.1812341
+        },
+        {
+          "rtt_ms": 8.35,
+          "timestamp": 1792983461.2812343
+        },
+        {
+          "rtt_ms": 8.44,
+          "timestamp": 1792983461.3812342
+        },
+        {
+          "rtt_ms": 8.45,
+          "timestamp": 1792983461.481234
+        },
+        {
+          "rtt_ms": 8.67,
+          "timestamp": 1792983461.5812342
+        },
+        {
+          "rtt_ms": 8.4,
+          "timestamp": 1792983461.6812341
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983461.7812343
+        },
+        {
+          "rtt_ms": 8.27,
+          "timestamp": 1792983461.8812342
+        },
+        {
+          "rtt_ms": 8.42,
+          "timestamp": 1792983461.981234
+        },
+        {
+          "rtt_ms": 8.3,
+          "timestamp": 1792983462.0812342
+        },
+        {
+          "rtt_ms": 8.37,
+          "timestamp": 1792983462.1812341
+        },
+        {
+          "rtt_ms": 8.69,
+          "timestamp": 1792983462.2812343
+        },
+        {
+          "rtt_ms": 8.38,
+          "timestamp": 1792983462.3812342
+        },
+        {
+          "rtt_ms": 8.29,
+          "timestamp": 1792983462.481234
+        },
+        {
+          "rtt_ms": 8.24,
+          "timestamp": 1792983462.5812342
+        },
+        {
+          "rtt_ms": 8.22,
+          "timestamp": 1792983462.6812341
+        },
+        {
+          "rtt_ms": 8.44,
+          "timestamp": 1792983462.7812343
+        },
+        {
+          "rtt_ms": 9.03,
+          "timestamp": 1792983462.8812342
+        },
+        {
+          "rtt_ms": 9.18,
+          "timestamp": 1792983462.981234
+        },
+        {
+          "rtt_ms": 9.81,
+          "timestamp": 1792983463.0812342
+        },
+        {
+          "rtt_ms": 9.73,
+          "timestamp": 1792983463.1812341
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983463.2812343
+        },
+        {
+          "rtt_ms": 9.77,
+          "timestamp": 1792983463.3812342
+        },
+        {
+          "rtt_ms": 9.74,
+          "timestamp": 1792983463.481234
+        },
+        {
+          "rtt_ms": 9.65,
+          "timestamp": 1792983463.5812342
+        },
+        {
+          "rtt_ms": 9.09,
+          "timestamp": 1792983463.6812341
+        },
+        {
+          "rtt_ms": 9.17,
+          "timestamp": 1792983463.7812343
+        },
+        {
+          "rtt_ms": 9.07,
+          "timestamp": 1792983463.8812342
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983463.981234
+        },
+        {
+          "rtt_ms": 9.68,
+          "timestamp": 1792983464.0812342
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983464.1812341
+        },
+        {
+          "rtt_ms": 9.36,
+          "timestamp": 1792983464.2812343
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983464.3812342
+        },
+        {
+          "rtt_ms": 9.1,
+          "timestamp": 1792983464.481234
+        },
+        {
+          "rtt_ms": 9.4,
+          "timestamp": 1792983464.5812342
+        },
+        {
+          "rtt_ms": 9.61,
+          "timestamp": 1792983464.6812341
+        },
+        {
+          "rtt_ms": 9.34,
+          "timestamp": 1792983464.7812343
+        },
+        {
+          "rtt_ms": 9.44,
+          "timestamp": 1792983464.8812342
+        },
+        {
+          "rtt_ms": 9.51,
+          "timestamp": 1792983464.981234
+        },
+        {
+          "rtt_ms": 9.42,
+          "timestamp": 1792983465.0812342
+        },
+        {
+          "rtt_ms": 9.09,
+          "timestamp": 1792983465.1812341
+        },
+        {
+          "rtt_ms": 9.13,
+          "timestamp": 1792983465.2812343
+        },
+        {
+          "rtt_ms": 9.2,
+          "timestamp": 1792983465.3812342
+        },
+        {
+          "rtt_ms": 9.71,
+          "timestamp": 1792983465.481234
+        },
+        {
+          "rtt_ms": 9.58,
+          "timestamp": 1792983465.5812342
+        },
+        {
+          "rtt_ms": 9.77,
+          "timestamp": 1792983465.6812341
+        },
+        {
+          "rtt_ms": 9.72,
+          "timestamp": 1792983465.7812343
+        },
+        {
+          "rtt_ms": 9.8,
+          "timestamp": 1792983465.8812342
+        },
+        {
+          "rtt_ms": 9.69,
+          "timestamp": 1792983465.981234
+        },
+        {
+          "rtt_ms": 9.68,
+          "timestamp": 1792983466.0812342
+        },
+        {
+          "rtt_ms": 9.75,
+          "timestamp": 1792983466.1812341
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983466.2812343
+        },
+        {
+          "rtt_ms": 8.63,
+          "timestamp": 1792983466.3812342
+        },
+        {
+          "rtt_ms": 8.75,
+          "timestamp": 1792983466.481234
+        },
+        {
+          "rtt_ms": 9.12,
+          "timestamp": 1792983466.5812342
+        },
+        {
+          "rtt_ms": 8.9,
+          "timestamp": 1792983466.6812341
+        },
+        {
+          "rtt_ms": 8.82,
+          "timestamp": 1792983466.7812343
+        },
+        {
+          "rtt_ms": 8.67,
+          "timestamp": 1792983466.8812342
+        },
+        {
+          "rtt_ms": 8.99,
+          "timestamp": 1792983466.981234
+        },
+        {
+          "rtt_ms": 9.13,
+          "timestamp": 1792983467.0812342
+        },
+        {
+          "rtt_ms": 9.12,
+          "timestamp": 1792983467.1812341
+        },
+        {
+          "rtt_ms": 9.52,
+          "timestamp": 1792983467.2812343
+        },
+        {
+          "rtt_ms": 9.65,
+          "timestamp": 1792983467.3812342
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983467.481234
+        },
+        {
+          "rtt_ms": 9.53,
+          "timestamp": 1792983467.5812342
+        },
+        {
+          "rtt_ms": 9.06,
+          "timestamp": 1792983467.6812341
+        },
+        {
+          "rtt_ms": 9.43,
+          "timestamp": 1792983467.7812343
+        },
+        {
+          "rtt_ms": 9.11,
+          "timestamp": 1792983467.8812342
+        },
+        {
+          "rtt_ms": 9.32,
+          "timestamp": 1792983467.981234
+        },
+        {
+          "rtt_ms": 9.49,
+          "timestamp": 1792983468.0812342
+        },
+        {
+          "rtt_ms": 9.16,
+          "timestamp": 1792983468.1812341
+        },
+        {
+          "rtt_ms": 9.28,
+          "timestamp": 1792983468.2812343
+        },
+        {
+          "rtt_ms": 9.39,
+          "timestamp": 1792983468.3812342
+        },
+        {
+          "rtt_ms": 9.21,
+          "timestamp": 1792983468.481234
+        },
+        {
+          "rtt_ms": 9.33,
+          "timestamp": 1792983468.5812342
+        },
+        {
+          "rtt_ms": 9.24,
+          "timestamp": 1792983468.6812341
+        },
+        {
+          "rtt_ms": 8.91,
+          "timestamp": 1792983468.7812343
+        }
+      ],
+      "queue_id": 3,
+      "scenario_scale_factor": 1.0,
+      "throughput_mbps": 0.493,
+      "udp_port": 5103
+    }
+  },
+  "qos_enabled": true,
+  "raw_process_output": {
+    "client_BACKGROUND": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t49564,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5104\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Mon, 26 Oct 2026 02:57:38 GMT\",\n\t\t\t\"timesecs\":\t1792983458\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5104\n\t\t},\n\t\t\"cookie\":\t\"sq7a3wd7cdydu26gm7f4lwii64i4o4hqad3g\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t55,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t0\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000121,\n\t\t\t\t\t\"seconds\":\t1.000120997428894,\n\t\t\t\t\t\"bytes\":\t2686475,\n\t\t\t\t\t\"bits_per_second\":\t21489199.8620677,\n\t\t\t\t\t\"packets\":\t48845,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000121,\n\t\t\t\t\"seconds\":\t1.000120997428894,\n\t\t\t\t\"bytes\":\t2686475,\n\t\t\t\t\"bits_per_second\":\t21489199.8620677,\n\t\t\t\t\"packets\":\t48845,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000121,\n\t\t\t\t\t\"end\":\t2.000083,\n\t\t\t\t\t\"seconds\":\t0.9999619722366333,\n\t\t\t\t\t\"bytes\":\t2686860,\n\t\t\t\t\t\"bits_per_second\":\t21495697.4332954,\n\t\t\t\t\t\"packets\":\t48852,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000121,\n\t\t\t\t\"end\":\t2.000083,\n\t\t\t\t\"seconds\":\t0.9999619722366333,\n\t\t\t\t\"bytes\":\t2686860,\n\t\t\t\t\"bits_per_second\":\t21495697.4332954,\n\t\t\t\t\"packets\":\t48852,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000083,\n\t\t\t\t\t\"end\":\t3.000095,\n\t\t\t\t\t\"seconds\":\t1.0000120401382446,\n\t\t\t\t\t\"bytes\":\t2688785,\n\t\t\t\t\t\"bits_per_second\":\t21510021.016373318,\n\t\t\t\t\t\"packets\":\t48887,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000083,\n\t\t\t\t\"end\":\t3.000095,\n\t\t\t\t\"seconds\":\t1.0000120401382446,\n\t\t\t\t\"bytes\":\t2688785,\n\t\t\t\t\"bits_per_second\":\t21510021.016373318,\n\t\t\t\t\"packets\":\t48887,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000095,\n\t\t\t\t\t\"end\":\t4.000278,\n\t\t\t\t\t\"seconds\":\t1.0001829862594604,\n\t\t\t\t\t\"bytes\":\t2686585,\n\t\t\t\t\t\"bits_per_second\":\t21488747.854409631,\n\t\t\t\t\t\"packets\":\t48847,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000095,\n\t\t\t\t\"end\":\t4.000278,\n\t\t\t\t\"seconds\":\t1.0001829862594604,\n\t\t\t\t\"bytes\":\t2686585,\n\t\t\t\t\"bits_per_second\":\t21488747.854409631,\n\t\t\t\t\"packets\":\t48847,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000278,\n\t\t\t\t\t\"seconds\":\t4.000278,\n\t\t\t\t\t\"bytes\":\t10748705,\n\t\t\t\t\t\"bits_per_second\":\t21495916.033835649,\n\t\t\t\t\t\"jitter_ms\":\t0.00649751667116681,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t195431,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.053962,\n\t\t\t\"seconds\":\t4.053962,\n\t\t\t\"bytes\":\t10748705,\n\t\t\t\"bits_per_second\":\t21495916.033835649,\n\t\t\t\"jitter_ms\":\t0.00649751667116681,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t195431,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t31.914864733831088,\n\t\t\t\"host_user\":\t1.7326432657810531,\n\t\t\t\"host_system\":\t30.182197226801126,\n\t\t\t\"remote_total\":\t10.018681562181804,\n\t\t\t\"remote_user\":\t1.3155247911479504,\n\t\t\t\"remote_system\":\t8.70311236513373\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 53230\\n[  7] local 10.0.0.2 port 5104 connected to 10.0.0.1 port 49564\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  2.43 MBytes  20.3 Mbits/sec  0.009 ms  0/46238 (0%)  \\n[  7]   1.00-2.00   sec  2.56 MBytes  21.5 Mbits/sec  0.007 ms  0/48863 (0%)  \\n[  7]   2.00-3.00   sec  2.56 MBytes  21.5 Mbits/sec  0.013 ms  0/48850 (0%)  \\n[  7]   3.00-4.00   sec  2.56 MBytes  21.5 Mbits/sec  0.008 ms  0/48870 (0%)  \\n[  7]   4.00-4.05   sec   140 KBytes  21.3 Mbits/sec  0.006 ms  0/2610 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[SUM]  0.0- 4.1 sec  9669 datagrams received out-of-order\\n[  7]   0.00-4.05   sec  10.3 MBytes  21.2 Mbits/sec  0.006 ms  0/195431 (0%)  receiver\\n\"\n}\n",
+    "client_ECG": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t45133,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5101\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Mon, 26 Oct 2026 02:57:38 GMT\",\n\t\t\t\"timesecs\":\t1792983458\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5101\n\t\t},\n\t\t\"cookie\":\t\"236ugstdm3mhbb4qv3q27xqefhjdrfqnic7l\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t55,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t184\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000153,\n\t\t\t\t\t\"seconds\":\t1.0001529455184937,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499763.56340267113,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000153,\n\t\t\t\t\"seconds\":\t1.0001529455184937,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499763.56340267113,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000153,\n\t\t\t\t\t\"end\":\t2.000139,\n\t\t\t\t\t\"seconds\":\t0.99998599290847778,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499847.00140269578,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000153,\n\t\t\t\t\"end\":\t2.000139,\n\t\t\t\t\"seconds\":\t0.99998599290847778,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499847.00140269578,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000139,\n\t\t\t\t\t\"end\":\t3.000133,\n\t\t\t\t\t\"seconds\":\t0.99999397993087769,\n\t\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\t\"bits_per_second\":\t500283.01173831138,\n\t\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000139,\n\t\t\t\t\"end\":\t3.000133,\n\t\t\t\t\"seconds\":\t0.99999397993087769,\n\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\"bits_per_second\":\t500283.01173831138,\n\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000133,\n\t\t\t\t\t\"end\":\t4.000122,\n\t\t\t\t\t\"seconds\":\t0.99998897314071655,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499845.51172612124,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000133,\n\t\t\t\t\"end\":\t4.000122,\n\t\t\t\t\"seconds\":\t0.99998897314071655,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499845.51172612124,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000122,\n\t\t\t\t\t\"seconds\":\t4.000122,\n\t\t\t\t\t\"bytes\":\t249975,\n\t\t\t\t\t\"bits_per_second\":\t499934.75199006428,\n\t\t\t\t\t\"jitter_ms\":\t0.028159732838764218,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t4545,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.048704,\n\t\t\t\"seconds\":\t4.048704,\n\t\t\t\"bytes\":\t249975,\n\t\t\t\"bits_per_second\":\t499934.75199006428,\n\t\t\t\"jitter_ms\":\t0.028159732838764218,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t4545,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.14510023044101,\n\t\t\t\"host_user\":\t0,\n\t\t\t\"host_system\":\t3.1450517267554572,\n\t\t\t\"remote_total\":\t1.0743603601879663,\n\t\t\t\"remote_user\":\t0,\n\t\t\t\"remote_system\":\t1.0742936076181593\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 59930\\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 45133\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  58.1 KBytes   476 Kbits/sec  0.032 ms  0/1081 (0%)  \\n[  7]   1.00-2.00   sec  61.1 KBytes   500 Kbits/sec  0.059 ms  0/1137 (0%)  \\n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.033 ms  0/1136 (0%)  \\n[  7]   3.00-4.00   sec  61.0 KBytes   500 Kbits/sec  0.049 ms  0/1136 (0%)  \\n[  7]   4.00-4.05   sec  2.95 KBytes   498 Kbits/sec  0.028 ms  0/55 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[SUM]  0.0- 4.0 sec  1 datagrams received out-of-order\\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.028 ms  0/4545 (0%)  receiver\\n\"\n}\n",
+    "client_ICU": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t53979,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5102\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Mon, 26 Oct 2026 02:57:38 GMT\",\n\t\t\t\"timesecs\":\t1792983458\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5102\n\t\t},\n\t\t\"cookie\":\t\"elixhj5nibu32bn46ppszkz3r4w24vxkojid\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t55,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t136\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000133,\n\t\t\t\t\t\"seconds\":\t1.0001330375671387,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499773.51134793,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000133,\n\t\t\t\t\"seconds\":\t1.0001330375671387,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499773.51134793,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000133,\n\t\t\t\t\t\"end\":\t2.000104,\n\t\t\t\t\t\"seconds\":\t0.99997097253799438,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499854.509507783,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000133,\n\t\t\t\t\"end\":\t2.000104,\n\t\t\t\t\"seconds\":\t0.99997097253799438,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499854.509507783,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000104,\n\t\t\t\t\t\"end\":\t3.000133,\n\t\t\t\t\t\"seconds\":\t1.0000289678573608,\n\t\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\t\"bits_per_second\":\t500265.50838011072,\n\t\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000104,\n\t\t\t\t\"end\":\t3.000133,\n\t\t\t\t\"seconds\":\t1.0000289678573608,\n\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\"bits_per_second\":\t500265.50838011072,\n\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000133,\n\t\t\t\t\t\"end\":\t4.000153,\n\t\t\t\t\t\"seconds\":\t1.0000200271606445,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499829.98982449883,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000133,\n\t\t\t\t\"end\":\t4.000153,\n\t\t\t\t\"seconds\":\t1.0000200271606445,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499829.98982449883,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000153,\n\t\t\t\t\t\"seconds\":\t4.000153,\n\t\t\t\t\t\"bytes\":\t249975,\n\t\t\t\t\t\"bits_per_second\":\t499930.87764393,\n\t\t\t\t\t\"jitter_ms\":\t0.030564281660677747,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t4545,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.048714,\n\t\t\t\"seconds\":\t4.048714,\n\t\t\t\"bytes\":\t249975,\n\t\t\t\"bits_per_second\":\t499930.87764393,\n\t\t\t\"jitter_ms\":\t0.030564281660677747,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t4545,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.2055563105476712,\n\t\t\t\"host_user\":\t0,\n\t\t\t\"host_system\":\t3.2055320429439518,\n\t\t\t\"remote_total\":\t1.0934948439705232,\n\t\t\t\"remote_user\":\t0,\n\t\t\t\"remote_system\":\t1.0934503359686523\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 51252\\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53979\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  58.1 KBytes   476 Kbits/sec  0.044 ms  0/1081 (0%)  \\n[  7]   1.00-2.00   sec  61.1 KBytes   500 Kbits/sec  0.085 ms  0/1137 (0%)  \\n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.040 ms  0/1136 (0%)  \\n[  7]   3.00-4.00   sec  61.0 KBytes   500 Kbits/sec  0.049 ms  0/1136 (0%)  \\n[  7]   4.00-4.05   sec  2.95 KBytes   498 Kbits/sec  0.031 ms  0/55 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[SUM]  0.0- 4.0 sec  3 datagrams received out-of-order\\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.031 ms  0/4545 (0%)  receiver\\n\"\n}\n",
+    "client_WEARABLE": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t53664,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5103\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Mon, 26 Oct 2026 02:57:38 GMT\",\n\t\t\t\"timesecs\":\t1792983458\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5103\n\t\t},\n\t\t\"cookie\":\t\"4xbfo66eenv4ms54mg6uy6cagqkcl2pe6aik\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t55,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t72\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000145,\n\t\t\t\t\t\"seconds\":\t1.0001449584960938,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499767.554446911,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000145,\n\t\t\t\t\"seconds\":\t1.0001449584960938,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499767.554446911,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000145,\n\t\t\t\t\t\"end\":\t2.000143,\n\t\t\t\t\t\"seconds\":\t0.99999797344207764,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499841.01295676472,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000145,\n\t\t\t\t\"end\":\t2.000143,\n\t\t\t\t\"seconds\":\t0.99999797344207764,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499841.01295676472,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000143,\n\t\t\t\t\t\"end\":\t3.000158,\n\t\t\t\t\t\"seconds\":\t1.0000150203704834,\n\t\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\t\"bits_per_second\":\t500272.48572192178,\n\t\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000143,\n\t\t\t\t\"end\":\t3.000158,\n\t\t\t\t\"seconds\":\t1.0000150203704834,\n\t\t\t\t\"bytes\":\t62535,\n\t\t\t\t\"bits_per_second\":\t500272.48572192178,\n\t\t\t\t\"packets\":\t1137,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000158,\n\t\t\t\t\t\"end\":\t4.000128,\n\t\t\t\t\t\"seconds\":\t0.999970018863678,\n\t\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\t\"bits_per_second\":\t499854.98622048314,\n\t\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000158,\n\t\t\t\t\"end\":\t4.000128,\n\t\t\t\t\"seconds\":\t0.999970018863678,\n\t\t\t\t\"bytes\":\t62480,\n\t\t\t\t\"bits_per_second\":\t499854.98622048314,\n\t\t\t\t\"packets\":\t1136,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000128,\n\t\t\t\t\t\"seconds\":\t4.000128,\n\t\t\t\t\t\"bytes\":\t249975,\n\t\t\t\t\t\"bits_per_second\":\t499934.00211193238,\n\t\t\t\t\t\"jitter_ms\":\t0.057744656604739632,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t4545,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.053596,\n\t\t\t\"seconds\":\t4.053596,\n\t\t\t\"bytes\":\t249975,\n\t\t\t\"bits_per_second\":\t499934.00211193238,\n\t\t\t\"jitter_ms\":\t0.057744656604739632,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t4545,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.77112093462621,\n\t\t\t\"host_user\":\t0.36073615585896812,\n\t\t\t\"host_system\":\t3.4103605324871058,\n\t\t\t\"remote_total\":\t1.1310527118024187,\n\t\t\t\"remote_user\":\t0.3345786526465665,\n\t\t\t\"remote_system\":\t0.79645183982708034\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 49626\\n[  7] local 10.0.0.2 port 5103 connected to 10.0.0.1 port 53664\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  57.8 KBytes   473 Kbits/sec  0.043 ms  0/1076 (0%)  \\n[  7]   1.00-2.00   sec  61.0 KBytes   500 Kbits/sec  0.068 ms  0/1136 (0%)  \\n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.067 ms  0/1136 (0%)  \\n[  7]   3.00-4.00   sec  61.1 KBytes   500 Kbits/sec  0.055 ms  0/1137 (0%)  \\n[  7]   4.00-4.05   sec  3.22 KBytes   493 Kbits/sec  0.058 ms  0/60 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[SUM]  0.0- 4.1 sec  6 datagrams received out-of-order\\n[  7]   0.00-4.05   sec   244 KBytes   493 Kbits/sec  0.058 ms  0/4545 (0%)  receiver\\n\"\n}\n",
+    "ping_BACKGROUND": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=8.97 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=9.07 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=8.17 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=8.28 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=8.18 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=8.13 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=8.15 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=8.15 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=8.33 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=8.25 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=8.17 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=8.32 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=8.13 ms\n64 bytes from 10.0.0.2: icmp_seq=21 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=22 ttl=64 time=8.22 ms\n64 bytes from 10.0.0.2: icmp_seq=23 ttl=64 time=8.26 ms\n64 bytes from 10.0.0.2: icmp_seq=24 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=25 ttl=64 time=8.18 ms\n64 bytes from 10.0.0.2: icmp_seq=26 ttl=64 time=8.18 ms\n64 bytes from 10.0.0.2: icmp_seq=27 ttl=64 time=8.16 ms\n64 bytes from 10.0.0.2: icmp_seq=28 ttl=64 time=8.21 ms\n64 bytes from 10.0.0.2: icmp_seq=29 ttl=64 time=8.20 ms\n64 bytes from 10.0.0.2: icmp_seq=30 ttl=64 time=8.45 ms\n64 bytes from 10.0.0.2: icmp_seq=31 ttl=64 time=8.34 ms\n64 bytes from 10.0.0.2: icmp_seq=32 ttl=64 time=8.11 ms\n64 bytes from 10.0.0.2: icmp_seq=33 ttl=64 time=8.21 ms\n64 bytes from 10.0.0.2: icmp_seq=34 ttl=64 time=8.54 ms\n64 bytes from 10.0.0.2: icmp_seq=35 ttl=64 time=8.26 ms\n64 bytes from 10.0.0.2: icmp_seq=36 ttl=64 time=8.20 ms\n64 bytes from 10.0.0.2: icmp_seq=37 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=38 ttl=64 time=8.19 ms\n64 bytes from 10.0.0.2: icmp_seq=39 ttl=64 time=8.29 ms\n64 bytes from 10.0.0.2: icmp_seq=40 ttl=64 time=8.43 ms\n64 bytes from 10.0.0.2: icmp_seq=41 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=42 ttl=64 time=9.75 ms\n64 bytes from 10.0.0.2: icmp_seq=43 ttl=64 time=10.0 ms\n64 bytes from 10.0.0.2: icmp_seq=44 ttl=64 time=9.61 ms\n64 bytes from 10.0.0.2: icmp_seq=45 ttl=64 time=10.2 ms\n64 bytes from 10.0.0.2: icmp_seq=46 ttl=64 time=10.4 ms\n64 bytes from 10.0.0.2: icmp_seq=47 ttl=64 time=10.3 ms\n64 bytes from 10.0.0.2: icmp_seq=48 ttl=64 time=9.98 ms\n64 bytes from 10.0.0.2: icmp_seq=49 ttl=64 time=9.58 ms\n64 bytes from 10.0.0.2: icmp_seq=50 ttl=64 time=9.66 ms\n64 bytes from 10.0.0.2: icmp_seq=51 ttl=64 time=9.35 ms\n64 bytes from 10.0.0.2: icmp_seq=52 ttl=64 time=9.56 ms\n64 bytes from 10.0.0.2: icmp_seq=53 ttl=64 time=9.60 ms\n64 bytes from 10.0.0.2: icmp_seq=54 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=55 ttl=64 time=9.58 ms\n64 bytes from 10.0.0.2: icmp_seq=56 ttl=64 time=9.91 ms\n64 bytes from 10.0.0.2: icmp_seq=57 ttl=64 time=9.17 ms\n64 bytes from 10.0.0.2: icmp_seq=58 ttl=64 time=9.79 ms\n64 bytes from 10.0.0.2: icmp_seq=59 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=60 ttl=64 time=9.91 ms\n64 bytes from 10.0.0.2: icmp_seq=61 ttl=64 time=9.65 ms\n64 bytes from 10.0.0.2: icmp_seq=62 ttl=64 time=10.0 ms\n64 bytes from 10.0.0.2: icmp_seq=63 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=64 ttl=64 time=9.60 ms\n64 bytes from 10.0.0.2: icmp_seq=65 ttl=64 time=9.23 ms\n64 bytes from 10.0.0.2: icmp_seq=66 ttl=64 time=9.33 ms\n64 bytes from 10.0.0.2: icmp_seq=67 ttl=64 time=9.72 ms\n64 bytes from 10.0.0.2: icmp_seq=68 ttl=64 time=9.63 ms\n64 bytes from 10.0.0.2: icmp_seq=69 ttl=64 time=9.78 ms\n64 bytes from 10.0.0.2: icmp_seq=70 ttl=64 time=9.85 ms\n64 bytes from 10.0.0.2: icmp_seq=71 ttl=64 time=9.85 ms\n64 bytes from 10.0.0.2: icmp_seq=72 ttl=64 time=9.65 ms\n64 bytes from 10.0.0.2: icmp_seq=73 ttl=64 time=10.2 ms\n64 bytes from 10.0.0.2: icmp_seq=74 ttl=64 time=9.84 ms\n64 bytes from 10.0.0.2: icmp_seq=75 ttl=64 time=10.2 ms\n64 bytes from 10.0.0.2: icmp_seq=76 ttl=64 time=9.16 ms\n64 bytes from 10.0.0.2: icmp_seq=77 ttl=64 time=8.72 ms\n64 bytes from 10.0.0.2: icmp_seq=78 ttl=64 time=8.73 ms\n64 bytes from 10.0.0.2: icmp_seq=79 ttl=64 time=9.19 ms\n64 bytes from 10.0.0.2: icmp_seq=80 ttl=64 time=9.03 ms\n64 bytes from 10.0.0.2: icmp_seq=81 ttl=64 time=8.97 ms\n64 bytes from 10.0.0.2: icmp_seq=82 ttl=64 time=9.03 ms\n64 bytes from 10.0.0.2: icmp_seq=83 ttl=64 time=8.94 ms\n64 bytes from 10.0.0.2: icmp_seq=84 ttl=64 time=8.75 ms\n64 bytes from 10.0.0.2: icmp_seq=85 ttl=64 time=8.92 ms\n64 bytes from 10.0.0.2: icmp_seq=86 ttl=64 time=9.00 ms\n64 bytes from 10.0.0.2: icmp_seq=87 ttl=64 time=9.20 ms\n64 bytes from 10.0.0.2: icmp_seq=88 ttl=64 time=9.12 ms\n64 bytes from 10.0.0.2: icmp_seq=89 ttl=64 time=9.21 ms\n64 bytes from 10.0.0.2: icmp_seq=90 ttl=64 time=9.47 ms\n64 bytes from 10.0.0.2: icmp_seq=91 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=92 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=93 ttl=64 time=9.31 ms\n64 bytes from 10.0.0.2: icmp_seq=94 ttl=64 time=9.42 ms\n64 bytes from 10.0.0.2: icmp_seq=95 ttl=64 time=9.42 ms\n64 bytes from 10.0.0.2: icmp_seq=96 ttl=64 time=9.43 ms\n64 bytes from 10.0.0.2: icmp_seq=97 ttl=64 time=9.33 ms\n64 bytes from 10.0.0.2: icmp_seq=98 ttl=64 time=9.45 ms\n64 bytes from 10.0.0.2: icmp_seq=99 ttl=64 time=9.45 ms\n64 bytes from 10.0.0.2: icmp_seq=100 ttl=64 time=9.06 ms\n\n--- 10.0.0.2 ping statistics ---\n100 packets transmitted, 100 received, 0% packet loss, time 9900ms\nrtt min/avg/max/mdev = 8.108/9.015/10.384/0.686 ms\n",
+    "ping_ECG": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=8.93 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=8.45 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=8.22 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=8.32 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=8.29 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=8.21 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=8.25 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=8.47 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=8.28 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=8.27 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=8.27 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=8.26 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=8.32 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=8.17 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=21 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=22 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=23 ttl=64 time=8.23 ms\n64 bytes from 10.0.0.2: icmp_seq=24 ttl=64 time=8.18 ms\n64 bytes from 10.0.0.2: icmp_seq=25 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=26 ttl=64 time=8.31 ms\nping: Warning: time of day goes back (-2 s), taking countermeasures\nping: Warning: time of day goes back (-2 s), taking countermeasures\n64 bytes from 10.0.0.2: icmp_seq=27 ttl=64 time=0.000 ms\n64 bytes from 10.0.0.2: icmp_seq=28 ttl=64 time=8.27 ms\n64 bytes from 10.0.0.2: icmp_seq=29 ttl=64 time=8.39 ms\n64 bytes from 10.0.0.2: icmp_seq=30 ttl=64 time=8.87 ms\n64 bytes from 10.0.0.2: icmp_seq=31 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=32 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=33 ttl=64 time=8.32 ms\n64 bytes from 10.0.0.2: icmp_seq=34 ttl=64 time=8.15 ms\n64 bytes from 10.0.0.2: icmp_seq=35 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=36 ttl=64 time=8.44 ms\n64 bytes from 10.0.0.2: icmp_seq=37 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=38 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=39 ttl=64 time=8.32 ms\n64 bytes from 10.0.0.2: icmp_seq=40 ttl=64 time=8.26 ms\n64 bytes from 10.0.0.2: icmp_seq=41 ttl=64 time=9.04 ms\n64 bytes from 10.0.0.2: icmp_seq=42 ttl=64 time=9.57 ms\n64 bytes from 10.0.0.2: icmp_seq=43 ttl=64 time=9.98 ms\n64 bytes from 10.0.0.2: icmp_seq=44 ttl=64 time=9.16 ms\n64 bytes from 10.0.0.2: icmp_seq=45 ttl=64 time=10.2 ms\n64 bytes from 10.0.0.2: icmp_seq=46 ttl=64 time=9.86 ms\n64 bytes from 10.0.0.2: icmp_seq=47 ttl=64 time=9.72 ms\n64 bytes from 10.0.0.2: icmp_seq=48 ttl=64 time=9.56 ms\n64 bytes from 10.0.0.2: icmp_seq=49 ttl=64 time=9.31 ms\n64 bytes from 10.0.0.2: icmp_seq=50 ttl=64 time=9.48 ms\n64 bytes from 10.0.0.2: icmp_seq=51 ttl=64 time=9.36 ms\n64 bytes from 10.0.0.2: icmp_seq=52 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=53 ttl=64 time=9.80 ms\n64 bytes from 10.0.0.2: icmp_seq=54 ttl=64 time=9.42 ms\n64 bytes from 10.0.0.2: icmp_seq=55 ttl=64 time=9.12 ms\n64 bytes from 10.0.0.2: icmp_seq=56 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=57 ttl=64 time=9.13 ms\n64 bytes from 10.0.0.2: icmp_seq=58 ttl=64 time=9.55 ms\n64 bytes from 10.0.0.2: icmp_seq=59 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=60 ttl=64 time=9.70 ms\n64 bytes from 10.0.0.2: icmp_seq=61 ttl=64 time=9.86 ms\n64 bytes from 10.0.0.2: icmp_seq=62 ttl=64 time=9.84 ms\n64 bytes from 10.0.0.2: icmp_seq=63 ttl=64 time=9.68 ms\n64 bytes from 10.0.0.2: icmp_seq=64 ttl=64 time=9.94 ms\n64 bytes from 10.0.0.2: icmp_seq=65 ttl=64 time=9.82 ms\n64 bytes from 10.0.0.2: icmp_seq=66 ttl=64 time=9.81 ms\n64 bytes from 10.0.0.2: icmp_seq=67 ttl=64 time=9.63 ms\n64 bytes from 10.0.0.2: icmp_seq=68 ttl=64 time=9.59 ms\n64 bytes from 10.0.0.2: icmp_seq=69 ttl=64 time=9.41 ms\n64 bytes from 10.0.0.2: icmp_seq=70 ttl=64 time=9.47 ms\n64 bytes from 10.0.0.2: icmp_seq=71 ttl=64 time=9.67 ms\n64 bytes from 10.0.0.2: icmp_seq=72 ttl=64 time=9.63 ms\n64 bytes from 10.0.0.2: icmp_seq=73 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=74 ttl=64 time=9.63 ms\n64 bytes from 10.0.0.2: icmp_seq=75 ttl=64 time=9.63 ms\n64 bytes from 10.0.0.2: icmp_seq=76 ttl=64 time=9.40 ms\n64 bytes from 10.0.0.2: icmp_seq=77 ttl=64 time=8.73 ms\n64 bytes from 10.0.0.2: icmp_seq=78 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=79 ttl=64 time=9.28 ms\n64 bytes from 10.0.0.2: icmp_seq=80 ttl=64 time=9.30 ms\n64 bytes from 10.0.0.2: icmp_seq=81 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=82 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=83 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=84 ttl=64 time=9.35 ms\n64 bytes from 10.0.0.2: icmp_seq=85 ttl=64 time=9.36 ms\n64 bytes from 10.0.0.2: icmp_seq=86 ttl=64 time=9.19 ms\n64 bytes from 10.0.0.2: icmp_seq=87 ttl=64 time=9.38 ms\n64 bytes from 10.0.0.2: icmp_seq=88 ttl=64 time=9.19 ms\n64 bytes from 10.0.0.2: icmp_seq=89 ttl=64 time=9.46 ms\n64 bytes from 10.0.0.2: icmp_seq=90 ttl=64 time=9.28 ms\n64 bytes from 10.0.0.2: icmp_seq=91 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=92 ttl=64 time=9.61 ms\n64 bytes from 10.0.0.2: icmp_seq=93 ttl=64 time=9.31 ms\n64 bytes from 10.0.0.2: icmp_seq=94 ttl=64 time=9.19 ms\n64 bytes from 10.0.0.2: icmp_seq=95 ttl=64 time=9.38 ms\n64 bytes from 10.0.0.2: icmp_seq=96 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=97 ttl=64 time=9.28 ms\n64 bytes from 10.0.0.2: icmp_seq=98 ttl=64 time=9.45 ms\n64 bytes from 10.0.0.2: icmp_seq=99 ttl=64 time=9.53 ms\n64 bytes from 10.0.0.2: icmp_seq=100 ttl=64 time=9.10 ms\n\n--- 10.0.0.2 ping statistics ---\n100 packets transmitted, 100 received, 0% packet loss, time 9915ms\nrtt min/avg/max/mdev = 0.000/8.941/10.161/1.085 ms\n",
+    "ping_ICU": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=8.64 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=8.66 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=8.38 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=8.37 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=8.63 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=8.60 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=8.41 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=8.25 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=8.56 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=8.17 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=8.47 ms\n64 bytes from 10.0.0.2: icmp_seq=21 ttl=64 time=8.37 ms\n64 bytes from 10.0.0.2: icmp_seq=22 ttl=64 time=8.34 ms\n64 bytes from 10.0.0.2: icmp_seq=23 ttl=64 time=8.28 ms\n64 bytes from 10.0.0.2: icmp_seq=24 ttl=64 time=8.20 ms\n64 bytes from 10.0.0.2: icmp_seq=25 ttl=64 time=8.43 ms\n64 bytes from 10.0.0.2: icmp_seq=26 ttl=64 time=8.29 ms\nping: Warning: time of day goes back (-2 s), taking countermeasures\nping: Warning: time of day goes back (-2 s), taking countermeasures\n64 bytes from 10.0.0.2: icmp_seq=27 ttl=64 time=0.000 ms\n64 bytes from 10.0.0.2: icmp_seq=28 ttl=64 time=8.46 ms\n64 bytes from 10.0.0.2: icmp_seq=29 ttl=64 time=8.36 ms\n64 bytes from 10.0.0.2: icmp_seq=30 ttl=64 time=8.67 ms\n64 bytes from 10.0.0.2: icmp_seq=31 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=32 ttl=64 time=8.45 ms\n64 bytes from 10.0.0.2: icmp_seq=33 ttl=64 time=8.45 ms\n64 bytes from 10.0.0.2: icmp_seq=34 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=35 ttl=64 time=8.51 ms\n64 bytes from 10.0.0.2: icmp_seq=36 ttl=64 time=8.39 ms\n64 bytes from 10.0.0.2: icmp_seq=37 ttl=64 time=8.48 ms\n64 bytes from 10.0.0.2: icmp_seq=38 ttl=64 time=8.37 ms\n64 bytes from 10.0.0.2: icmp_seq=39 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=40 ttl=64 time=8.47 ms\n64 bytes from 10.0.0.2: icmp_seq=41 ttl=64 time=9.16 ms\n64 bytes from 10.0.0.2: icmp_seq=42 ttl=64 time=9.72 ms\n64 bytes from 10.0.0.2: icmp_seq=43 ttl=64 time=10.0 ms\n64 bytes from 10.0.0.2: icmp_seq=44 ttl=64 time=9.40 ms\n64 bytes from 10.0.0.2: icmp_seq=45 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=46 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=47 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=48 ttl=64 time=9.68 ms\n64 bytes from 10.0.0.2: icmp_seq=49 ttl=64 time=9.01 ms\n64 bytes from 10.0.0.2: icmp_seq=50 ttl=64 time=9.27 ms\n64 bytes from 10.0.0.2: icmp_seq=51 ttl=64 time=9.22 ms\n64 bytes from 10.0.0.2: icmp_seq=52 ttl=64 time=9.29 ms\n64 bytes from 10.0.0.2: icmp_seq=53 ttl=64 time=9.80 ms\n64 bytes from 10.0.0.2: icmp_seq=54 ttl=64 time=9.07 ms\n64 bytes from 10.0.0.2: icmp_seq=55 ttl=64 time=9.13 ms\n64 bytes from 10.0.0.2: icmp_seq=56 ttl=64 time=9.65 ms\n64 bytes from 10.0.0.2: icmp_seq=57 ttl=64 time=8.78 ms\n64 bytes from 10.0.0.2: icmp_seq=58 ttl=64 time=9.10 ms\n64 bytes from 10.0.0.2: icmp_seq=59 ttl=64 time=9.91 ms\n64 bytes from 10.0.0.2: icmp_seq=60 ttl=64 time=9.89 ms\n64 bytes from 10.0.0.2: icmp_seq=61 ttl=64 time=9.92 ms\n64 bytes from 10.0.0.2: icmp_seq=62 ttl=64 time=10.0 ms\n64 bytes from 10.0.0.2: icmp_seq=63 ttl=64 time=9.90 ms\n64 bytes from 10.0.0.2: icmp_seq=64 ttl=64 time=10.1 ms\n64 bytes from 10.0.0.2: icmp_seq=65 ttl=64 time=9.87 ms\n64 bytes from 10.0.0.2: icmp_seq=66 ttl=64 time=9.17 ms\n64 bytes from 10.0.0.2: icmp_seq=67 ttl=64 time=9.72 ms\n64 bytes from 10.0.0.2: icmp_seq=68 ttl=64 time=9.07 ms\n64 bytes from 10.0.0.2: icmp_seq=69 ttl=64 time=9.89 ms\n64 bytes from 10.0.0.2: icmp_seq=70 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=71 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=72 ttl=64 time=9.80 ms\n64 bytes from 10.0.0.2: icmp_seq=73 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=74 ttl=64 time=9.79 ms\n64 bytes from 10.0.0.2: icmp_seq=75 ttl=64 time=9.83 ms\n64 bytes from 10.0.0.2: icmp_seq=76 ttl=64 time=9.36 ms\n64 bytes from 10.0.0.2: icmp_seq=77 ttl=64 time=9.13 ms\n64 bytes from 10.0.0.2: icmp_seq=78 ttl=64 time=9.07 ms\n64 bytes from 10.0.0.2: icmp_seq=79 ttl=64 time=9.61 ms\n64 bytes from 10.0.0.2: icmp_seq=80 ttl=64 time=9.33 ms\n64 bytes from 10.0.0.2: icmp_seq=81 ttl=64 time=9.25 ms\n64 bytes from 10.0.0.2: icmp_seq=82 ttl=64 time=9.54 ms\n64 bytes from 10.0.0.2: icmp_seq=83 ttl=64 time=9.46 ms\n64 bytes from 10.0.0.2: icmp_seq=84 ttl=64 time=9.30 ms\n64 bytes from 10.0.0.2: icmp_seq=85 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=86 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=87 ttl=64 time=9.26 ms\n64 bytes from 10.0.0.2: icmp_seq=88 ttl=64 time=9.00 ms\n64 bytes from 10.0.0.2: icmp_seq=89 ttl=64 time=9.17 ms\n64 bytes from 10.0.0.2: icmp_seq=90 ttl=64 time=9.35 ms\n64 bytes from 10.0.0.2: icmp_seq=91 ttl=64 time=9.28 ms\n64 bytes from 10.0.0.2: icmp_seq=92 ttl=64 time=9.33 ms\n64 bytes from 10.0.0.2: icmp_seq=93 ttl=64 time=9.30 ms\n64 bytes from 10.0.0.2: icmp_seq=94 ttl=64 time=9.76 ms\n64 bytes from 10.0.0.2: icmp_seq=95 ttl=64 time=9.03 ms\n64 bytes from 10.0.0.2: icmp_seq=96 ttl=64 time=9.46 ms\n64 bytes from 10.0.0.2: icmp_seq=97 ttl=64 time=9.38 ms\n64 bytes from 10.0.0.2: icmp_seq=98 ttl=64 time=8.96 ms\n64 bytes from 10.0.0.2: icmp_seq=99 ttl=64 time=9.40 ms\n64 bytes from 10.0.0.2: icmp_seq=100 ttl=64 time=9.11 ms\n\n--- 10.0.0.2 ping statistics ---\n100 packets transmitted, 100 received, 0% packet loss, time 9910ms\nrtt min/avg/max/mdev = 0.000/8.960/10.120/1.072 ms\n",
+    "ping_WEARABLE": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=9.25 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=8.79 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=8.29 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=8.33 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=8.46 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=8.48 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=8.56 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=8.39 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=8.50 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=8.57 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=8.28 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=8.29 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=8.31 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=8.41 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=8.46 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=8.38 ms\n64 bytes from 10.0.0.2: icmp_seq=21 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=22 ttl=64 time=8.27 ms\n64 bytes from 10.0.0.2: icmp_seq=23 ttl=64 time=8.52 ms\n64 bytes from 10.0.0.2: icmp_seq=24 ttl=64 time=8.19 ms\n64 bytes from 10.0.0.2: icmp_seq=25 ttl=64 time=8.35 ms\n64 bytes from 10.0.0.2: icmp_seq=26 ttl=64 time=8.44 ms\n64 bytes from 10.0.0.2: icmp_seq=27 ttl=64 time=8.45 ms\n64 bytes from 10.0.0.2: icmp_seq=28 ttl=64 time=8.67 ms\n64 bytes from 10.0.0.2: icmp_seq=29 ttl=64 time=8.40 ms\n64 bytes from 10.0.0.2: icmp_seq=30 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=31 ttl=64 time=8.27 ms\n64 bytes from 10.0.0.2: icmp_seq=32 ttl=64 time=8.42 ms\n64 bytes from 10.0.0.2: icmp_seq=33 ttl=64 time=8.30 ms\n64 bytes from 10.0.0.2: icmp_seq=34 ttl=64 time=8.37 ms\n64 bytes from 10.0.0.2: icmp_seq=35 ttl=64 time=8.69 ms\n64 bytes from 10.0.0.2: icmp_seq=36 ttl=64 time=8.38 ms\n64 bytes from 10.0.0.2: icmp_seq=37 ttl=64 time=8.29 ms\n64 bytes from 10.0.0.2: icmp_seq=38 ttl=64 time=8.24 ms\n64 bytes from 10.0.0.2: icmp_seq=39 ttl=64 time=8.22 ms\n64 bytes from 10.0.0.2: icmp_seq=40 ttl=64 time=8.44 ms\n64 bytes from 10.0.0.2: icmp_seq=41 ttl=64 time=9.03 ms\n64 bytes from 10.0.0.2: icmp_seq=42 ttl=64 time=9.18 ms\n64 bytes from 10.0.0.2: icmp_seq=43 ttl=64 time=9.81 ms\n64 bytes from 10.0.0.2: icmp_seq=44 ttl=64 time=9.73 ms\n64 bytes from 10.0.0.2: icmp_seq=45 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=46 ttl=64 time=9.77 ms\n64 bytes from 10.0.0.2: icmp_seq=47 ttl=64 time=9.74 ms\n64 bytes from 10.0.0.2: icmp_seq=48 ttl=64 time=9.65 ms\n64 bytes from 10.0.0.2: icmp_seq=49 ttl=64 time=9.09 ms\n64 bytes from 10.0.0.2: icmp_seq=50 ttl=64 time=9.17 ms\n64 bytes from 10.0.0.2: icmp_seq=51 ttl=64 time=9.07 ms\n64 bytes from 10.0.0.2: icmp_seq=52 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=53 ttl=64 time=9.68 ms\n64 bytes from 10.0.0.2: icmp_seq=54 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=55 ttl=64 time=9.36 ms\n64 bytes from 10.0.0.2: icmp_seq=56 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=57 ttl=64 time=9.10 ms\n64 bytes from 10.0.0.2: icmp_seq=58 ttl=64 time=9.40 ms\n64 bytes from 10.0.0.2: icmp_seq=59 ttl=64 time=9.61 ms\n64 bytes from 10.0.0.2: icmp_seq=60 ttl=64 time=9.34 ms\n64 bytes from 10.0.0.2: icmp_seq=61 ttl=64 time=9.44 ms\n64 bytes from 10.0.0.2: icmp_seq=62 ttl=64 time=9.51 ms\n64 bytes from 10.0.0.2: icmp_seq=63 ttl=64 time=9.42 ms\n64 bytes from 10.0.0.2: icmp_seq=64 ttl=64 time=9.09 ms\n64 bytes from 10.0.0.2: icmp_seq=65 ttl=64 time=9.13 ms\n64 bytes from 10.0.0.2: icmp_seq=66 ttl=64 time=9.20 ms\n64 bytes from 10.0.0.2: icmp_seq=67 ttl=64 time=9.71 ms\n64 bytes from 10.0.0.2: icmp_seq=68 ttl=64 time=9.58 ms\n64 bytes from 10.0.0.2: icmp_seq=69 ttl=64 time=9.77 ms\n64 bytes from 10.0.0.2: icmp_seq=70 ttl=64 time=9.72 ms\n64 bytes from 10.0.0.2: icmp_seq=71 ttl=64 time=9.80 ms\n64 bytes from 10.0.0.2: icmp_seq=72 ttl=64 time=9.69 ms\n64 bytes from 10.0.0.2: icmp_seq=73 ttl=64 time=9.68 ms\n64 bytes from 10.0.0.2: icmp_seq=74 ttl=64 time=9.75 ms\n64 bytes from 10.0.0.2: icmp_seq=75 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=76 ttl=64 time=8.63 ms\n64 bytes from 10.0.0.2: icmp_seq=77 ttl=64 time=8.75 ms\n64 bytes from 10.0.0.2: icmp_seq=78 ttl=64 time=9.12 ms\n64 bytes from 10.0.0.2: icmp_seq=79 ttl=64 time=8.90 ms\n64 bytes from 10.0.0.2: icmp_seq=80 ttl=64 time=8.82 ms\n64 bytes from 10.0.0.2: icmp_seq=81 ttl=64 time=8.67 ms\n64 bytes from 10.0.0.2: icmp_seq=82 ttl=64 time=8.99 ms\n64 bytes from 10.0.0.2: icmp_seq=83 ttl=64 time=9.13 ms\n64 bytes from 10.0.0.2: icmp_seq=84 ttl=64 time=9.12 ms\n64 bytes from 10.0.0.2: icmp_seq=85 ttl=64 time=9.52 ms\n64 bytes from 10.0.0.2: icmp_seq=86 ttl=64 time=9.65 ms\n64 bytes from 10.0.0.2: icmp_seq=87 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=88 ttl=64 time=9.53 ms\n64 bytes from 10.0.0.2: icmp_seq=89 ttl=64 time=9.06 ms\n64 bytes from 10.0.0.2: icmp_seq=90 ttl=64 time=9.43 ms\n64 bytes from 10.0.0.2: icmp_seq=91 ttl=64 time=9.11 ms\n64 bytes from 10.0.0.2: icmp_seq=92 ttl=64 time=9.32 ms\n64 bytes from 10.0.0.2: icmp_seq=93 ttl=64 time=9.49 ms\n64 bytes from 10.0.0.2: icmp_seq=94 ttl=64 time=9.16 ms\n64 bytes from 10.0.0.2: icmp_seq=95 ttl=64 time=9.28 ms\n64 bytes from 10.0.0.2: icmp_seq=96 ttl=64 time=9.39 ms\n64 bytes from 10.0.0.2: icmp_seq=97 ttl=64 time=9.21 ms\n64 bytes from 10.0.0.2: icmp_seq=98 ttl=64 time=9.33 ms\n64 bytes from 10.0.0.2: icmp_seq=99 ttl=64 time=9.24 ms\n64 bytes from 10.0.0.2: icmp_seq=100 ttl=64 time=8.91 ms\n\n--- 10.0.0.2 ping statistics ---\n100 packets transmitted, 100 received, 0% packet loss, time 9900ms\nrtt min/avg/max/mdev = 8.188/8.968/9.810/0.526 ms\n",
+    "server_BACKGROUND": "-----------------------------------------------------------\nServer listening on 5104\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 53230\n[  7] local 10.0.0.2 port 5104 connected to 10.0.0.1 port 49564\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  2.43 MBytes  20.3 Mbits/sec  0.009 ms  0/46238 (0%)  \n[  7]   1.00-2.00   sec  2.56 MBytes  21.5 Mbits/sec  0.007 ms  0/48863 (0%)  \n[  7]   2.00-3.00   sec  2.56 MBytes  21.5 Mbits/sec  0.013 ms  0/48850 (0%)  \n[  7]   3.00-4.00   sec  2.56 MBytes  21.5 Mbits/sec  0.008 ms  0/48870 (0%)  \n[  7]   4.00-4.05   sec   140 KBytes  21.3 Mbits/sec  0.006 ms  0/2610 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[SUM]  0.0- 4.1 sec  9669 datagrams received out-of-order\n[  7]   0.00-4.05   sec  10.3 MBytes  21.2 Mbits/sec  0.006 ms  0/195431 (0%)  receiver\n",
+    "server_ECG": "-----------------------------------------------------------\nServer listening on 5101\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 59930\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 45133\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  58.1 KBytes   476 Kbits/sec  0.032 ms  0/1081 (0%)  \n[  7]   1.00-2.00   sec  61.1 KBytes   500 Kbits/sec  0.059 ms  0/1137 (0%)  \n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.033 ms  0/1136 (0%)  \n[  7]   3.00-4.00   sec  61.0 KBytes   500 Kbits/sec  0.049 ms  0/1136 (0%)  \n[  7]   4.00-4.05   sec  2.95 KBytes   498 Kbits/sec  0.028 ms  0/55 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[SUM]  0.0- 4.0 sec  1 datagrams received out-of-order\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.028 ms  0/4545 (0%)  receiver\n",
+    "server_ICU": "-----------------------------------------------------------\nServer listening on 5102\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 51252\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53979\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  58.1 KBytes   476 Kbits/sec  0.044 ms  0/1081 (0%)  \n[  7]   1.00-2.00   sec  61.1 KBytes   500 Kbits/sec  0.085 ms  0/1137 (0%)  \n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.040 ms  0/1136 (0%)  \n[  7]   3.00-4.00   sec  61.0 KBytes   500 Kbits/sec  0.049 ms  0/1136 (0%)  \n[  7]   4.00-4.05   sec  2.95 KBytes   498 Kbits/sec  0.031 ms  0/55 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[SUM]  0.0- 4.0 sec  3 datagrams received out-of-order\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.031 ms  0/4545 (0%)  receiver\n",
+    "server_WEARABLE": "-----------------------------------------------------------\nServer listening on 5103\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 49626\n[  7] local 10.0.0.2 port 5103 connected to 10.0.0.1 port 53664\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  57.8 KBytes   473 Kbits/sec  0.043 ms  0/1076 (0%)  \n[  7]   1.00-2.00   sec  61.0 KBytes   500 Kbits/sec  0.068 ms  0/1136 (0%)  \n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.067 ms  0/1136 (0%)  \n[  7]   3.00-4.00   sec  61.1 KBytes   500 Kbits/sec  0.055 ms  0/1137 (0%)  \n[  7]   4.00-4.05   sec  3.22 KBytes   493 Kbits/sec  0.058 ms  0/60 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[SUM]  0.0- 4.1 sec  6 datagrams received out-of-order\n[  7]   0.00-4.05   sec   244 KBytes   493 Kbits/sec  0.058 ms  0/4545 (0%)  receiver\n"
+  },
+  "repetition": 3,
+  "route": "baseline",
+  "scenario": "heavy_background_with_prioritization"
+}

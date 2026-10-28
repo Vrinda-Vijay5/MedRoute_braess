@@ -1,0 +1,34 @@
+loading app sdn/controller.py
+loading app ryu.controller.ofp_handler
+creating context wsgi
+instantiating app sdn/controller.py of MedRoute
+instantiating app ryu.controller.ofp_handler of OFPHandler
+(3109) wsgi starting up on http://0.0.0.0:8080
+(3109) accepted ('127.0.0.1', 48324)
+127.0.0.1 - - [21/Oct/2026 14:48:53] "GET /medroute/mode HTTP/1.1" 200 167 0.001735
+MEDROUTE {"timestamp": 1792594136.1723468, "event": "switch_connected", "dpid": 4, "mode": "baseline"}
+MEDROUTE {"timestamp": 1792594136.192052, "event": "switch_connected", "dpid": 1, "mode": "baseline"}
+MEDROUTE {"timestamp": 1792594136.204362, "event": "switch_connected", "dpid": 3, "mode": "baseline"}
+MEDROUTE {"timestamp": 1792594136.2174723, "event": "switch_connected", "dpid": 2, "mode": "baseline"}
+(3109) accepted ('127.0.0.1', 48332)
+127.0.0.1 - - [21/Oct/2026 14:48:56] "GET /medroute/mode HTTP/1.1" 200 177 0.000706
+(3109) accepted ('127.0.0.1', 48334)
+MEDROUTE {"timestamp": 1792594136.3016784, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "stage baseline", "active_dpids": [1, 2, 3, 4]}
+127.0.0.1 - - [21/Oct/2026 14:48:56] "POST /medroute/mode HTTP/1.1" 200 189 0.013700
+(3109) accepted ('127.0.0.1', 48346)
+127.0.0.1 - - [21/Oct/2026 14:48:56] "GET /medroute/mode HTTP/1.1" 200 177 0.000510
+(3109) accepted ('127.0.0.1', 48356)
+MEDROUTE {"timestamp": 1792594140.8091142, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "stage shortcut", "active_dpids": [1, 2, 3, 4]}
+127.0.0.1 - - [21/Oct/2026 14:49:00] "POST /medroute/mode HTTP/1.1" 200 189 0.016698
+(3109) accepted ('127.0.0.1', 48360)
+127.0.0.1 - - [21/Oct/2026 14:49:00] "GET /medroute/mode HTTP/1.1" 200 177 0.000864
+(3109) accepted ('127.0.0.1', 45020)
+MEDROUTE {"timestamp": 1792594145.3010814, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "baseline", "reason": "measurement decision: harmful", "active_dpids": [1, 2, 3, 4]}
+127.0.0.1 - - [21/Oct/2026 14:49:05] "POST /medroute/mode HTTP/1.1" 200 189 0.013960
+(3109) accepted ('127.0.0.1', 45028)
+127.0.0.1 - - [21/Oct/2026 14:49:05] "GET /medroute/mode HTTP/1.1" 200 177 0.000493
+(3109) accepted ('127.0.0.1', 45042)
+MEDROUTE {"timestamp": 1792594145.3280864, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "stage prevention", "active_dpids": [1, 2, 3, 4]}
+127.0.0.1 - - [21/Oct/2026 14:49:05] "POST /medroute/mode HTTP/1.1" 200 189 0.014346
+(3109) accepted ('127.0.0.1', 45058)
+127.0.0.1 - - [21/Oct/2026 14:49:05] "GET /medroute/mode HTTP/1.1" 200 177 0.000660

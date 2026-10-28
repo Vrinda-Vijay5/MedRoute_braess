@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "classification": {
+    "precedence": ["transport_port", "ipv4_dscp", "default"],
+    "unknown_class": "BACKGROUND",
+    "transport_port_direction": "source_or_destination"
+  },
+  "link_capacity_mbps": 100,
+  "classes": {
+    "ECG": {
+      "dscp": 46,
+      "tcp_port": 5101,
+      "udp_port": 5101,
+      "queue_id": 1,
+      "min_rate_mbps": 20,
+      "max_rate_mbps": 50,
+      "latency_sensitivity": 1.0,
+      "loss_sensitivity": 1.0
+    },
+    "ICU": {
+      "dscp": 34,
+      "tcp_port": 5102,
+      "udp_port": 5102,
+      "queue_id": 2,
+      "min_rate_mbps": 30,
+      "max_rate_mbps": 80,
+      "latency_sensitivity": 0.9,
+      "loss_sensitivity": 0.9
+    },
+    "WEARABLE": {
+      "dscp": 18,
+      "tcp_port": 5103,
+      "udp_port": 5103,
+      "queue_id": 3,
+      "min_rate_mbps": 10,
+      "max_rate_mbps": 50,
+      "latency_sensitivity": 0.6,
+      "loss_sensitivity": 0.55
+    },
+    "BACKGROUND": {
+      "dscp": 0,
+      "tcp_port": 5104,
+      "udp_port": 5104,
+      "queue_id": 4,
+      "min_rate_mbps": 5,
+      "max_rate_mbps": 20,
+      "latency_sensitivity": 0.1,
+      "loss_sensitivity": 0.1
+    }
+  }
+}

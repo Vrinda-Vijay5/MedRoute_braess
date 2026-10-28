@@ -1,0 +1,40 @@
+loading app sdn/controller.py
+loading app ryu.controller.ofp_handler
+creating context wsgi
+instantiating app sdn/controller.py of MedRoute
+instantiating app ryu.controller.ofp_handler of OFPHandler
+(10080) wsgi starting up on http://0.0.0.0:8080
+(10080) accepted ('127.0.0.1', 50774)
+127.0.0.1 - - [22/Oct/2026 00:05:41] "GET /medroute/mode HTTP/1.1" 200 306 0.001347
+MEDROUTE {"timestamp": 1792627542.7873974, "event": "switch_connected", "dpid": 1, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s1-eth1", "s1-eth2", "s1-eth3", "s1-eth6", "s1-eth7"]}
+MEDROUTE {"timestamp": 1792627542.816959, "event": "switch_connected", "dpid": 3, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s3-eth1", "s3-eth2", "s3-eth3"]}
+MEDROUTE {"timestamp": 1792627542.870432, "event": "switch_connected", "dpid": 4, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s4-eth1", "s4-eth2", "s4-eth3", "s4-eth4", "s4-eth5"]}
+(10080) accepted ('127.0.0.1', 50788)
+127.0.0.1 - - [22/Oct/2026 00:05:42] "GET /medroute/mode HTTP/1.1" 200 316 0.000240
+MEDROUTE {"timestamp": 1792627542.9181378, "event": "switch_connected", "dpid": 2, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s2-eth1", "s2-eth2", "s2-eth3"]}
+(10080) accepted ('127.0.0.1', 50800)
+MEDROUTE {"timestamp": 1792627542.948261, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "stage baseline", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [22/Oct/2026 00:05:42] "POST /medroute/mode HTTP/1.1" 200 189 0.025913
+(10080) accepted ('127.0.0.1', 50816)
+127.0.0.1 - - [22/Oct/2026 00:05:42] "GET /medroute/mode HTTP/1.1" 200 319 0.000214
+(10080) accepted ('127.0.0.1', 57516)
+127.0.0.1 - - [22/Oct/2026 00:06:07] "POST /medroute/mode/metrics HTTP/1.1" 404 195 0.000373
+(10080) accepted ('127.0.0.1', 57520)
+MEDROUTE {"timestamp": 1792627567.7339704, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "stage shortcut", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [22/Oct/2026 00:06:07] "POST /medroute/mode HTTP/1.1" 200 189 0.038492
+(10080) accepted ('127.0.0.1', 57532)
+127.0.0.1 - - [22/Oct/2026 00:06:07] "GET /medroute/mode HTTP/1.1" 200 319 0.000209
+(10080) accepted ('127.0.0.1', 47112)
+127.0.0.1 - - [22/Oct/2026 00:06:32] "POST /medroute/mode/metrics HTTP/1.1" 404 195 0.000345
+(10080) accepted ('127.0.0.1', 47120)
+MEDROUTE {"timestamp": 1792627592.1924305, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "baseline", "reason": "measurement decision: inconclusive", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [22/Oct/2026 00:06:32] "POST /medroute/mode HTTP/1.1" 200 189 0.025533
+(10080) accepted ('127.0.0.1', 47126)
+127.0.0.1 - - [22/Oct/2026 00:06:32] "GET /medroute/mode HTTP/1.1" 200 338 0.000241
+(10080) accepted ('127.0.0.1', 47128)
+MEDROUTE {"timestamp": 1792627592.229286, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "stage prevention", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [22/Oct/2026 00:06:32] "POST /medroute/mode HTTP/1.1" 200 189 0.033185
+(10080) accepted ('127.0.0.1', 47142)
+127.0.0.1 - - [22/Oct/2026 00:06:32] "GET /medroute/mode HTTP/1.1" 200 321 0.000196
+(10080) accepted ('127.0.0.1', 36972)
+127.0.0.1 - - [22/Oct/2026 00:06:56] "POST /medroute/mode/metrics HTTP/1.1" 404 195 0.000695

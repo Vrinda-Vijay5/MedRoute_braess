@@ -1,0 +1,37 @@
+{
+  "model": "Wardrop Braess network; demand 4000",
+  "baseline": {
+    "shortcut": false,
+    "demand": 4000,
+    "flows": {
+      "upper": 2000,
+      "lower": 2000,
+      "zigzag": 0
+    },
+    "latencies": {
+      "upper": 65,
+      "lower": 65,
+      "zigzag": null
+    },
+    "averageCost": 65,
+    "totalCost": 260000
+  },
+  "shortcut": {
+    "shortcut": true,
+    "demand": 4000,
+    "flows": {
+      "upper": 0,
+      "lower": 0,
+      "zigzag": 4000
+    },
+    "latencies": {
+      "upper": 85,
+      "lower": 85,
+      "zigzag": 80
+    },
+    "averageCost": 80,
+    "totalCost": 320000
+  },
+  "classification": "harmful",
+  "criterion": "equal latency on all used paths; unused paths no cheaper"
+}

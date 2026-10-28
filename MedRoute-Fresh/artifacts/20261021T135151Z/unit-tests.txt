@@ -1,0 +1,41 @@
+✔ coordinator requires complete, fresh, valid measurements (3.0358ms)
+✔ coordinator fails safe and selects route from paired measurement (1.1347ms)
+✔ acceptance rejects missing stages and verifies selected OpenFlow mode (0.8307ms)
+✖ dashboard serves its page and reads saved run artifacts (215.9937ms)
+✔ shortcut mode changes actual switch output actions and reverses symmetrically (2.944ms)
+✔ every installed action has valid ingress/egress and unambiguous match (1.1612ms)
+✔ measured shortcut decision: harmful, beneficial, neutral (1.9076ms)
+✔ missing, invalid, incomplete, stale telemetry fails safe (0.541ms)
+✔ acceptance distinguishes infrastructure failure and live prevention (0.4351ms)
+✔ classic Braess equilibrium is verified by Wardrop conditions (4.2999ms)
+✔ classification handles harmful, beneficial, neutral and missing measurements (0.5347ms)
+✔ invalid demand is rejected (0.95ms)
+✔ shortcut equilibrium verifies the interior-demand region (0.5064ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 12
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 773.5029
+
+✖ failing tests:
+
+test at test\dashboard.test.js:6:1
+✖ dashboard serves its page and reads saved run artifacts (215.9937ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(evidence.summary)
+  
+      at TestContext.<anonymous> (C:\Users\VICTUS\Downloads\MedRoute-Fresh\test\dashboard.test.js:18:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+      at async Test.run (node:internal/test_runner/test:1110:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

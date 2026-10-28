@@ -1,0 +1,91 @@
+"""Definitions for the explicit MedRoute routing comparison methods.
+
+The method policies are intentionally independent of the live experiment
+runner. They describe which existing controls a future runner integration may
+enable; they do not start services or change controller state.
+"""
+from dataclasses import dataclass
+from types import MappingProxyType
+from typing import Mapping, Tuple
+
+
+@dataclass(frozen=True)
+class ExperimentMethod:
+    """Immutable routing-method policy used by experiment orchestration."""
+
+    method_id: str
+    name: str
+    initial_route: str
+    qos_enabled: bool
+    candidate_evaluation_enabled: bool
+    braess_guard_enabled: bool
+
+
+_METHODS: Mapping[str, ExperimentMethod] = MappingProxyType({
+    "M1": ExperimentMethod(
+        method_id="M1",
+        name="shortest_path_baseline",
+        initial_route="baseline",
+        qos_enabled=False,
+        candidate_evaluation_enabled=False,
+        braess_guard_enabled=False,
+    ),
+    "M2": ExperimentMethod(
+        method_id="M2",
+        name="qos_only",
+        initial_route="baseline",
+        qos_enabled=True,
+        candidate_evaluation_enabled=False,
+        braess_guard_enabled=False,
+    ),
+    "M3": ExperimentMethod(
+        method_id="M3",
+        name="qos_braess_guard",
+        initial_route="baseline",
+        qos_enabled=True,
+        candidate_evaluation_enabled=True,
+        braess_guard_enabled=True,
+    ),
+})
+
+
+def available_methods() -> Tuple[str, ...]:
+    """Return the supported method IDs in stable comparison order."""
+
+    return tuple(_METHODS)
+
+
+def get_method(method_id: str) -> ExperimentMethod:
+    """Return an immutable method policy.
+
+    Raises:
+        ValueError: If ``method_id`` is not one of the supported method IDs.
+    """
+
+    try:
+        return _METHODS[method_id]
+    except (KeyError, TypeError) as exc:
+        supported = ", ".join(available_methods())
+        raise ValueError(
+            "unknown experiment method {!r}; expected one of: {}".format(
+                method_id, supported
+            )
+        ) from exc
+
+
+def build_method_scenario_plan(method_id: str):
+    """Return matched normal/heavy scenarios with the method policy held fixed."""
+    method = get_method(method_id)
+    return {
+        "normal_load": {
+            "qos_enabled": method.qos_enabled,
+            "heavy_background": False,
+        },
+        "heavy_background": {
+            "qos_enabled": method.qos_enabled,
+            "heavy_background": True,
+        },
+    }
+
+
+__all__ = ["ExperimentMethod", "available_methods", "get_method", "build_method_scenario_plan"]
