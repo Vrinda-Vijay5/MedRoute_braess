@@ -54,3 +54,14 @@ test("dashboard topology API edits simulation state and reports disconnected rou
   assert.equal(invalid.status, 400);
   assert.deepEqual((await (await fetch(base + "/api/simulation/topology")).json()).topology.nodes, ["x", "y"]);
 });
+
+test("live topology endpoint never falls back to the simulation graph", async t => {
+  const server = createServer();
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const response = await fetch(`http://127.0.0.1:${server.address().port}/api/live/topology`);
+  const body = await response.json();
+  assert.equal(body.source, "unavailable");
+  assert.equal(body.connected, false);
+  assert.deepEqual(body.switches, []);
+});

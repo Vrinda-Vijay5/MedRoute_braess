@@ -79,7 +79,12 @@ def load_traffic_catalog(project_root):
     path = Path(project_root) / CATALOG_FILE
     if not path.exists():
         raise ValueError("healthcare traffic catalog is missing: {}".format(path))
-    with path.open(newline="", encoding="utf-8") as stream:
+    raw = path.read_bytes()
+    # A checked-out LFS pointer is not a workload catalog.  Failing explicitly
+    # prevents a misleading schema error or accidental synthetic replacement.
+    if raw.startswith(b"version https://git-lfs.github.com/spec/v1"):
+        raise ValueError("healthcare traffic catalog is a Git LFS pointer; run `git lfs pull` before experiments")
+    with path.open(newline="", encoding="utf-8-sig") as stream:
         rows = list(csv.DictReader(stream))
     required = {"traffic_type", "criticality", "transport_protocol",
                 "destination_port", "offered_rate_bps", "packet_size_bytes",
@@ -92,7 +97,7 @@ def load_traffic_catalog(project_root):
                 raise ValueError("healthcare traffic catalog has a blank {}".format(field))
     return {"source_file": str(CATALOG_FILE).replace("\\", "/"),
             "rows": rows, "row_count": len(rows),
-            "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+            "sha256": hashlib.sha256(raw).hexdigest()}
 
 
 def build_scenario_workloads(provenance, scenario_plan, class_names, bottleneck_mbps,

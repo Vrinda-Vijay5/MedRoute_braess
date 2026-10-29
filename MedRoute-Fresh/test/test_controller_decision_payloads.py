@@ -25,7 +25,28 @@ with open(SDN_DIR / "classes.json", encoding="utf-8") as f:
     CLASS_CONFIG = json.load(f)
 
 from dataset_workload import load_traffic_catalog
-TRAFFIC_CATALOG = load_traffic_catalog(ROOT)
+
+
+def load_controller_test_catalog():
+    """Use recorded synthetic catalog metadata for controller unit tests.
+
+    These assertions exercise decision payload behavior, not workload-source
+    provenance. The checked-in LFS input is validated separately by
+    test_dataset_workload and may be unavailable in a pointer-only checkout.
+    """
+    try:
+        return load_traffic_catalog(ROOT)
+    except ValueError as exc:
+        if "Git LFS pointer" not in str(exc):
+            raise
+    artifact = ROOT / "artifacts" / "smoke-20261029-retry-091029" / "profile_matrix.json"
+    matrix = json.loads(artifact.read_text(encoding="utf-8"))
+    rows = [profile["catalog"] for profile in matrix["profiles"]]
+    return {"source_file": "historical synthetic test fixture", "rows": rows,
+            "row_count": len(rows), "sha256": "historical-artifact-metadata"}
+
+
+TRAFFIC_CATALOG = load_controller_test_catalog()
 
 try:
     from controller import MedRoute

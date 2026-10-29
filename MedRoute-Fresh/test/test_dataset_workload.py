@@ -14,7 +14,12 @@ SPEC.loader.exec_module(MODULE)
 class DatasetWorkloadTests(unittest.TestCase):
     def test_supplied_training_profile_and_catalog_are_traceable(self):
         provenance = MODULE.load_profiles(ROOT)
-        catalog = MODULE.load_traffic_catalog(ROOT)
+        try:
+            catalog = MODULE.load_traffic_catalog(ROOT)
+        except ValueError as exc:
+            if "Git LFS pointer" in str(exc):
+                self.skipTest("Git LFS catalog object is unavailable in this checkout")
+            raise
         self.assertEqual(provenance["dataset"], "CICIoMT2024")
         self.assertEqual(provenance["profile_version"], "unspecified")
         self.assertEqual(provenance["source_kind"], "training-derived aggregate profile")
@@ -54,6 +59,16 @@ class DatasetWorkloadTests(unittest.TestCase):
             provenance = MODULE.load_profiles(root)
             self.assertEqual(provenance["profile_version"], "unspecified")
             self.assertEqual(provenance["source_kind"], "training-derived aggregate profile")
+
+    def test_lfs_pointer_is_reported_as_missing_input_not_a_schema_error(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = pathlib.Path(temp_dir)
+            catalog = root / "data" / "CICIoMT2024" / "raw"
+            catalog.mkdir(parents=True)
+            (catalog / "healthcare_traffic_profiles.csv").write_text(
+                "version https://git-lfs.github.com/spec/v1\noid sha256:abc\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "Git LFS pointer"):
+                MODULE.load_traffic_catalog(root)
 
 
 if __name__ == "__main__":

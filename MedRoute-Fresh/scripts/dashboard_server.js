@@ -5,9 +5,22 @@ const path = require("node:path");
 const { DEFAULT_TOPOLOGY, validateTopology, shortestPath, connectedComponents } = require("../src/topology");
 const root = path.resolve(__dirname, "..");
 const artifacts = path.join(root, "artifacts");
+const controllerUrl = process.env.MEDROUTE_CONTROLLER_URL || "http://127.0.0.1:8080";
 const mime = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".log": "text/plain; charset=utf-8", ".png": "image/png" };
 function json(res, value) { res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" }); res.end(JSON.stringify(value)); }
 function readJson(folder, name) { try { return JSON.parse(fs.readFileSync(path.join(folder, name), "utf8")); } catch { return null; } }
+async function liveTopology() {
+  // The dashboard never substitutes the simulation graph if the controller is down.
+  try {
+    const response = await fetch(new URL("/medroute/topology", controllerUrl), { signal: AbortSignal.timeout(1200) });
+    if (!response.ok) throw new Error("controller returned HTTP " + response.status);
+    const body = await response.json();
+    return { connected: true, controller_url: controllerUrl, ...body };
+  } catch (error) {
+    return { connected: false, source: "unavailable", controller_url: controllerUrl,
+      error: String(error.message || error), switches: [], links: [], hosts: [] };
+  }
+}
 function dashboardScenarioResults(results) {
   if (!results || typeof results !== "object") return null;
   return {
@@ -96,6 +109,11 @@ function createServer() {
         return jsonWithStatus(res, 400, { error: "invalid route request", details: [error.message] });
       }
     }
+    if (pathname === "/api/live/topology") {
+      if (req.method !== "GET") { res.writeHead(405).end("Read only"); return; }
+      const state = await liveTopology();
+      return jsonWithStatus(res, state.connected ? 200 : 503, state);
+    }
     if (req.method !== "GET") { res.writeHead(405).end("Read only"); return; }
     if (pathname === "/api/runs") {
       const names = fs.readdirSync(artifacts, { withFileTypes: true }).filter(x => x.isDirectory() && fs.existsSync(path.join(artifacts, x.name, "summary.json"))).map(x => x.name);
@@ -145,4 +163,4 @@ function jsonWithStatus(res, status, value) {
   res.end(JSON.stringify(value));
 }
 if (require.main === module) createServer().listen(8765, "127.0.0.1", () => console.log("MedRoute dashboard: http://127.0.0.1:8765"));
-module.exports = { createServer, sortRunNames, dashboardScenarioResults };
+module.exports = { createServer, sortRunNames, dashboardScenarioResults, liveTopology };

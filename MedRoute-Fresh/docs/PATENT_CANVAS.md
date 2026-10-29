@@ -10,7 +10,8 @@ network-wide safety check for this decision.
 
 A deterministic controller pipeline combines: (1) a Wardrop/Braess candidate
 screen, (2) fresh paired route telemetry, (3) criticality-aware queue policy,
-and (4) verified OpenFlow actuation with evidence capture.
+(4) discovered topology/component health, and (5) verified OpenFlow actuation
+with evidence capture.
 
 ## Potentially distinctive aspects
 
@@ -22,6 +23,9 @@ and (4) verified OpenFlow actuation with evidence capture.
    counters, and flow-table proof.
 4. Recovery-mode route selection after a failed link while preserving class
    queue policy.
+5. An auditable sequence linking topology observations, candidate constraints,
+   decision explanation, barrier-confirmed rule installation, and recovery
+   timing. This remains a candidate differentiator until prior art is reviewed.
 
 ## Prior-art and legal status
 

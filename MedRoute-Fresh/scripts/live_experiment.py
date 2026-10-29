@@ -1606,11 +1606,15 @@ def set_link_state(link, enabled):
 def run_link_failure_recovery(net, failed_link, shortcut_link, evidence_dir,
                               routes, class_config, method_qos_enabled=True):
     """Verify the alternate route while the primary inter-switch link is down."""
+    started = time.monotonic()
     set_qos_enabled(method_qos_enabled)
     set_shortcut_link(shortcut_link, True)
     set_link_state(failed_link, False)
+    failure_signalled = time.monotonic()
     try:
+        computation_started = time.monotonic()
         set_mode("recovery", "primary link failure recovery")
+        installation_confirmed = time.monotonic()
         flows = verify_flows("failure_recovery", "recovery", evidence_dir,
                              routes, class_config)
         h1, h2 = net.get("h1", "h2")
@@ -1622,6 +1626,15 @@ def run_link_failure_recovery(net, failed_link, shortcut_link, evidence_dir,
             "selected_route": "recovery",
             "connectivity": {"received": received, "probe": probe},
             "flows_verified": flows["verified"],
+            "timing_ms": {
+                # These are controller/runner timestamps, not a claim of
+                # instantaneous data-plane failover. Packet loss is measured
+                # only by the recorded post-update probe below.
+                "failure_detection_signal": round((failure_signalled - started) * 1000, 3),
+                "route_computation_and_request": round((installation_confirmed - computation_started) * 1000, 3),
+                "rule_installation_to_probe": round((time.monotonic() - installation_confirmed) * 1000, 3),
+                "end_to_end_recovery_probe": round((time.monotonic() - started) * 1000, 3),
+            },
             "complete": received >= 1 and flows["verified"],
         }
         save_json(evidence_dir / "failure_recovery.json", result)

@@ -16,6 +16,7 @@ from ryu.controller.handler import (CONFIG_DISPATCHER, DEAD_DISPATCHER,
 from ryu.lib import hub
 from ryu.ofproto import ofproto_v1_3
 from ryu.app.wsgi import WSGIApplication, ControllerBase, route
+from ryu.topology import event as topology_event
 from webob import Response
 
 H1, H2 = "10.0.0.1", "10.0.0.2"
@@ -26,6 +27,7 @@ ROUTE_CHANGE_WINDOW_SECONDS = 60
 MAX_ROUTE_CHANGES_PER_WINDOW = 12
 sys.path.insert(0, os.path.dirname(__file__))
 from qos import configure_switch_queues, flow_action_specs, flow_specs, load_classes
+from topology_state import TopologyState
 
 with open(os.path.join(os.path.dirname(__file__), "routes.json"), encoding="utf-8") as stream:
     ROUTES = json.load(stream)
@@ -99,6 +101,9 @@ class MedRoute(app_manager.RyuApp):
                                "reason": "controller startup", "previous_route": None}
         self.latest_measurements = None
         self.latest_measurements_received_at = None
+        # This is observed controller state.  It is intentionally independent of
+        # the dashboard's editable simulation graph and of routes.json fixtures.
+        self.topology_state = TopologyState()
         self.log_path = os.environ.get("MEDROUTE_LOG", "artifacts/controller.jsonl")
         wsgi.register(MedRouteRest, {"app": self})
 
@@ -116,6 +121,7 @@ class MedRoute(app_manager.RyuApp):
         if previous is not None and previous is not dp:
             self._datapath_disconnected(previous, "datapath replaced by a new connection")
         self.datapaths[dp.id] = dp
+        self.topology_state.switch_up(dp.id)
         self.ready_datapaths.pop(dp.id, None)
         self._refresh_global_state()
         # Queue setup and route programming can block; do them outside the
@@ -495,12 +501,60 @@ class MedRoute(app_manager.RyuApp):
             self.datapaths.pop(dp.id, None)
         if self.ready_datapaths.get(dp.id) is dp:
             self.ready_datapaths.pop(dp.id, None)
+        topology_state = getattr(self, "topology_state", None)
+        if topology_state is None:
+            # Some isolated barrier tests construct the Ryu app without running
+            # __init__; initialize the optional discovery state lazily there.
+            self.topology_state = TopologyState()
+            topology_state = self.topology_state
+        topology_state.switch_down(dp.id)
         for operation in list(self._active_updates.values()):
             if operation["datapaths"].get(id(dp)) is dp:
                 self._fail_update(operation, dp, reason)
         self._refresh_global_state()
         self.log("switch_disconnected", dpid=dp.id, reason=reason,
                  route_state=self.route_state)
+
+    # Ryu topology discovery is enabled by starting ryu-manager with
+    # --observe-links. These handlers are idempotent in TopologyState so repeat
+    # LLDP events cannot create duplicate usable edges.
+    @set_ev_cls(topology_event.EventSwitchEnter)
+    def discovered_switch_enter(self, ev):
+        self.topology_state.switch_up(ev.switch.dp.id)
+        self.log("topology_switch_up", dpid=ev.switch.dp.id)
+
+    @set_ev_cls(topology_event.EventSwitchLeave)
+    def discovered_switch_leave(self, ev):
+        self.topology_state.switch_down(ev.switch.dp.id)
+        self.log("topology_switch_down", dpid=ev.switch.dp.id)
+
+    @set_ev_cls(topology_event.EventLinkAdd)
+    def discovered_link_add(self, ev):
+        link = ev.link
+        self.topology_state.link_up(link.src.dpid, link.dst.dpid, link.src.port_no, link.dst.port_no)
+        self.log("topology_link_up", source=link.src.dpid, target=link.dst.dpid,
+                 source_port=link.src.port_no, target_port=link.dst.port_no)
+
+    @set_ev_cls(topology_event.EventLinkDelete)
+    def discovered_link_delete(self, ev):
+        link = ev.link
+        self.topology_state.link_down(link.src.dpid, link.dst.dpid, link.src.port_no, link.dst.port_no)
+        self.log("topology_link_down", source=link.src.dpid, target=link.dst.dpid,
+                 source_port=link.src.port_no, target_port=link.dst.port_no)
+
+    @set_ev_cls(topology_event.EventHostAdd)
+    def discovered_host_add(self, ev):
+        host = ev.host
+        self.topology_state.host_seen(host.mac, host.port.dpid, host.port.port_no)
+        self.log("topology_host_seen", mac=host.mac, dpid=host.port.dpid, port=host.port.port_no)
+
+    @set_ev_cls(ofp_event.EventOFPPortStatus, MAIN_DISPATCHER)
+    def port_status(self, ev):
+        desc = ev.msg.desc
+        # A port-status event gives local health. Link removal remains confirmed
+        # by discovery, avoiding a false claim about an unknown remote endpoint.
+        self.log("port_status", dpid=ev.msg.datapath.id, port=desc.port_no,
+                 reason=ev.msg.reason, state=desc.state)
 
     def publish_measurements(self, payload):
         if not isinstance(payload, dict) or not isinstance(payload.get("stage"), str):
@@ -597,6 +651,22 @@ class MedRouteRest(ControllerBase):
         except (ValueError, KeyError, json.JSONDecodeError) as exc:
             return Response(status=400, content_type="application/json",
                             body=json.dumps({"error": str(exc)}).encode("utf-8"))
+
+    @route("medroute_topology", "/medroute/topology", methods=["GET"])
+    def topology(self, req, **kwargs):
+        """Return live discovered state; never return dashboard simulation data."""
+        body = self.app.topology_state.snapshot()
+        body["controller_connected_dpids"] = sorted(self.app.datapaths)
+        body["controller_ready_dpids"] = sorted(self.app.ready_datapaths)
+        source, target = req.params.get("source"), req.params.get("target")
+        if source is not None or target is not None:
+            if not source or not target:
+                return Response(status=400, content_type="application/json",
+                                body=json.dumps({"error": "source and target must both be supplied"}).encode("utf-8"))
+            path = self.app.topology_state.usable_path(source, target)
+            body["requested_path"] = {"source": source, "target": target,
+                                      "path": path, "reachable": path is not None}
+        return Response(content_type="application/json", body=json.dumps(body).encode("utf-8"))
 
     @route("medroute_metrics", "/medroute/metrics", methods=["GET", "POST"])
     def metrics(self, req, **kwargs):
