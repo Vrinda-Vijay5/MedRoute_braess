@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "sdn"))
-from cbdr import ConfigurationError, evaluate_candidate, load_config, validate_config
+from cbdr import (ConfigurationError, evaluate_candidate, evaluate_class_aware_candidate, load_config, validate_config)
 
 
 def record(stamp, latency=20, jitter=5, loss=0.1, throughput=10, route="baseline", **extra):
@@ -48,6 +48,52 @@ class CbdREvaluatorTests(unittest.TestCase):
         self.assertEqual(stale["reason_code"], "TELEMETRY_STALE_OR_FUTURE_MEASUREMENT")
         self.assertEqual(missing["classification"], "inconclusive")
         self.assertEqual(missing["decision"], "retain_baseline")
+
+    def evaluate_all_classes(self, stamp, *, max_age_seconds):
+        current = {
+            name: record(stamp, route="baseline")
+            for name in self.config["classes"]
+        }
+        candidate = {
+            name: record(stamp, route="shortcut")
+            for name in self.config["classes"]
+        }
+        return evaluate_class_aware_candidate(
+            current_by_class=current,
+            candidate_by_class=candidate,
+            current_network_cost_pct=10.0,
+            candidate_network_cost_pct=10.0,
+            config=self.config,
+            now=self.now,
+            max_age_seconds=max_age_seconds,
+        )
+
+    def test_class_aware_batch_accepts_complete_measurements_60_seconds_old(self):
+        result = self.evaluate_all_classes(940, max_age_seconds=120.0)
+        self.assertNotEqual(result["reason_code"], "INCOMPLETE_CLASS_TELEMETRY")
+        self.assertEqual(len(result["class_evaluations"]), 6)
+        self.assertTrue(all(
+            item["classification"] != "inconclusive"
+            for item in result["class_evaluations"].values()
+        ))
+
+    def test_class_aware_batch_rejects_measurements_older_than_120_seconds(self):
+        result = self.evaluate_all_classes(870, max_age_seconds=120.0)
+        self.assertEqual(result["classification"], "inconclusive")
+        self.assertEqual(result["reason_code"], "INCOMPLETE_CLASS_TELEMETRY")
+
+    def test_class_aware_batch_rejects_future_timestamps(self):
+        result = self.evaluate_all_classes(1001, max_age_seconds=120.0)
+        self.assertEqual(result["classification"], "inconclusive")
+        self.assertEqual(result["reason_code"], "INCOMPLETE_CLASS_TELEMETRY")
+
+    def test_single_pair_default_freshness_limit_remains_30_seconds(self):
+        result = self.evaluate(record(940), record(940, route="shortcut"))
+        self.assertEqual(result["classification"], "inconclusive")
+        self.assertEqual(
+            result["reason_code"],
+            "TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+        )
 
     def test_invalid_inconsistent_measurements_are_inconclusive(self):
         incomplete = record(999)

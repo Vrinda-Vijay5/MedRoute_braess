@@ -1,0 +1,235 @@
+{
+  "catalog": {
+    "row_count": 6,
+    "rows": [
+      {
+        "criticality": "5",
+        "destination_port": "5001",
+        "destination_role": "clinical gateway",
+        "duration_seconds": "60",
+        "offered_rate_bps": "500000",
+        "packet_size_bytes": "256",
+        "source_role": "bedside monitor",
+        "traffic_type": "ECG",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Steady low-volume waveform metadata workload assumption"
+      },
+      {
+        "criticality": "5",
+        "destination_port": "5002",
+        "destination_role": "ICU monitoring station",
+        "duration_seconds": "60",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "512",
+        "source_role": "ICU monitor",
+        "traffic_type": "ICU",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Continuous vital-sign and alarm metadata workload assumption"
+      },
+      {
+        "criticality": "4",
+        "destination_port": "5003",
+        "destination_role": "remote clinician endpoint",
+        "duration_seconds": "60",
+        "offered_rate_bps": "4000000",
+        "packet_size_bytes": "1200",
+        "source_role": "consultation endpoint",
+        "traffic_type": "TELEMEDICINE",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Interactive media metadata workload assumption"
+      },
+      {
+        "criticality": "4",
+        "destination_port": "5004",
+        "destination_role": "EHR service",
+        "duration_seconds": "30",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "1024",
+        "source_role": "clinical workstation",
+        "traffic_type": "EHR",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Transactional record-transfer metadata workload assumption"
+      },
+      {
+        "criticality": "3",
+        "destination_port": "5005",
+        "destination_role": "image archive",
+        "duration_seconds": "30",
+        "offered_rate_bps": "20000000",
+        "packet_size_bytes": "1200",
+        "source_role": "imaging modality",
+        "traffic_type": "IMAGING",
+        "transport_protocol": "UDP",
+        "workload_rationale": "High-rate bulk-transfer metadata workload assumption"
+      },
+      {
+        "criticality": "1",
+        "destination_port": "5006",
+        "destination_role": "video recorder",
+        "duration_seconds": "60",
+        "offered_rate_bps": "8000000",
+        "packet_size_bytes": "1200",
+        "source_role": "surveillance camera",
+        "traffic_type": "CCTV",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Routine video-stream metadata workload assumption"
+      }
+    ],
+    "sha256": "0c6a465f8111c1f83cf307d9838de9ee4bf566de9a86efe2dbc8a26421a84e48",
+    "source_file": "data/CICIoMT2024/raw/healthcare_traffic_profiles.csv"
+  },
+  "clinical_labels_from_dataset": false,
+  "mapping_policy": "All classes use the training median profile by default; BACKGROUND uses the training p75 profile when a congestion scenario is requested. In heavy scenarios its synthetic offered rate is derived as bottleneck capacity plus the other classes' nominal dataset-profile rates. This creates demand above capacity; it is not presented as dataset-native traffic.",
+  "provenance": {
+    "dataset": "CICIoMT2024",
+    "limitations": [
+      "Flow-feature records characterize captured IoMT network traffic, not patient signals or clinical priority.",
+      "AVG is a flow-feature average packet size; it is mapped approximately to UDP payload bytes by subtracting IPv4 and UDP headers.",
+      "The profile shapes synthetic iperf packet size only; it does not replay captured packets or set clinical class rates.",
+      "The benign test split is sampled for inventory/reproducibility only and is not used to derive the workload profile."
+    ],
+    "profile_version": "unspecified",
+    "profiles": {
+      "ciciomt-benign-train-high": {
+        "offered_rate_bps": 20000000,
+        "packet_size_bytes": 55,
+        "split": "train"
+      },
+      "ciciomt-benign-train-typical": {
+        "offered_rate_bps": 500000,
+        "packet_size_bytes": 55,
+        "split": "train"
+      }
+    },
+    "source_file": "data/CICIoMT2024/processed/benign_training_profile.json",
+    "source_kind": "training-derived aggregate profile",
+    "source_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+    "test_source_files_excluded_from_workload_derivation": [
+      "Benign_test.pcap.csv"
+    ],
+    "train_source_files": [
+      "Benign_train.pcap.csv"
+    ]
+  },
+  "raw_packet_replay": false,
+  "workload_by_scenario_and_class": {
+    "emergency_surge": {
+      "BACKGROUND": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.48573,
+        "offered_rate_bps": 485730,
+        "scenario_scale_factor": 0.97146,
+        "seed_rate_factor": 0.9714598667442971
+      },
+      "ECG": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "emergency_surge_multiplier": 40,
+        "emergency_surge_rate_cap_mbps": 50,
+        "offered_load_mbps": 20.0,
+        "offered_rate_bps": 20000000,
+        "scenario_scale_factor": 40.0,
+        "seed_rate_factor": 1.0526858912186081
+      },
+      "ICU": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "emergency_surge_multiplier": 30,
+        "emergency_surge_rate_cap_mbps": 80,
+        "offered_load_mbps": 15.0,
+        "offered_rate_bps": 15000000,
+        "scenario_scale_factor": 30.0,
+        "seed_rate_factor": 0.9104408975824061
+      },
+      "WEARABLE": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.495322,
+        "offered_rate_bps": 495322,
+        "scenario_scale_factor": 0.990644,
+        "seed_rate_factor": 0.9906449156852343
+      }
+    },
+    "mixed_priority_congestion": {
+      "BACKGROUND": {
+        "dataset_base_rate_bps": 20000000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-high",
+        "offered_load_mbps": 21.547238,
+        "offered_rate_bps": 21547238,
+        "scenario_scale_factor": 1.0773619,
+        "seed_rate_factor": 0.953824863903341
+      },
+      "ECG": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.50428,
+        "offered_rate_bps": 504280,
+        "scenario_scale_factor": 1.00856,
+        "seed_rate_factor": 1.0085600846507996
+      },
+      "ICU": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.503718,
+        "offered_rate_bps": 503718,
+        "scenario_scale_factor": 1.007436,
+        "seed_rate_factor": 1.0074355605922463
+      },
+      "WEARABLE": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.53924,
+        "offered_rate_bps": 539240,
+        "scenario_scale_factor": 1.07848,
+        "seed_rate_factor": 1.0784796039146307
+      }
+    },
+    "normal_load": {
+      "BACKGROUND": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.502751,
+        "offered_rate_bps": 502751,
+        "scenario_scale_factor": 1.005502,
+        "seed_rate_factor": 1.00550192055101
+      },
+      "ECG": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.466224,
+        "offered_rate_bps": 466224,
+        "scenario_scale_factor": 0.932448,
+        "seed_rate_factor": 0.9324477942664036
+      },
+      "ICU": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.480451,
+        "offered_rate_bps": 480451,
+        "scenario_scale_factor": 0.960902,
+        "seed_rate_factor": 0.9609018612437688
+      },
+      "WEARABLE": {
+        "dataset_base_rate_bps": 500000,
+        "dataset_packet_size_bytes": 55,
+        "dataset_profile": "ciciomt-benign-train-typical",
+        "offered_load_mbps": 0.468636,
+        "offered_rate_bps": 468636,
+        "scenario_scale_factor": 0.937272,
+        "seed_rate_factor": 0.937272634868174
+      }
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "report_type": "reconstructed_from_saved_m4_repetitions",
+  "source_folder": "artifacts/m4-batch-age-20261029T115901Z",
+  "source_summary_modified": false,
+  "experiment_rerun": false,
+  "repetitions": 2,
+  "all_repetitions_complete": true,
+  "all_controller_decisions_recorded": true,
+  "all_route_selections_verified": true,
+  "all_flows_verified": true,
+  "all_repetitions_classified_harmful": true,
+  "all_prevention_flags_verified": true,
+  "baseline_selected_in_all_repetitions": true,
+  "live_prevention_verified": true,
+  "overall_classification": "harmful_shortcut_prevented",
+  "qos_safety_claim": "not established; hard service constraint violations were observed",
+  "class_evaluations": {
+    "CCTV_BACKGROUND": [
+      {
+        "repetition": 1,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      },
+      {
+        "repetition": 2,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      }
+    ],
+    "CRITICAL_PHYSIOLOGICAL_TELEMETRY": [
+      {
+        "repetition": 1,
+        "classification": "harmful",
+        "decision": "reject_candidate",
+        "reason_code": "OBSERVED_CANDIDATE_DEGRADATION"
+      },
+      {
+        "repetition": 2,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      }
+    ],
+    "EHR_TRANSACTIONS": [
+      {
+        "repetition": 1,
+        "classification": "beneficial",
+        "decision": "accept_candidate",
+        "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT"
+      },
+      {
+        "repetition": 2,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      }
+    ],
+    "EMERGENCY_ALARM": [
+      {
+        "repetition": 1,
+        "classification": "beneficial",
+        "decision": "accept_candidate",
+        "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT"
+      },
+      {
+        "repetition": 2,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      }
+    ],
+    "MEDICAL_IMAGING": [
+      {
+        "repetition": 1,
+        "classification": "beneficial",
+        "decision": "accept_candidate",
+        "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT"
+      },
+      {
+        "repetition": 2,
+        "classification": "neutral",
+        "decision": "retain_baseline",
+        "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND"
+      }
+    ],
+    "REAL_TIME_CLINICAL_VIDEO": [
+      {
+        "repetition": 1,
+        "classification": "constraint_violation",
+        "decision": "reject_candidate",
+        "reason_code": "HARD_CONSTRAINT_VIOLATION"
+      },
+      {
+        "repetition": 2,
+        "classification": "constraint_violation",
+        "decision": "reject_candidate",
+        "reason_code": "HARD_CONSTRAINT_VIOLATION"
+      }
+    ]
+  },
+  "limitations": [
+    "Only two saved repetitions are summarized.",
+    "Real-time clinical video had a hard constraint violation in both repetitions.",
+    "The evaluator reported safe_route_exists=false.",
+    "This is a deterministic network prototype, not clinical validation.",
+    "The report reconstructs saved evidence; it does not rerun the experiment."
+  ]
+}

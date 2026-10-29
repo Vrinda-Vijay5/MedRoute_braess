@@ -1,0 +1,139 @@
+{
+  "baseline_cost": 4.542333333333334,
+  "prevention_cost": 3.9663333333333335,
+  "prevention_mode": "shortcut",
+  "route_decision": {
+    "controller_recorded": true,
+    "flows_verified": true,
+    "metrics_used": {
+      "baseline": {
+        "complete": true,
+        "cost": 4.542333333333334,
+        "jitter_ms": 29.885,
+        "latency_ms": 153.0,
+        "packet_loss_pct": 0.0
+      },
+      "shortcut": {
+        "complete": true,
+        "cost": 3.4303333333333335,
+        "jitter_ms": 17.705,
+        "latency_ms": 135.0,
+        "packet_loss_pct": 0.0
+      }
+    },
+    "prevention_metrics": {
+      "complete": true,
+      "cost": 3.9663333333333335,
+      "jitter_ms": 25.745,
+      "latency_ms": 135.0,
+      "packet_loss_pct": 0.0
+    },
+    "prevention_verified": false,
+    "reason": "Measured candidate cost is more than the configured threshold below baseline.",
+    "repetition": 1,
+    "route_selection_verified": true,
+    "sample_timestamps": {
+      "baseline": [
+        1793283883.7601287,
+        1793283883.9234838,
+        1793283884.1268263,
+        1793283884.4334953,
+        1793283884.7584503
+      ],
+      "shortcut": [
+        1793283889.8131635,
+        1793283889.97355,
+        1793283890.156866,
+        1793283890.4464579,
+        1793283890.74697
+      ]
+    },
+    "selected_route": "shortcut",
+    "structured_evaluation": {
+      "baseline_cost": 4.542333333333334,
+      "candidate_cost": 3.4303333333333335,
+      "candidate_route": "shortcut",
+      "candidate_topology": "four_switch_diamond_with_candidate_link",
+      "classical_braess_paradox": "not_established_by_measured_route_comparison",
+      "classification": "beneficial",
+      "constraint_violations": [],
+      "controller_action": "request_candidate_route",
+      "criticality_score": null,
+      "current_route": "baseline",
+      "current_topology": "four_switch_diamond",
+      "decision": "accept_candidate",
+      "explanation": "Measured candidate cost is more than the configured threshold below baseline.",
+      "fairness": {
+        "reason": "aggregate_route_probe_has_no_per_class_throughput",
+        "status": "unavailable"
+      },
+      "measurement_ages_seconds": {
+        "candidate": 2.5655088424682617,
+        "current": 8.554028511047363
+      },
+      "measurement_source": {
+        "candidate": "measured_aggregate_probe",
+        "current": "measured_aggregate_probe"
+      },
+      "measurement_timestamps": {
+        "candidate": 1793283890.74697,
+        "current": 1793283884.7584503
+      },
+      "missing_constraints": [],
+      "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT",
+      "relative_change": -0.2448081015630733,
+      "route_installation_verification_status": "pending_controller_action",
+      "route_installation_verified": false,
+      "safe_route_exists": true,
+      "traffic_class": null
+    },
+    "threshold_fraction": 0.05,
+    "verdict": "beneficial"
+  },
+  "shortcut_cost": 3.4303333333333335,
+  "shortcut_decision": {
+    "mode": "shortcut",
+    "ratio": 0.7551918984369267,
+    "reason": "Measured candidate cost is more than the configured threshold below baseline.",
+    "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT",
+    "structured_evaluation": {
+      "baseline_cost": 4.542333333333334,
+      "candidate_cost": 3.4303333333333335,
+      "candidate_route": "shortcut",
+      "candidate_topology": "four_switch_diamond_with_candidate_link",
+      "classical_braess_paradox": "not_established_by_measured_route_comparison",
+      "classification": "beneficial",
+      "constraint_violations": [],
+      "controller_action": "request_candidate_route",
+      "criticality_score": null,
+      "current_route": "baseline",
+      "current_topology": "four_switch_diamond",
+      "decision": "accept_candidate",
+      "explanation": "Measured candidate cost is more than the configured threshold below baseline.",
+      "fairness": {
+        "reason": "aggregate_route_probe_has_no_per_class_throughput",
+        "status": "unavailable"
+      },
+      "measurement_ages_seconds": {
+        "candidate": 2.5655088424682617,
+        "current": 8.554028511047363
+      },
+      "measurement_source": {
+        "candidate": "measured_aggregate_probe",
+        "current": "measured_aggregate_probe"
+      },
+      "measurement_timestamps": {
+        "candidate": 1793283890.74697,
+        "current": 1793283884.7584503
+      },
+      "missing_constraints": [],
+      "reason_code": "OBSERVED_CANDIDATE_IMPROVEMENT",
+      "relative_change": -0.2448081015630733,
+      "route_installation_verification_status": "pending_controller_action",
+      "route_installation_verified": false,
+      "safe_route_exists": true,
+      "traffic_class": null
+    },
+    "verdict": "beneficial"
+  }
+}

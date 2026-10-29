@@ -2,6 +2,7 @@
 import hashlib
 import json
 import platform
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -36,6 +37,11 @@ def _version(command):
         return text[0] if text else None
     except (OSError, subprocess.SubprocessError):
         return None
+
+
+def _ryu_manager_path():
+    adjacent = Path(sys.executable).with_name("ryu-manager")
+    return str(adjacent) if adjacent.is_file() else shutil.which("ryu-manager")
 
 
 def write_manifest(directory, started_at=None):
@@ -79,6 +85,7 @@ def write_manifest(directory, started_at=None):
     else:
         status = "completed_with_result_requiring_review"
     repository = directory.parent.parent if directory.parent.name == "artifacts" else directory.parent
+    ryu_manager = _ryu_manager_path()
     manifest = {
         "schema_version": 1,
         "run_id": directory.name,
@@ -87,7 +94,7 @@ def write_manifest(directory, started_at=None):
         "finished_at_utc": datetime.now(timezone.utc).isoformat(),
         "repository": _git_info(repository),
         "environment": {"python": sys.version, "platform": platform.platform(),
-                        "ryu_manager": _version([str(Path(sys.executable).with_name("ryu-manager")), "--version"]),
+                        "ryu_manager": _version([ryu_manager, "--version"]) if ryu_manager else None,
                         "mininet": _version(["mn", "--version"]),
                         "open_vswitch": _version(["ovs-vsctl", "--version"]),
                         "node": _version(["node", "--version"])},

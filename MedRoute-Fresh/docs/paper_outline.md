@@ -8,7 +8,7 @@
 6. **CBDR algorithm** — evaluator validation, cost comparison, hard constraints, freshness, fairness safeguard, explicit fallback and reason codes.
 7. **Analytical Braess model** — edge functions, demand, Wardrop conditions, beneficial/harmful/neutral load regimes.
 8. **Implementation and setup** — Mininet, OVS, Ryu/OpenFlow 1.3, data provenance, versions, and evidence format.
-9. **Baselines and ablations** — report M3, M4, and required ablations unavailable until faithful implementations exist.
+9. **Baselines and ablations** — describe M3's measured bottleneck-utilization selector and M4's CBDR path, but report live comparative results and ablations only when matched evidence bundles exist.
 10. **Results/statistics** — placeholder for paired independent run seeds, confidence intervals, effect sizes, and flow-installation outcomes.
 11. **Fairness and safety** — background throughput/fairness tradeoffs; no patient-level or clinical safety inference.
 12. **Threats to validity** — small topology, synthetic traffic, deterministic current generator, measurements, and external validity.

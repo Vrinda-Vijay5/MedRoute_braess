@@ -2,7 +2,13 @@
 
 ## Software validation
 
-The final offline validation passed 69 Python tests and 25 Node tests. The focused CBDR, evidence-manifest, barrier, and live-metric regression set passed 37 tests. Software tests do not establish network performance.
+Latest validation on 2026-10-29 passed 83 Python tests and 28 Node tests, including simulation topology API and playground coverage. Software tests do not establish network performance. WSL has Mininet, OVS, and Ryu 4.34.
+
+## Latest two-repetition live pilot
+
+Run [`pilot-20261029T142341Z`](../artifacts/pilot-20261029T142341Z/) completed in WSL2 with workload seed `1526175684`. It contains two complete repetitions for each of five scenarios: baseline without prioritization, prioritization without congestion, emergency surge, heavy background without prioritization, and heavy background with prioritization. Scenario validation passed with no errors. Flow rules were verified; required telemetry was complete; six of six catalog profiles were complete. Failure recovery completed with 3/3 probes received and the recovery route verified. The Stage 6 [`experiment_report.md`](../artifacts/pilot-20261029T142341Z/experiment_report.md), four plots, `manifest.json`, and refreshed `checksums.sha256` are saved in the run directory.
+
+The two shortcut comparisons were one beneficial and one neutral; no harmful shortcut was observed in this run. Optional candidate-evaluation fairness telemetry was unavailable, so `all_telemetry_complete` is false even though `required_telemetry_complete` is true. Repeated Linux HTB quantum warnings appeared during queue setup, but did not stop the runner or invalidate scenario validation. This is one seeded smoke pilot, not an independent-seed study or matched M1-M4 comparison. The run does not establish clinical service guarantees.
 
 ## Fresh two-repetition live pilot
 
@@ -20,4 +26,4 @@ The analytical result in `artifacts/analytical-review-20261028/` records the con
 
 ## Evidence still unavailable
 
-Historical and pilot repetitions use deterministic workload generation, not independent random seeds. The current repo still lacks a complete comparative study of shortest path, QoS-only, a distinct congestion-aware policy, and CBDR; independent-seed trials; candidate-evaluation, QoS, and guard ablations; load and topology sweeps; validated per-service targets; and a dashboard for the new structured policy outputs. M3 and M4 are not represented as complete live methods. Resume/checkpoint support is not implemented. The project's novelty and clinical relevance have not been established by this implementation or pilot.
+Historical and pilot repetitions use deterministic workload generation, not independent random seeds. The current repository still lacks a matched live comparison of shortest path, QoS-only, congestion-aware routing, and CBDR; independent-seed trials; completed ablations; load and live-topology sweeps; validated per-service targets; and complete dashboard views for the structured method results. M3 has a distinct measured-utilization selector in the runner, but its current changes have not been live-verified; M4's profile-level live inputs and decisions also require further verification. The new topology playground is simulation-only and is not part of the Mininet testbed. Resume/checkpoint support is not implemented. Novelty and clinical relevance have not been established.

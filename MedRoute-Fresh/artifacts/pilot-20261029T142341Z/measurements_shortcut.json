@@ -1,0 +1,490 @@
+{
+  "complete": true,
+  "controller_metrics": {
+    "complete": true,
+    "response": {
+      "accepted": true,
+      "class_count": 4,
+      "link_utilization_complete": true,
+      "stage": "shortcut"
+    },
+    "route_decision": {
+      "previous_route": "baseline",
+      "reason": "stage shortcut",
+      "selected_route": "shortcut",
+      "timestamp": 1793283858.5029426
+    }
+  },
+  "flow_evidence": {
+    "htb_ports_verified": 16,
+    "mode": "shortcut",
+    "qos_enabled": true,
+    "queue_actions_verified": true,
+    "queue_ids_seen": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "s2_h1_egress": 3,
+    "verified": true
+  },
+  "iperf_bits_per_second": 18876789.00792694,
+  "iperf_client_output": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t38480,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5201\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Thu, 29 Oct 2026 14:24:19 GMT\",\n\t\t\t\"timesecs\":\t1793283859\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5201\n\t\t},\n\t\t\"cookie\":\t\"w6bjoreu7c6o4lrqo33yq4f7bdjmetvkluyo\",\n\t\t\"tcp_mss_default\":\t1448,\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t87380,\n\t\t\"rcvbuf_actual\":\t87380,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"TCP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t131072,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t0\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000101,\n\t\t\t\t\t\"seconds\":\t1.0001009702682495,\n\t\t\t\t\t\"bytes\":\t4619120,\n\t\t\t\t\t\"bits_per_second\":\t36949229.2264134,\n\t\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\t\"snd_cwnd\":\t427160,\n\t\t\t\t\t\"rtt\":\t169637,\n\t\t\t\t\t\"rttvar\":\t570,\n\t\t\t\t\t\"pmtu\":\t1500,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000101,\n\t\t\t\t\"seconds\":\t1.0001009702682495,\n\t\t\t\t\"bytes\":\t4619120,\n\t\t\t\t\"bits_per_second\":\t36949229.2264134,\n\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000101,\n\t\t\t\t\t\"end\":\t2.000054,\n\t\t\t\t\t\"seconds\":\t0.99995297193527222,\n\t\t\t\t\t\"bytes\":\t3062520,\n\t\t\t\t\t\"bits_per_second\":\t24501312.249298375,\n\t\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\t\"snd_cwnd\":\t547344,\n\t\t\t\t\t\"rtt\":\t217158,\n\t\t\t\t\t\"rttvar\":\t424,\n\t\t\t\t\t\"pmtu\":\t1500,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000101,\n\t\t\t\t\"end\":\t2.000054,\n\t\t\t\t\"seconds\":\t0.99995297193527222,\n\t\t\t\t\"bytes\":\t3062520,\n\t\t\t\t\"bits_per_second\":\t24501312.249298375,\n\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000054,\n\t\t\t\t\t\"end\":\t3.000302,\n\t\t\t\t\t\"seconds\":\t1.0002479553222656,\n\t\t\t\t\t\"bytes\":\t2476080,\n\t\t\t\t\t\"bits_per_second\":\t19803729.559854925,\n\t\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\t\"snd_cwnd\":\t666080,\n\t\t\t\t\t\"rtt\":\t264481,\n\t\t\t\t\t\"rttvar\":\t315,\n\t\t\t\t\t\"pmtu\":\t1500,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000054,\n\t\t\t\t\"end\":\t3.000302,\n\t\t\t\t\"seconds\":\t1.0002479553222656,\n\t\t\t\t\"bytes\":\t2476080,\n\t\t\t\t\"bits_per_second\":\t19803729.559854925,\n\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000302,\n\t\t\t\t\t\"end\":\t4.000485,\n\t\t\t\t\t\"seconds\":\t1.0001829862594604,\n\t\t\t\t\t\"bytes\":\t2621440,\n\t\t\t\t\t\"bits_per_second\":\t20967683.2020813,\n\t\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\t\"snd_cwnd\":\t786264,\n\t\t\t\t\t\"rtt\":\t312367,\n\t\t\t\t\t\"rttvar\":\t189,\n\t\t\t\t\t\"pmtu\":\t1500,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000302,\n\t\t\t\t\"end\":\t4.000485,\n\t\t\t\t\"seconds\":\t1.0001829862594604,\n\t\t\t\t\"bytes\":\t2621440,\n\t\t\t\t\"bits_per_second\":\t20967683.2020813,\n\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"sender\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000485,\n\t\t\t\t\t\"seconds\":\t4.000485,\n\t\t\t\t\t\"bytes\":\t12779160,\n\t\t\t\t\t\"bits_per_second\":\t25555221.429401685,\n\t\t\t\t\t\"retransmits\":\t0,\n\t\t\t\t\t\"max_snd_cwnd\":\t786264,\n\t\t\t\t\t\"max_rtt\":\t312367,\n\t\t\t\t\t\"min_rtt\":\t169637,\n\t\t\t\t\t\"mean_rtt\":\t240910,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t},\n\t\t\t\t\"receiver\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.388326,\n\t\t\t\t\t\"seconds\":\t4.000485,\n\t\t\t\t\t\"bytes\":\t10354688,\n\t\t\t\t\t\"bits_per_second\":\t18876789.007926941,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum_sent\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.000485,\n\t\t\t\"seconds\":\t4.000485,\n\t\t\t\"bytes\":\t12779160,\n\t\t\t\"bits_per_second\":\t25555221.429401685,\n\t\t\t\"retransmits\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"sum_received\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.388326,\n\t\t\t\"seconds\":\t4.388326,\n\t\t\t\"bytes\":\t10354688,\n\t\t\t\"bits_per_second\":\t18876789.007926941,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t1.0578813952345336,\n\t\t\t\"host_user\":\t0,\n\t\t\t\"host_system\":\t1.0578813952345336,\n\t\t\t\"remote_total\":\t1.9993066391454479,\n\t\t\t\"remote_user\":\t0.25829844489944115,\n\t\t\t\"remote_system\":\t1.7410081942460069\n\t\t},\n\t\t\"sender_tcp_congestion\":\t\"cubic\",\n\t\t\"receiver_tcp_congestion\":\t\"cubic\"\n\t}\n}\n",
+  "iperf_client_returncode": 0,
+  "iperf_server_output": "-----------------------------------------------------------\nServer listening on 5201\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 38466\n[  7] local 10.0.0.2 port 5201 connected to 10.0.0.1 port 38480\n[ ID] Interval           Transfer     Bitrate\n[  7]   0.00-1.08   sec  2.38 MBytes  18.4 Mbits/sec                  \n[  7]   1.08-2.07   sec  2.25 MBytes  19.1 Mbits/sec                  \n[  7]   2.07-3.11   sec  2.38 MBytes  19.1 Mbits/sec                  \n[  7]   3.11-4.10   sec  2.25 MBytes  19.1 Mbits/sec                  \n[  7]   4.10-4.39   sec   640 KBytes  17.9 Mbits/sec                  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate\n[  7]   0.00-4.39   sec  9.88 MBytes  18.9 Mbits/sec                  receiver\n",
+  "iperf_server_returncode": 0,
+  "link_utilization": {
+    "capacity_mbps": 100,
+    "complete": true,
+    "interval_seconds": 19.840301752090454,
+    "links": [
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth1 <-> h1",
+        "peer": "h1",
+        "port": 1,
+        "rx_mbps": 43.35350554380412,
+        "rx_utilization_pct": 43.35350554380412,
+        "switch": "s1",
+        "tx_mbps": 0.4208024708656627,
+        "tx_utilization_pct": 0.4208024708656627
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth2 <-> s2-eth1",
+        "peer": "s2-eth1",
+        "port": 2,
+        "rx_mbps": 0.4208024708656627,
+        "rx_utilization_pct": 0.4208024708656627,
+        "switch": "s1",
+        "tx_mbps": 43.35350554380412,
+        "tx_utilization_pct": 43.35350554380412
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth3 <-> s3-eth1",
+        "peer": "s3-eth1",
+        "port": 3,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth6 <-> h3",
+        "peer": "h3",
+        "port": 6,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s1-eth7 <-> h4",
+        "peer": "h4",
+        "port": 7,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s1",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth1 <-> s1-eth2",
+        "peer": "s1-eth2",
+        "port": 1,
+        "rx_mbps": 43.35350554380412,
+        "rx_utilization_pct": 43.35350554380412,
+        "switch": "s2",
+        "tx_mbps": 0.4208024708656627,
+        "tx_utilization_pct": 0.4208024708656627
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth2 <-> s4-eth1",
+        "peer": "s4-eth1",
+        "port": 2,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s2",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s2-eth3 <-> s3-eth3",
+        "peer": "s3-eth3",
+        "port": 3,
+        "rx_mbps": 0.4208306962428267,
+        "rx_utilization_pct": 0.42083069624282676,
+        "switch": "s2",
+        "tx_mbps": 43.35350554380412,
+        "tx_utilization_pct": 43.35350554380412
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth1 <-> s1-eth3",
+        "peer": "s1-eth3",
+        "port": 1,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s3",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth2 <-> s4-eth2",
+        "peer": "s4-eth2",
+        "port": 2,
+        "rx_mbps": 0.4208024708656627,
+        "rx_utilization_pct": 0.4208024708656627,
+        "switch": "s3",
+        "tx_mbps": 43.353477318426954,
+        "tx_utilization_pct": 43.353477318426954
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s3-eth3 <-> s2-eth3",
+        "peer": "s2-eth3",
+        "port": 3,
+        "rx_mbps": 43.35350554380412,
+        "rx_utilization_pct": 43.35350554380412,
+        "switch": "s3",
+        "tx_mbps": 0.4208306962428267,
+        "tx_utilization_pct": 0.42083069624282676
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth1 <-> s2-eth2",
+        "peer": "s2-eth2",
+        "port": 1,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth2 <-> s3-eth2",
+        "peer": "s3-eth2",
+        "port": 2,
+        "rx_mbps": 43.353477318426954,
+        "rx_utilization_pct": 43.353477318426954,
+        "switch": "s4",
+        "tx_mbps": 0.4208024708656627,
+        "tx_utilization_pct": 0.4208024708656627
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth3 <-> h2",
+        "peer": "h2",
+        "port": 3,
+        "rx_mbps": 0.4208024708656627,
+        "rx_utilization_pct": 0.4208024708656627,
+        "switch": "s4",
+        "tx_mbps": 43.353477318426954,
+        "tx_utilization_pct": 43.353477318426954
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth4 <-> h5",
+        "peer": "h5",
+        "port": 4,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      },
+      {
+        "capacity_mbps": 100,
+        "complete": true,
+        "name": "s4-eth5 <-> h6",
+        "peer": "h6",
+        "port": 5,
+        "rx_mbps": 0.0,
+        "rx_utilization_pct": 0.0,
+        "switch": "s4",
+        "tx_mbps": 0.0,
+        "tx_utilization_pct": 0.0
+      }
+    ]
+  },
+  "median_rtt_ms": 142.0,
+  "metrics": {
+    "complete": true,
+    "cost": 3.897,
+    "jitter_ms": 22.955000000000002,
+    "latency_ms": 142.0,
+    "packet_loss_pct": 0.0
+  },
+  "mode": "shortcut",
+  "per_class_metrics": {
+    "BACKGROUND": {
+      "complete": true,
+      "dscp": 0,
+      "duration_seconds": 5.073410987854004,
+      "error": null,
+      "iperf_bits_per_second": 18945099.408736825,
+      "metrics": {
+        "complete": true,
+        "cost": 3.4450000000000003,
+        "jitter_ms": 27.25,
+        "latency_ms": 97.7,
+        "packet_loss_pct": 0.0
+      },
+      "queue_id": 4,
+      "samples": [
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=6.72 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 6.716/6.716/6.716/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 6.72,
+          "timestamp": 1793283878.0071843
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=57.2 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 57.231/57.231/57.231/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 57.2,
+          "timestamp": 1793283878.1708975
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=97.7 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 97.698/97.698/97.698/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 97.7,
+          "timestamp": 1793283878.3866656
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=110 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 109.538/109.538/109.538/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 110.0,
+          "timestamp": 1793283878.6409829
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=124 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 124.134/124.134/124.134/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 124.0,
+          "timestamp": 1793283878.9084024
+        }
+      ],
+      "service_port": 5104,
+      "throughput_mbps": 18.945099408736827,
+      "timestamp": 1793283882.7773674,
+      "tos": 0,
+      "traffic_class": "BACKGROUND"
+    },
+    "ECG": {
+      "complete": true,
+      "dscp": 46,
+      "duration_seconds": 4.924922704696655,
+      "error": null,
+      "iperf_bits_per_second": 47318845.29063401,
+      "metrics": {
+        "complete": true,
+        "cost": 0.8933333333333332,
+        "jitter_ms": 8.6,
+        "latency_ms": 19.2,
+        "packet_loss_pct": 0.0
+      },
+      "queue_id": 1,
+      "samples": [
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=6.84 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 6.837/6.837/6.837/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 6.84,
+          "timestamp": 1793283863.272201
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=10.5 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 10.476/10.476/10.476/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 10.5,
+          "timestamp": 1793283863.4334202
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=19.2 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 19.171/19.171/19.171/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 19.2,
+          "timestamp": 1793283863.5998652
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=27.7 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 27.727/27.727/27.727/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 27.7,
+          "timestamp": 1793283863.7773473
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=36.4 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 36.353/36.353/36.353/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 36.4,
+          "timestamp": 1793283863.9598353
+        }
+      ],
+      "service_port": 5101,
+      "throughput_mbps": 47.318845290634016,
+      "timestamp": 1793283867.8897817,
+      "tos": 184,
+      "traffic_class": "ECG"
+    },
+    "ICU": {
+      "complete": true,
+      "dscp": 34,
+      "duration_seconds": 4.886780023574829,
+      "error": null,
+      "iperf_bits_per_second": 75630678.5650432,
+      "metrics": {
+        "complete": true,
+        "cost": 0.9316666666666666,
+        "jitter_ms": 8.799999999999999,
+        "latency_ms": 20.7,
+        "packet_loss_pct": 0.0
+      },
+      "queue_id": 2,
+      "samples": [
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=7.41 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 7.408/7.408/7.408/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 7.41,
+          "timestamp": 1793283868.201566
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=11.8 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 11.816/11.816/11.816/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 11.8,
+          "timestamp": 1793283868.363725
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=20.7 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 20.660/20.660/20.660/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 20.7,
+          "timestamp": 1793283868.5310378
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=29.4 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 29.442/29.442/29.442/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 29.4,
+          "timestamp": 1793283868.7098134
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=38.4 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 38.360/38.360/38.360/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 38.4,
+          "timestamp": 1793283868.898715
+        }
+      ],
+      "service_port": 5102,
+      "throughput_mbps": 75.6306785650432,
+      "timestamp": 1793283872.7766185,
+      "tos": 136,
+      "traffic_class": "ICU"
+    },
+    "WEARABLE": {
+      "complete": true,
+      "dscp": 18,
+      "duration_seconds": 4.9272987842559814,
+      "error": null,
+      "iperf_bits_per_second": 47324328.87310105,
+      "metrics": {
+        "complete": true,
+        "cost": 0.9016666666666667,
+        "jitter_ms": 8.65,
+        "latency_ms": 19.5,
+        "packet_loss_pct": 0.0
+      },
+      "queue_id": 3,
+      "samples": [
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=6.86 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 6.859/6.859/6.859/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 6.86,
+          "timestamp": 1793283873.0868556
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=10.8 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 10.771/10.771/10.771/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 10.8,
+          "timestamp": 1793283873.2639005
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=19.5 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 19.514/19.514/19.514/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 19.5,
+          "timestamp": 1793283873.428798
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=28.1 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 28.080/28.080/28.080/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 28.1,
+          "timestamp": 1793283873.6045506
+        },
+        {
+          "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=38.7 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 38.705/38.705/38.705/0.000 ms",
+          "returncode": 0,
+          "rtt_ms": 38.7,
+          "timestamp": 1793283873.790054
+        }
+      ],
+      "service_port": 5103,
+      "throughput_mbps": 47.324328873101045,
+      "timestamp": 1793283877.7039366,
+      "tos": 72,
+      "traffic_class": "WEARABLE"
+    }
+  },
+  "sample_count": 5,
+  "samples": [
+    {
+      "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=7.29 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 7.287/7.287/7.287/0.000 ms",
+      "returncode": 0,
+      "rtt_ms": 7.29,
+      "timestamp": 1793283859.4764094
+    },
+    {
+      "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=37.2 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 37.239/37.239/37.239/0.000 ms",
+      "returncode": 0,
+      "rtt_ms": 37.2,
+      "timestamp": 1793283859.641021
+    },
+    {
+      "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=142 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 141.614/141.614/141.614/0.000 ms",
+      "returncode": 0,
+      "rtt_ms": 142.0,
+      "timestamp": 1793283859.8354566
+    },
+    {
+      "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=157 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 156.749/156.749/156.749/0.000 ms",
+      "returncode": 0,
+      "rtt_ms": 157.0,
+      "timestamp": 1793283860.1364086
+    },
+    {
+      "output": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=173 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 172.612/172.612/172.612/0.000 ms",
+      "returncode": 0,
+      "rtt_ms": 173.0,
+      "timestamp": 1793283860.4635768
+    }
+  ],
+  "stage": "shortcut",
+  "valid_count": 5
+}

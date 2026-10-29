@@ -40,6 +40,9 @@ EXPECTED_DPIDS = [1, 2, 3, 4]
 SAMPLES = 5
 SCENARIO_PING_SAMPLES = 100
 MAX_AGE = 30.0
+# CBDR evaluates six sequential baseline/shortcut profile pairs after collection.
+# Allow a bounded batch window while preserving the separate 30s scenario limit.
+CBDR_BATCH_MAX_AGE = 120.0
 THRESHOLD = 0.05
 SCENARIO_REPETITIONS = 3
 SCENARIO_BOTTLENECK_PORT = "s1-eth2"
@@ -1089,26 +1092,52 @@ def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir
     flow_evidence = verify_flows(
         "m3_selected_r{}".format(repetition), selected, evidence_dir,
         routes, class_config)
-    record = {"repetition": repetition, "method": "M3",
-        "selected_route": selected, "selection": selection,
-        "route_measurements": route_rows,
-        "route_selection_verified": bool(selection["complete"] and flow_evidence["verified"]),
-        "flow_evidence": flow_evidence,
-        "complete": bool(selection["complete"] and flow_evidence["verified"])}
-    decision = {"repetition": repetition, "verdict": "congestion_selected",
-        "selected_route": selected, "reason": selection["reason"],
-        "reason_code": selection["reason_code"],
-        "path_congestion_scores_pct": selection["scores_pct"],
-        "route_selection_verified": record["route_selection_verified"],
-        "prevention_verified": False, "flows_verified": flow_evidence["verified"]}
+    measurements_complete = bool(
+        selection.get("complete") and
+        route_rows and
+        all(bool(row.get("complete")) for row in route_rows)
+    )
+    flows_verified = bool(flow_evidence.get("verified"))
+    route_selection_verified = bool(measurements_complete and flows_verified)
+    route_details = {
+        row["mode"]: {
+            "congestion_score_pct": selection.get("scores_pct", {}).get(row["mode"]),
+            "throughput_mbps": row.get("throughput_mbps"),
+            "complete": bool(row.get("complete")),
+        }
+        for row in route_rows if isinstance(row, dict) and "mode" in row
+    }
+    metrics_used = {
+        "path_congestion_scores_pct": dict(selection.get("scores_pct", {})),
+        "route_congestion_scores": {
+            row["mode"]: selection.get("scores_pct", {}).get(row["mode"])
+            for row in route_rows if isinstance(row, dict) and "mode" in row
+        },
+        "routes": route_details,
+    }
+    decision = {"repetition": repetition, "method": "M3", "verdict": "inconclusive",
+        "classification": "congestion_selected",
+        "original_classification": "congestion_selected",
+        "selected_route": selected, "reason": selection.get("reason") or "M3 congestion selection",
+        "reason_code": selection.get("reason_code"),
+        "metrics_used": metrics_used,
+        "path_congestion_scores_pct": selection.get("scores_pct", {}),
+        "route_selection_verified": route_selection_verified,
+        "prevention_verified": False, "flows_verified": flows_verified}
     try:
         posted = request_json("POST", decision, timeout=3, endpoint=DECISION_API)
         decision["controller_recorded"] = bool(posted.get("recorded"))
     except Exception as exc:
         decision["controller_recorded"] = False
         decision["controller_error"] = type(exc).__name__ + ": " + str(exc)
-    record["decision"] = decision
-    record["complete"] = bool(record["complete"] and decision["controller_recorded"])
+    record = {"repetition": repetition, "method": "M3",
+        "selected_route": selected, "selection": selection,
+        "route_measurements": route_rows,
+        "route_selection_verified": route_selection_verified,
+        "flow_evidence": flow_evidence,
+        "decision": decision,
+        "prevention_verified": False,
+        "complete": bool(route_selection_verified and decision.get("controller_recorded"))}
     return record
 
 
@@ -1134,7 +1163,7 @@ def _profile_objective_record(row, profile_name, route):
     metrics = dict(row.get("metrics") or {})
     complete = bool(row.get("complete") and metrics.get("complete"))
     return {"topology": "four_switch_diamond" + ("_with_shortcut" if route == "shortcut" else ""),
-            "route": route, "timestamp": row.get("captured_at"),
+            "route": route, "timestamp": row.get("captured_at", row.get("timestamp")),
             "complete": complete, "metrics": metrics,
             "source": "measured_catalog_service_flow:{}".format(profile_name)}
 
@@ -1212,7 +1241,7 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
         candidate_network_cost_pct=max(candidate_path_util),
         config=policy_config, current_fairness=base_fairness,
         candidate_fairness=candidate_fairness, now=time.time(),
-        max_age_seconds=MAX_AGE)
+        max_age_seconds=CBDR_BATCH_MAX_AGE)
     selected = ("shortcut" if evaluation["decision"] == "accept_candidate"
                 else "baseline")
     if ablation == "disable_braess_detection":
@@ -1225,27 +1254,83 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
     evaluation["route_installation_verified"] = bool(final_flows["verified"])
     evaluation["route_installation_verification_status"] = (
         "verified" if final_flows["verified"] else "failed")
-    decision = {"repetition": repetition, "method": "M4", "verdict": evaluation["classification"],
-        "selected_route": selected, "reason": evaluation["explanation"],
-        "reason_code": evaluation["reason_code"], "evaluation": evaluation,
-        "route_selection_verified": bool(final_flows["verified"] and complete),
-        "flows_verified": final_flows["verified"],
-        "prevention_verified": bool(evaluation["classification"] in ("harmful", "constraint_violation") and
-                                     selected == "baseline" and final_flows["verified"])}
+    original_classification = evaluation.get("classification")
+    original_reason_code = evaluation.get("reason_code")
+    if original_classification == "constraint_violation":
+        controller_verdict = "harmful" if evaluation.get("decision") != "accept_candidate" else "beneficial"
+    elif original_classification in ("harmful", "beneficial", "neutral", "inconclusive"):
+        controller_verdict = original_classification
+    else:
+        controller_verdict = "inconclusive"
+
+    baseline_profile_metrics = {
+        row["cbdr_profile"]: row.get("metrics")
+        for row in baseline_rows
+        if isinstance(row, dict) and "cbdr_profile" in row and row.get("metrics")
+    }
+    candidate_profile_metrics = {
+        row["cbdr_profile"]: row.get("metrics")
+        for row in candidate_rows
+        if isinstance(row, dict) and "cbdr_profile" in row and row.get("metrics")
+    }
+    metrics_used = {
+        "baseline": {
+            "cost": evaluation.get("current_objective"),
+            "network_cost_pct": evaluation.get("current_network_cost_pct"),
+            "fairness": base_fairness,
+            "profiles": baseline_profile_metrics,
+        },
+        "shortcut": {
+            "cost": evaluation.get("candidate_objective"),
+            "network_cost_pct": evaluation.get("candidate_network_cost_pct"),
+            "fairness": candidate_fairness,
+            "profiles": candidate_profile_metrics,
+        },
+        "current_objective": evaluation.get("current_objective"),
+        "candidate_objective": evaluation.get("candidate_objective"),
+        "relative_change": evaluation.get("relative_change"),
+        "current_network_cost_pct": evaluation.get("current_network_cost_pct"),
+        "candidate_network_cost_pct": evaluation.get("candidate_network_cost_pct"),
+        "baseline_fairness": base_fairness,
+        "candidate_fairness": candidate_fairness,
+        "baseline_hard_violations": evaluation.get("baseline_hard_violations", []),
+        "candidate_hard_violations": evaluation.get("candidate_hard_violations", []),
+    }
+    flows_verified = bool(final_flows.get("verified"))
+    route_selection_verified = bool(flows_verified and complete)
+    prevention_candidate = bool(
+        original_classification in ("harmful", "constraint_violation") and
+        selected == "baseline" and
+        evaluation.get("decision") != "accept_candidate" and
+        flows_verified
+    )
+    decision = {"repetition": repetition, "method": "M4", "verdict": controller_verdict,
+        "classification": original_classification,
+        "original_classification": original_classification,
+        "selected_route": selected, "reason": evaluation.get("explanation") or "M4 CBDR decision",
+        "reason_code": original_reason_code, "evaluation": evaluation,
+        "structured_evaluation": evaluation,
+        "metrics_used": metrics_used,
+        "route_selection_verified": route_selection_verified,
+        "flows_verified": flows_verified,
+        "prevention_verified": prevention_candidate}
     try:
         posted = request_json("POST", decision, timeout=3, endpoint=DECISION_API)
         decision["controller_recorded"] = bool(posted.get("recorded"))
     except Exception as exc:
         decision["controller_recorded"] = False
         decision["controller_error"] = type(exc).__name__ + ": " + str(exc)
-    record = {"repetition": repetition, "method": "M4", "complete": complete and
-        decision["controller_recorded"] and decision["route_selection_verified"],
+    decision["prevention_verified"] = bool(
+        prevention_candidate and decision["controller_recorded"])
+    record = {"repetition": repetition, "method": "M4", "complete": bool(
+        complete and decision["controller_recorded"] and route_selection_verified),
         "decision": decision, "evaluation": evaluation,
         "baseline_profiles": baseline_rows, "candidate_profiles": candidate_rows,
         "final_flow_evidence": final_flows,
         "baseline_fairness": base_fairness,
         "candidate_fairness": candidate_fairness,
-        "ablation": ablation}
+        "ablation": ablation,
+        "prevention_verified": decision["prevention_verified"]}
     save_json(evidence_dir / "cbdr_repetition_r{}.json".format(repetition), record)
     return record
 
@@ -1382,7 +1467,7 @@ def summarize_telemetry_completeness(records, scenario_statistics,
     """Separate required route telemetry from optional metric coverage."""
     stages = [record for record in records if isinstance(record, dict)]
     required_complete = bool(stages) and all(
-        bool((record.get("metrics") or {}).get("complete")) for record in stages)
+        stage_measurement_complete(record) for record in stages)
     fairness_statuses = [
         (evaluation.get("fairness") or {}).get("status")
         for evaluation in candidate_evaluations
@@ -1587,7 +1672,7 @@ def classify(baseline, candidate, now=None):
         candidate={"topology": "four_switch_diamond_with_candidate_link",
                    "route": candidate.get("mode", "shortcut"), "timestamp": candidate_stamp,
                    "complete": True, "metrics": cm, "source": "measured_aggregate_probe"},
-        now=now, max_age_seconds=MAX_AGE, constraint_mode="experimental",
+        now=now, max_age_seconds=CBDR_BATCH_MAX_AGE, constraint_mode="experimental",
         neutral_policy="accept_candidate")
     evaluation["route_installation_verification_status"] = "pending_controller_action"
     evaluation["fairness"] = {
@@ -1862,6 +1947,7 @@ def main():
               "cost_references": COST_REFERENCES,
               "metric_methods": {"latency_ms": "median successful one-packet ping RTT", "jitter_ms": "median absolute difference for adjacent successful RTT pairs; at least two pairs", "packet_loss_pct": "100 * lost probes / 5"},
               "required_samples": SAMPLES, "max_sample_age_seconds": MAX_AGE,
+              "cbdr_batch_max_age_seconds": CBDR_BATCH_MAX_AGE,
               "traffic_classes": class_config,
               "required_scenarios": scenario_plan,
               "required_repetitions_per_scenario": SCENARIO_REPETITIONS,
@@ -2339,6 +2425,81 @@ def main():
                            "controller_metrics_published": bool(isinstance(records.get("baseline"), dict) and records["baseline"].get("controller_metrics", {}).get("complete")),
                            "per_class_metrics_complete": bool(isinstance(records.get("baseline"), dict) and all(bool(item.get("complete")) for item in records["baseline"].get("per_class_metrics", {}).values())),
                            "link_utilization_complete": bool(isinstance(records.get("baseline"), dict) and records["baseline"].get("link_utilization", {}).get("complete"))}
+            elif selected_method.method_id == "M4":
+                # M4 uses CBDR repetitions, not the separate Braess repetition list.
+                repeated_decision_summary = summarize_repeated_decisions(cbdr_repetitions)
+                selected_final = cbdr_repetitions[-1].get(
+                    "decision", {}).get("selected_route", "baseline")
+                set_shortcut_link(shortcut_link, selected_final == "shortcut")
+                set_mode(selected_final, "restore final M4 CBDR decision")
+                final_route_evidence = verify_flows(
+                    "final_selected", selected_final, out, routes, class_config)
+
+                if not scenario_validation:
+                    live_status = "scenario_validation_failed"
+                else:
+                    live_status = repeated_decision_summary["live_experiment"]
+
+                prevention_verified = bool(
+                    repeated_decision_summary["harmful_candidate_count"] > 0 and
+                    repeated_decision_summary["harmful_candidate_count"] ==
+                    repeated_decision_summary["prevention_verified_count"] and
+                    repeated_decision_summary["passed"] and
+                    final_route_evidence.get("verified"))
+
+                decisions = {
+                    "route_decisions": [row.get("decision", {}) for row in cbdr_repetitions],
+                    "candidate_decision_aggregate": repeated_decision_summary,
+                    "selected_route": selected_final,
+                }
+                summary = {
+                    "live_experiment": live_status,
+                    "live_prevention_verified": prevention_verified,
+                    "candidate_decision_aggregate": repeated_decision_summary,
+                    "shortcut_verdict": repeated_decision_summary["aggregate_verdict"],
+                    "shortcut_verdict_counts": repeated_decision_summary["verdict_counts"],
+                    "method_policy": summarize_method_policy("M4"),
+                    "failure_recovery": recovery,
+                    "dataset_used": True,
+                    "dataset_profile_version": dataset_provenance["profile_version"],
+                    "dataset_profile_sha256": dataset_provenance["source_sha256"],
+                    "all_flow_rules_verified": verified,
+                    "all_telemetry_complete": telemetry_completeness["all_telemetry_complete"],
+                    "required_telemetry_complete": telemetry_completeness["required_telemetry_complete"],
+                    "optional_telemetry": telemetry_completeness["optional_telemetry"],
+                    "optional_telemetry_complete": telemetry_completeness["optional_telemetry_complete"],
+                    "baseline_metrics": baseline.get("metrics"),
+                    "shortcut_metrics": candidate.get("metrics") if candidate else None,
+                    "prevention_metrics": None,
+                    "route_decision": decision_record,
+                    "decision_metrics_used": decision_record.get("metrics_used")
+                        if isinstance(decision_record, dict) else None,
+                    "selected_route": selected_final,
+                    "prevention_mode": prevention_mode,
+                    "cbdr_repetitions": len(cbdr_repetitions),
+                    "cbdr_prevention_verified_repetitions":
+                        repeated_decision_summary["prevention_verified_count"],
+                    "scenario_repetitions": {
+                        name: len(rows) for name, rows in scenario_repetitions.items()},
+                    "catalog_profile_matrix": catalog_matrix_summary,
+                    "braess_validation": braess_validation,
+                    "braess_repetitions": 0,
+                    "scenario_validation_passed": bool(scenario_validation),
+                    "scenario_validation_errors": scenario_validation_errors,
+                    "scenario_statistics_file": "scenario_results.json",
+                    "final_repeated_route": selected_final,
+                    "final_route_verified": final_route_evidence.get("verified", False),
+                    "controller_metrics_published": bool(
+                        isinstance(records.get("baseline"), dict) and
+                        records["baseline"].get("controller_metrics", {}).get("complete")),
+                    "per_class_metrics_complete": bool(
+                        isinstance(records.get("baseline"), dict) and
+                        all(item.get("complete") for item in
+                            records["baseline"].get("per_class_metrics", {}).values())),
+                    "link_utilization_complete": bool(
+                        isinstance(records.get("baseline"), dict) and
+                        records["baseline"].get("link_utilization", {}).get("complete")),
+                }
             else:
                 selected_final = selected_method.initial_route
                 set_shortcut_link(shortcut_link, False)
@@ -2369,7 +2530,7 @@ def main():
                            "shortcut_metrics": None,
                            "prevention_metrics": None,
                            "route_decision": decision_record,
-                           "decision_metrics_used": None,
+                           "decision_metrics_used": decision_record.get("metrics_used") if isinstance(decision_record, dict) else None,
                            "selected_route": selected_final,
                            "scenario_repetitions": {name: len(rows) for name, rows in scenario_repetitions.items()},
                            "catalog_profile_matrix": catalog_matrix_summary,

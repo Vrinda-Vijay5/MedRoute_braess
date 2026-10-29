@@ -1,0 +1,476 @@
+{
+  "live_experiment": "cbdr_route_selected",
+  "live_prevention_verified": false,
+  "failure_recovery": {
+    "enabled": true,
+    "failed_link": [
+      "s1-eth2",
+      "s2-eth1"
+    ],
+    "selected_route": "recovery",
+    "connectivity": {
+      "received": 3,
+      "probe": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\r\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=8.31 ms\r\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=7.84 ms\r\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=8.07 ms\r\n\r\n--- 10.0.0.2 ping statistics ---\r\n3 packets transmitted, 3 received, 0% packet loss, time 2000ms\r\nrtt min/avg/max/mdev = 7.838/8.072/8.307/0.191 ms\r\n"
+    },
+    "flows_verified": true,
+    "complete": true
+  },
+  "dataset_used": true,
+  "dataset_profile_version": "unspecified",
+  "dataset_profile_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+  "shortcut_verdict": "not_run",
+  "method_policy": {
+    "selected_method": "M4",
+    "method_id": "M4",
+    "name": "criticality_aware_braess_detection_routing",
+    "initial_route": "baseline",
+    "qos_enabled": true,
+    "candidate_evaluation_enabled": true,
+    "braess_guard_enabled": true,
+    "available_for_research_comparison": true,
+    "unavailable_reason": null
+  },
+  "all_flow_rules_verified": true,
+  "all_telemetry_complete": false,
+  "required_telemetry_complete": false,
+  "optional_telemetry": {
+    "candidate_evaluation_fairness": false,
+    "scenario_throughput_fairness": true,
+    "queue_occupancy": true
+  },
+  "optional_telemetry_complete": false,
+  "baseline_metrics": {
+    "complete": true,
+    "latency_ms": 148.0,
+    "jitter_ms": 23.425,
+    "packet_loss_pct": 0.0,
+    "cost": 4.028333333333333
+  },
+  "shortcut_metrics": null,
+  "prevention_metrics": null,
+  "route_decision": {
+    "repetition": 2,
+    "method": "M4",
+    "verdict": "inconclusive",
+    "classification": "inconclusive",
+    "original_classification": "inconclusive",
+    "selected_route": "baseline",
+    "reason": "CBDR retains the baseline because class EMERGENCY_ALARM cannot be evaluated: TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+    "reason_code": "INCOMPLETE_CLASS_TELEMETRY",
+    "evaluation": {
+      "algorithm": "CBDR",
+      "classification": "inconclusive",
+      "decision": "retain_baseline",
+      "reason_code": "INCOMPLETE_CLASS_TELEMETRY",
+      "explanation": "CBDR retains the baseline because class EMERGENCY_ALARM cannot be evaluated: TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+      "current_objective": null,
+      "candidate_objective": null,
+      "relative_change": null,
+      "current_network_cost_pct": 31.537704669898105,
+      "candidate_network_cost_pct": 19.950602281166383,
+      "class_evaluations": {
+        "EMERGENCY_ALARM": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EMERGENCY_ALARM",
+          "criticality_score": null,
+          "measurement_source": {
+            "current": null,
+            "candidate": null
+          },
+          "measurement_timestamps": {
+            "current": null,
+            "candidate": null
+          },
+          "measurement_ages_seconds": {
+            "current": null,
+            "candidate": null
+          },
+          "baseline_cost": null,
+          "candidate_cost": null,
+          "relative_change": null,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "inconclusive",
+          "decision": "retain_baseline",
+          "reason_code": "TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+          "explanation": "Candidate evaluation is inconclusive because current telemetry is stale or future measurement.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false
+        }
+      },
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": [],
+      "safe_route_exists": null,
+      "fairness": {
+        "status": "unavailable"
+      },
+      "route_installation_verified": true,
+      "route_installation_verification_status": "verified"
+    },
+    "structured_evaluation": {
+      "algorithm": "CBDR",
+      "classification": "inconclusive",
+      "decision": "retain_baseline",
+      "reason_code": "INCOMPLETE_CLASS_TELEMETRY",
+      "explanation": "CBDR retains the baseline because class EMERGENCY_ALARM cannot be evaluated: TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+      "current_objective": null,
+      "candidate_objective": null,
+      "relative_change": null,
+      "current_network_cost_pct": 31.537704669898105,
+      "candidate_network_cost_pct": 19.950602281166383,
+      "class_evaluations": {
+        "EMERGENCY_ALARM": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EMERGENCY_ALARM",
+          "criticality_score": null,
+          "measurement_source": {
+            "current": null,
+            "candidate": null
+          },
+          "measurement_timestamps": {
+            "current": null,
+            "candidate": null
+          },
+          "measurement_ages_seconds": {
+            "current": null,
+            "candidate": null
+          },
+          "baseline_cost": null,
+          "candidate_cost": null,
+          "relative_change": null,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "inconclusive",
+          "decision": "retain_baseline",
+          "reason_code": "TELEMETRY_STALE_OR_FUTURE_MEASUREMENT",
+          "explanation": "Candidate evaluation is inconclusive because current telemetry is stale or future measurement.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false
+        }
+      },
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": [],
+      "safe_route_exists": null,
+      "fairness": {
+        "status": "unavailable"
+      },
+      "route_installation_verified": true,
+      "route_installation_verification_status": "verified"
+    },
+    "metrics_used": {
+      "baseline": {
+        "cost": null,
+        "network_cost_pct": 31.537704669898105,
+        "fairness": 0.9999961124344657,
+        "profiles": {
+          "EMERGENCY_ALARM": {
+            "complete": true,
+            "latency_ms": 5.595000000000001,
+            "jitter_ms": 0.1299999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.456,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+            "complete": true,
+            "latency_ms": 5.505,
+            "jitter_ms": 0.13000000000000078,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 1.0,
+            "ping_packet_loss_pct": 0.0
+          },
+          "REAL_TIME_CLINICAL_VIDEO": {
+            "complete": true,
+            "latency_ms": 5.415,
+            "jitter_ms": 0.09000000000000075,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 21.7,
+            "ping_packet_loss_pct": 0.0
+          },
+          "EHR_TRANSACTIONS": {
+            "complete": true,
+            "latency_ms": 5.525,
+            "jitter_ms": 0.07000000000000028,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.894,
+            "ping_packet_loss_pct": 0.0
+          },
+          "MEDICAL_IMAGING": {
+            "complete": true,
+            "latency_ms": 5.375,
+            "jitter_ms": 0.1200000000000001,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 20.4,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CCTV_BACKGROUND": {
+            "complete": true,
+            "latency_ms": 5.335,
+            "jitter_ms": 0.1299999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 7.49,
+            "ping_packet_loss_pct": 0.0
+          }
+        }
+      },
+      "shortcut": {
+        "cost": null,
+        "network_cost_pct": 19.950602281166383,
+        "fairness": 0.9999960827573678,
+        "profiles": {
+          "EMERGENCY_ALARM": {
+            "complete": true,
+            "latency_ms": 7.975,
+            "jitter_ms": 0.22000000000000064,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.455,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+            "complete": true,
+            "latency_ms": 7.67,
+            "jitter_ms": 0.1200000000000001,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 1.0,
+            "ping_packet_loss_pct": 0.0
+          },
+          "REAL_TIME_CLINICAL_VIDEO": {
+            "complete": true,
+            "latency_ms": 7.43,
+            "jitter_ms": 0.08999999999999986,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 21.7,
+            "ping_packet_loss_pct": 0.0
+          },
+          "EHR_TRANSACTIONS": {
+            "complete": true,
+            "latency_ms": 7.859999999999999,
+            "jitter_ms": 0.15000000000000036,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.895,
+            "ping_packet_loss_pct": 0.0
+          },
+          "MEDICAL_IMAGING": {
+            "complete": true,
+            "latency_ms": 7.455,
+            "jitter_ms": 0.1299999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 20.4,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CCTV_BACKGROUND": {
+            "complete": true,
+            "latency_ms": 7.51,
+            "jitter_ms": 0.16999999999999993,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 7.49,
+            "ping_packet_loss_pct": 0.0
+          }
+        }
+      },
+      "current_objective": null,
+      "candidate_objective": null,
+      "relative_change": null,
+      "current_network_cost_pct": 31.537704669898105,
+      "candidate_network_cost_pct": 19.950602281166383,
+      "baseline_fairness": 0.9999961124344657,
+      "candidate_fairness": 0.9999960827573678,
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": []
+    },
+    "route_selection_verified": true,
+    "flows_verified": true,
+    "prevention_verified": false,
+    "controller_recorded": true
+  },
+  "decision_metrics_used": {
+    "baseline": {
+      "cost": null,
+      "network_cost_pct": 31.537704669898105,
+      "fairness": 0.9999961124344657,
+      "profiles": {
+        "EMERGENCY_ALARM": {
+          "complete": true,
+          "latency_ms": 5.595000000000001,
+          "jitter_ms": 0.1299999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.456,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "complete": true,
+          "latency_ms": 5.505,
+          "jitter_ms": 0.13000000000000078,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 1.0,
+          "ping_packet_loss_pct": 0.0
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "complete": true,
+          "latency_ms": 5.415,
+          "jitter_ms": 0.09000000000000075,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 21.7,
+          "ping_packet_loss_pct": 0.0
+        },
+        "EHR_TRANSACTIONS": {
+          "complete": true,
+          "latency_ms": 5.525,
+          "jitter_ms": 0.07000000000000028,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.894,
+          "ping_packet_loss_pct": 0.0
+        },
+        "MEDICAL_IMAGING": {
+          "complete": true,
+          "latency_ms": 5.375,
+          "jitter_ms": 0.1200000000000001,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 20.4,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CCTV_BACKGROUND": {
+          "complete": true,
+          "latency_ms": 5.335,
+          "jitter_ms": 0.1299999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 7.49,
+          "ping_packet_loss_pct": 0.0
+        }
+      }
+    },
+    "shortcut": {
+      "cost": null,
+      "network_cost_pct": 19.950602281166383,
+      "fairness": 0.9999960827573678,
+      "profiles": {
+        "EMERGENCY_ALARM": {
+          "complete": true,
+          "latency_ms": 7.975,
+          "jitter_ms": 0.22000000000000064,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.455,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "complete": true,
+          "latency_ms": 7.67,
+          "jitter_ms": 0.1200000000000001,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 1.0,
+          "ping_packet_loss_pct": 0.0
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "complete": true,
+          "latency_ms": 7.43,
+          "jitter_ms": 0.08999999999999986,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 21.7,
+          "ping_packet_loss_pct": 0.0
+        },
+        "EHR_TRANSACTIONS": {
+          "complete": true,
+          "latency_ms": 7.859999999999999,
+          "jitter_ms": 0.15000000000000036,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.895,
+          "ping_packet_loss_pct": 0.0
+        },
+        "MEDICAL_IMAGING": {
+          "complete": true,
+          "latency_ms": 7.455,
+          "jitter_ms": 0.1299999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 20.4,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CCTV_BACKGROUND": {
+          "complete": true,
+          "latency_ms": 7.51,
+          "jitter_ms": 0.16999999999999993,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 7.49,
+          "ping_packet_loss_pct": 0.0
+        }
+      }
+    },
+    "current_objective": null,
+    "candidate_objective": null,
+    "relative_change": null,
+    "current_network_cost_pct": 31.537704669898105,
+    "candidate_network_cost_pct": 19.950602281166383,
+    "baseline_fairness": 0.9999961124344657,
+    "candidate_fairness": 0.9999960827573678,
+    "baseline_hard_violations": [],
+    "candidate_hard_violations": []
+  },
+  "selected_route": "baseline",
+  "scenario_repetitions": {
+    "normal_load": 2,
+    "emergency_surge": 2,
+    "mixed_priority_congestion": 2
+  },
+  "catalog_profile_matrix": {
+    "profiles": 6,
+    "complete": true,
+    "file": "profile_matrix.json",
+    "skipped": false,
+    "status": "complete"
+  },
+  "braess_validation": {
+    "status": "not_run",
+    "passed": false,
+    "not_applicable": true
+  },
+  "braess_repetitions": 0,
+  "scenario_validation_passed": true,
+  "scenario_validation_errors": [],
+  "scenario_statistics_file": "scenario_results.json",
+  "braess_prevention_verified_repetitions": 0,
+  "final_repeated_route": "baseline",
+  "final_route_verified": true,
+  "controller_metrics_published": true,
+  "per_class_metrics_complete": true,
+  "link_utilization_complete": true,
+  "final_qos_enabled": true,
+  "final_qos_verified": true,
+  "evidence_database": "evidence.sqlite"
+}

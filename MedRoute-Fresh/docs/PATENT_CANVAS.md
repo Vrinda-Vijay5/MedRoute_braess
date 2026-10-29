@@ -29,8 +29,20 @@ This is an engineering canvas, not a patentability opinion. Prior-art search,
 claim drafting, inventorship, novelty, and jurisdictional review remain future
 legal work.
 
-## Enablement evidence
+## Prototype evidence
 
-The WSL run in `artifacts/wsl-live-20261022T1858Z/` demonstrates the workflow
-with Mininet, Ryu, OpenFlow dumps, receiver-side iperf metrics, and failure
-recovery.
+The latest WSL2 smoke pilot is `artifacts/pilot-20261029T142341Z/`. It records
+five traffic scenarios with two repetitions each, a seeded shortcut comparison,
+flow-rule verification, receiver-side throughput and route probes, and verified
+failure recovery. Required telemetry is complete, but optional candidate
+fairness telemetry is missing. This is engineering evidence for a prototype;
+it does not establish novelty, inventorship, patentability, clinical value, or
+production performance.
+
+## Open disclosure work
+
+Before filing, document the actual inventors and contribution dates, search
+relevant prior art, identify the implementation details that are new, and have
+counsel review claim scope and jurisdiction. Preserve dated source revisions
+and experiment manifests as supporting records. Do not treat this canvas as a
+claim set or legal opinion.

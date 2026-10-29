@@ -12,10 +12,10 @@ The saved historical WSL bundle is evidence from its dated code and environment.
 |---|---|---|
 | M1 shortest path | Static baseline route with QoS disabled | Available as a prototype baseline; not generalized shortest-path recomputation |
 | M2 QoS aware | Baseline route with current four queue classes | Available as a prototype policy |
-| M3 congestion aware without Braess guard | No distinct congestion-based route selector | Unavailable; must not be substituted with M2 or the guard |
+| M3 congestion aware without Braess guard | Measures baseline, alternate, and shortcut conditions; selects the route with minimum measured bottleneck utilization and does not invoke CBDR | Implemented and unit-tested in the runner; current changes still need live verification. This is an observed utilization selector, not a generalized path optimizer. |
 | M4 CBDR | Aggregate candidate-cost guard and standalone class evaluator | Partial prototype; not a completed live class-aware method because candidate measurements are not per-class and hard constraints are not validated |
 
-Current scenarios cover normal load, mixed-priority/background congestion, candidate route comparison, and primary-link recovery. The runner does not yet implement emergency surge, stale-telemetry live scenario, load/capacity sweep, topology scaling, five controlled ablations, execution-order randomization, or checkpoint/resume.
+Current scenarios cover normal load, an emergency-surge workload plan, mixed-priority/background congestion, candidate route comparison, and primary-link recovery. The emergency-surge plan is implemented in the runner but has no dedicated live artifact verified in this checkout. The live Mininet topology remains the fixed four-switch diamond with three link-condition presets. The dashboard playground supports a generalized simulation graph, separate from Mininet. Stale-telemetry live scenarios, load/capacity sweeps, live topology scaling, five controlled ablations, execution-order randomization, and checkpoint/resume are not implemented.
 
 ## Metrics and statistics
 

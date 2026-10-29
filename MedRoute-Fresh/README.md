@@ -24,7 +24,7 @@ Current implementation status is best described as:
 - Implemented and inspected: deterministic controller logic, QoS configuration, topology, analysis helpers, scenario runner, evidence outputs, and tests.
 - Verified by saved evidence: harmful-shortcut prevention on the historical WSL run in `artifacts/wsl-final-20261023T0015Z/`.
 - Verified by analytical model: Braess paradox example in `artifacts/analytical-review-20261028/`.
-- Current offline validation: the latest Python run in this session executed 69 tests with 0 failures and skipped 8 Ryu-dependent tests because Ryu is not installed in this Windows interpreter. A prior project validation recorded 25 Node tests passing; that Node result was not rerun in this session. A fresh WSL2 pilot (`artifacts/research-pilot-20261029T080424Z/`) completed two repetitions of each of the four existing scenarios, with complete scenario validation and successful link-failure recovery. Across its two shortcut comparisons, one decision was neutral and one harmful; the harmful candidate was rejected and its baseline forwarding was verified. This deterministic two-repeat pilot is smoke evidence, not an independent-seed study. `data/CICIoMT2024/raw/healthcare_traffic_profiles.csv` is the six-row synthetic healthcare workload catalog in this checkout; it is not a raw CICIoMT packet trace.
+- Current offline validation on 2026-10-29: Python passed 83/83 after the manifest-runtime fix and Node passed 28/28. Live pilot `artifacts/pilot-20261029T142341Z/` completed five scenarios × two repetitions with validation passing, all flow rules verified, all required telemetry complete, successful 3/3 failure-recovery probes, and six complete profile records. Its two shortcut decisions were one beneficial and one neutral; no harmful shortcut was observed. Optional candidate-evaluation fairness telemetry is unavailable, so all telemetry is not marked complete. Stage 6 tables/plots and the refreshed checksums are saved with the run. This is a single-seed smoke pilot, not a matched M1-M4 study. The earlier pilot `artifacts/research-pilot-20261029T080424Z/` remains separate historical evidence. `data/CICIoMT2024/raw/healthcare_traffic_profiles.csv` is a six-row synthetic healthcare workload catalog, not a raw CICIoMT packet trace.
 - Not claimed as live clinical validation: no hospital, patient, or live-production deployment was conducted.
 - Needs verification before reuse: any newer runner or data-path change that has not been exercised against live infrastructure.
 
@@ -34,13 +34,14 @@ Current implementation status is best described as:
 |---|---|---|
 | M1 shortest-path baseline | Implemented offline | Baseline route with QoS, candidate evaluation, and Braess guard disabled. |
 | M2 QoS-aware routing | Implemented offline | Baseline route with QoS enabled and candidate evaluation disabled. |
-| M3 congestion-aware routing | Implemented offline; live verification pending | Selects among measured route options using path congestion without the CBDR guard. |
-| M4 CBDR routing | Implemented offline; live verification pending | Evaluates named catalog profiles, hard objectives, fairness, and measured network cost before selecting a route. |
+| M3 congestion-aware routing | Implemented in the live runner; current changes not live-verified | Measures baseline, alternate, and shortcut conditions and selects the lowest measured bottleneck-utilization score without the CBDR guard. |
+| M4 CBDR routing | Runner path implemented; current live verification pending | Evaluates named catalog profiles and measured network cost with configured constraints and fairness checks; live inputs and current changes still require validation. |
 | Candidate telemetry and barriers | Implemented; historical live evidence exists | Freshness/completeness checks, controller decision recording, flow verification, and barrier-confirmed installation are represented. |
 | Queue occupancy | Implemented with explicit unavailable state | Uses `tc` class backlog counters; missing counters remain incomplete rather than fabricated. |
 | Seeded workloads | Implemented | `--seed` is recorded and deterministically perturbs synthetic offered rates. |
 | Ablation controls | Implemented in runner CLI | M4 supports disabling Braess detection, priority handling, or candidate-link evaluation; matched live ablation results are pending. |
 | Four-method matched study | Pending | No saved matrix comparing M1–M4 under identical seeds, topology, workload, and repetitions has been verified. |
+| Topology playground | Simulation-only, implemented | Dashboard graph editing, node/link removal, JSON import/export, topology validation, link toggles, and disconnected-route handling use a separate in-memory graph; this does not configure Mininet. |
 | Clinical or production validation | Not implemented / not claimed | The project is a networking prototype, not a medical validation study. |
 
 ## Architecture and implemented components
@@ -298,7 +299,7 @@ This is a mathematical Wardrop demonstration of a Braess paradox scenario; it re
 
 - full live replay / package setup on every machine
 - explicit validation of all newer method-policy branches under live Ryu/Mininet conditions
-- distinct M3 congestion-aware routing, complete live M4 integration, ablations, seed sweeps, and resume support
+- matched live validation for M1-M4, ablations, multi-seed sweeps, and resume support
 - metadata provenance cleanup when the preferred profile file is absent
 - distinction between analytical results and live measured results in every user-facing explanation
 - any future ML component would need a dedicated, leakage-safe dataset and separate validation plan; it is not part of the current implementation
@@ -313,6 +314,8 @@ The repository should be treated as an offline + live hybrid prototype. The work
 4. inspect saved `summary.json`, `scenario_results.json`, and `controller.jsonl` before making claims
 
 Use the controlled pilot command in `docs/reproducibility.md` only in the configured WSL environment. This README does not claim a live run for code changes unless a new run directory contains complete measurements and forwarding evidence.
+
+Start the evidence dashboard from the repository root with `npm run dashboard`, then open `http://127.0.0.1:8765`. The simulation-only topology editor is at `http://127.0.0.1:8765/playground`; its in-memory graph does not change Mininet or persist after the dashboard server stops. Run the Node checks with `npm test`. In the configured WSL environment, run Python checks with `PYTHONDONTWRITEBYTECODE=1 /home/subiw/ryu-env/bin/python -m unittest discover -s test -v`.
 
 ## Summary
 

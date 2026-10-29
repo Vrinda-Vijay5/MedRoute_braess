@@ -277,5 +277,42 @@ class LiveMetricTests(unittest.TestCase):
         self.assertFalse(result["all_telemetry_complete"])
 
 
+    def test_required_telemetry_rejects_missing_or_incomplete_stages(self):
+        scenarios = {}
+        repetitions = {}
+
+        missing = LIVE.summarize_telemetry_completeness(
+            [], scenarios, repetitions)
+        self.assertFalse(missing["required_telemetry_complete"])
+
+        incomplete = LIVE.summarize_telemetry_completeness(
+            [{"complete": False, "metrics": {"complete": False}}],
+            scenarios, repetitions)
+        self.assertFalse(incomplete["required_telemetry_complete"])
+
+        complete = LIVE.summarize_telemetry_completeness(
+            [{"complete": True, "metrics": None}],
+            scenarios, repetitions)
+        self.assertTrue(complete["required_telemetry_complete"])
+
+    def test_repeated_decisions_reject_incomplete_harmful_prevention(self):
+        trials = [{
+            "repetition": 1,
+            "complete": True,
+            "decision": {
+                "verdict": "harmful",
+                "controller_recorded": True,
+                "route_selection_verified": True,
+                "prevention_verified": False,
+            },
+        }]
+
+        summary = LIVE.summarize_repeated_decisions(trials)
+        self.assertFalse(summary["passed"])
+        self.assertEqual(summary["harmful_candidate_count"], 1)
+        self.assertEqual(summary["prevention_verified_count"], 0)
+        self.assertEqual(summary["live_experiment"], "prevention_failed")
+
+
 if __name__ == "__main__":
     unittest.main()

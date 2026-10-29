@@ -2,6 +2,7 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const { DEFAULT_TOPOLOGY, validateTopology, shortestPath, connectedComponents } = require("../src/topology");
 const root = path.resolve(__dirname, "..");
 const artifacts = path.join(root, "artifacts");
 const mime = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".log": "text/plain; charset=utf-8", ".png": "image/png" };
@@ -58,10 +59,43 @@ function latestProfileMatrixRun() {
     Object.fromEntries(candidates.map(x => [x.name, x.time])))[0] || null;
 }
 function createServer() {
-  return http.createServer((req, res) => {
-    let pathname;
-    try { pathname = decodeURIComponent(new URL(req.url, "http://localhost").pathname); }
+  let simulationTopology = JSON.parse(JSON.stringify(DEFAULT_TOPOLOGY));
+  return http.createServer(async (req, res) => {
+    let pathname, requestUrl;
+    try { requestUrl = new URL(req.url, "http://localhost"); pathname = decodeURIComponent(requestUrl.pathname); }
     catch { res.writeHead(400).end("Bad request"); return; }
+    if (pathname === "/api/simulation/topology") {
+      if (req.method === "GET") {
+        return json(res, { mode: "simulation", topology: simulationTopology,
+          components: connectedComponents(simulationTopology) });
+      }
+      if (req.method !== "PUT") { res.writeHead(405).end("Use GET or PUT"); return; }
+      try {
+        let body = "";
+        for await (const chunk of req) {
+          body += chunk;
+          if (body.length > 128 * 1024) { res.writeHead(413).end("Topology payload too large"); return; }
+        }
+        const parsed = JSON.parse(body);
+        const result = validateTopology(parsed);
+        if (!result.valid) return jsonWithStatus(res, 400, { error: "invalid topology", details: result.errors });
+        simulationTopology = result.topology;
+        return json(res, { mode: "simulation", topology: simulationTopology,
+          components: connectedComponents(simulationTopology) });
+      } catch (error) {
+        return jsonWithStatus(res, 400, { error: "invalid JSON", details: [error.message] });
+      }
+    }
+    if (pathname === "/api/simulation/path") {
+      if (req.method !== "GET") { res.writeHead(405).end("Read only"); return; }
+      try {
+        const route = shortestPath(simulationTopology, requestUrl.searchParams.get("source"),
+          requestUrl.searchParams.get("target"));
+        return json(res, { mode: "simulation", route, reachable: route !== null });
+      } catch (error) {
+        return jsonWithStatus(res, 400, { error: "invalid route request", details: [error.message] });
+      }
+    }
     if (req.method !== "GET") { res.writeHead(405).end("Read only"); return; }
     if (pathname === "/api/runs") {
       const names = fs.readdirSync(artifacts, { withFileTypes: true }).filter(x => x.isDirectory() && fs.existsSync(path.join(artifacts, x.name, "summary.json"))).map(x => x.name);
@@ -87,10 +121,28 @@ function createServer() {
       res.writeHead(200, { "Content-Type": mime[path.extname(target)] || "application/octet-stream" }); fs.createReadStream(target).pipe(res); return;
     }
     const relative = pathname === "/" ? "index.html" : pathname.replace(/^\//, "");
+    if (relative === "playground") {
+      const playground = path.join(root, "dashboard", "playground.html");
+      if (!fs.existsSync(playground)) { res.writeHead(404).end("Not found"); return; }
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      fs.createReadStream(playground).pipe(res);
+      return;
+    }
     const target = path.resolve(root, "dashboard", relative);
     if (path.dirname(target) !== path.resolve(root, "dashboard") || !fs.existsSync(target) || !fs.statSync(target).isFile()) { res.writeHead(404).end("Not found"); return; }
+    if (relative === "index.html") {
+      const page = fs.readFileSync(target, "utf8").replace("</header>",
+        '</header><p class="run-note"><a href="/playground">Open the simulation-only topology playground</a></p>');
+      res.writeHead(200, { "Content-Type": mime[".html"] });
+      res.end(page);
+      return;
+    }
     res.writeHead(200, { "Content-Type": mime[path.extname(target)] || "application/octet-stream" }); fs.createReadStream(target).pipe(res);
   });
+}
+function jsonWithStatus(res, status, value) {
+  res.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
+  res.end(JSON.stringify(value));
 }
 if (require.main === module) createServer().listen(8765, "127.0.0.1", () => console.log("MedRoute dashboard: http://127.0.0.1:8765"));
 module.exports = { createServer, sortRunNames, dashboardScenarioResults };
