@@ -34,7 +34,8 @@ test("dashboard serves its page and reads saved run artifacts", async t => {
   if (evidence.files.includes("scenario_results.json")) {
     assert.equal(typeof evidence.scenario_results.validation_passed, "boolean");
     const firstScenario = Object.values(evidence.scenario_results.scenarios)[0];
-    assert.equal(firstScenario.length, 3);
+    assert.equal(firstScenario.length, evidence.scenario_results.required_repetitions);
+    assert.ok(firstScenario.length >= 2);
     assert.equal("raw_process_output" in firstScenario[0], false);
     if (evidence.scenario_results.braess_shortcut_repetitions.length) {
       const decision = evidence.scenario_results.braess_shortcut_repetitions[0].decision;

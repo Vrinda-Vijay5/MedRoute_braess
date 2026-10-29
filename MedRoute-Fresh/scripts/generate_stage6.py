@@ -14,28 +14,40 @@ METRICS = {
     "packet_loss_pct": ("Per class packet loss across scenarios", "Packet loss (%)"),
     "jitter_ms": ("Per class jitter across scenarios", "Jitter (ms)"),
 }
+_T_975 = (None, 12.706, 4.303, 3.182, 2.776, 2.571, 2.447, 2.365,
+          2.306, 2.262, 2.228, 2.201, 2.179, 2.160, 2.145, 2.131,
+          2.120, 2.110, 2.101, 2.093, 2.086, 2.080, 2.074, 2.069,
+          2.064, 2.060, 2.056, 2.052, 2.048, 2.045, 2.042)
 
 
 def metric_value(row, traffic_class, field):
     item = row.get("per_class_metrics", {}).get(traffic_class, {})
     value = item.get("throughput_mbps") if field == "throughput_mbps" else \
         (item.get("metrics") or {}).get(field)
-    return value if isinstance(value, (int, float)) and math.isfinite(value) else None
+    if (not isinstance(value, (int, float)) or isinstance(value, bool) or
+            not math.isfinite(value) or value < 0 or
+            (field == "packet_loss_pct" and value > 100)):
+        return None
+    return value
 
 
 def confidence_interval_95(values):
     if len(values) < 2:
         return None
     mean = statistics.mean(values)
-    margin = 1.96 * statistics.stdev(values) / math.sqrt(len(values))
+    degrees = len(values) - 1
+    critical = _T_975[degrees] if degrees < len(_T_975) else 1.96
+    margin = critical * statistics.stdev(values) / math.sqrt(len(values))
     return [mean - margin, mean + margin]
 
 
 def calculate_scenario_statistics(results, classes):
+    class_profiles = classes if isinstance(classes, dict) else {}
+    class_names = list(class_profiles) if class_profiles else list(classes)
     output = {}
     for scenario, repetitions in results.get("scenarios", {}).items():
         output[scenario] = {}
-        for traffic_class in classes:
+        for traffic_class in class_names:
             output[scenario][traffic_class] = {}
             for field in METRICS:
                 values = [value for row in repetitions
@@ -48,6 +60,75 @@ def calculate_scenario_statistics(results, classes):
                 if len(values) > 1:
                     statistic["confidence_interval_95"] = confidence_interval_95(values)
                 output[scenario][traffic_class][field] = statistic
+            profile = class_profiles.get(traffic_class, {})
+            objectives = profile.get("objectives", {}) if isinstance(profile, dict) else {}
+            if not isinstance(objectives, dict):
+                objectives = {}
+            raw_probes = []
+            for repetition in repetitions:
+                per_class = repetition.get("per_class_metrics", {}).get(traffic_class, {})
+                probes = per_class.get("ping_samples")
+                if isinstance(probes, list):
+                    raw_probes.extend(probes)
+            valid_rtts = [probe["rtt_ms"] for probe in raw_probes
+                if isinstance(probe, dict) and
+                isinstance(probe.get("rtt_ms"), (int, float)) and
+                not isinstance(probe.get("rtt_ms"), bool) and
+                math.isfinite(probe["rtt_ms"]) and probe["rtt_ms"] >= 0]
+            valid_rtts.sort()
+            def valid_target(key, low, high=None):
+                value = objectives.get(key)
+                if (not isinstance(value, (int, float)) or isinstance(value, bool) or
+                        not math.isfinite(value) or value < low or
+                        (high is not None and value > high)):
+                    return None
+                return value
+            deadline = valid_target("delay_deadline_ms", 0)
+            if deadline == 0:
+                deadline = None
+            max_loss = valid_target("max_packet_loss_pct", 0, 100)
+            min_reliability = valid_target("min_reliability_pct", 0, 100)
+            p95 = valid_rtts[max(0, math.ceil(.95 * len(valid_rtts)) - 1)] if valid_rtts else None
+            p99 = valid_rtts[max(0, math.ceil(.99 * len(valid_rtts)) - 1)] if valid_rtts else None
+            misses = (len(raw_probes) - sum(rtt <= deadline for rtt in valid_rtts)
+                      if deadline is not None and raw_probes else None)
+            loss_stats = output[scenario][traffic_class]["packet_loss_pct"]
+            loss_complete = bool(repetitions) and loss_stats["n"] == len(repetitions)
+            mean_loss = loss_stats["mean"] if loss_stats["n"] else None
+            delivery = 100 - mean_loss if loss_complete and mean_loss is not None else None
+            output[scenario][traffic_class]["tail_latency"] = {
+                "sample_count": len(valid_rtts), "probe_count": len(raw_probes),
+                "p95_ms": p95, "p99_ms": p99, "deadline_ms": deadline,
+                "deadline_miss_count": misses,
+                "deadline_miss_rate_pct": 100 * misses / len(raw_probes)
+                    if misses is not None else None,
+                "delay_target_met": (misses == 0 if misses is not None else None),
+                "mean_packet_loss_pct": mean_loss,
+                "loss_observation_count": loss_stats["n"],
+                "max_packet_loss_pct": max_loss,
+                "packet_loss_target_met": (mean_loss <= max_loss
+                    if loss_complete and mean_loss is not None and max_loss is not None else None),
+                "receiver_delivery_reliability_pct": delivery,
+                "min_reliability_pct": min_reliability,
+                "reliability_target_met": (delivery >= min_reliability
+                    if delivery is not None and min_reliability is not None else None),
+                "target_source": objectives.get("target_source", "unspecified")}
+        rates = [output[scenario][name]["throughput_mbps"]["mean"]
+                 for name in class_names]
+        fairness_complete = bool(repetitions) and bool(class_names) and all(
+            output[scenario][name]["throughput_mbps"]["n"] == len(repetitions) and
+            output[scenario][name]["throughput_mbps"]["mean"] is not None
+            for name in class_names)
+        denominator = len(rates) * sum(rate * rate for rate in rates
+                                      if rate is not None) if rates else 0
+        output[scenario]["_throughput_fairness"] = {
+            "metric": "jain_fairness_index", "n_classes": sum(
+                output[scenario][name]["throughput_mbps"]["n"] == len(repetitions)
+                and bool(repetitions) for name in class_names),
+            "expected_classes": len(class_names),
+            "complete": fairness_complete and denominator > 0,
+            "jain_index": (sum(rates) ** 2 / denominator)
+                if fairness_complete and denominator > 0 else None}
     return output
 
 
@@ -69,7 +150,7 @@ def generate(evidence_dir):
     results = json.loads(results_path.read_text(encoding="utf-8"))
     class_config = config.get("traffic_classes", {}).get("classes", {})
     classes = list(class_config)
-    statistics_by_scenario = calculate_scenario_statistics(results, classes)
+    statistics_by_scenario = calculate_scenario_statistics(results, class_config)
 
     try:
         import matplotlib
@@ -111,8 +192,9 @@ def generate(evidence_dir):
                "Loss %", "Jitter ms"]
     lines = ["# Stage 6 experiment summary", "",
              "Mean ± sample standard deviation and approximate 95% normal confidence "
-             "intervals, calculated from saved scenario repetitions. Missing measurements "
-             "are shown as unavailable.", "",
+             "intervals using Student-t critical values through 30 degrees of freedom "
+             "and a normal approximation above that; calculated from saved run-level repetitions. "
+             "Missing measurements are shown as unavailable.", "",
              "| " + " | ".join(columns) + " |",
              "|" + "|".join(["---"] * len(columns)) + "|"]
     suffix = {"latency_ms": " ms", "throughput_mbps": " Mbps",
@@ -124,6 +206,31 @@ def generate(evidence_dir):
                 format_stat(metrics[field], suffix[field]) for field in
                 ("latency_ms", "throughput_mbps", "packet_loss_pct", "jitter_ms")]
             lines.append("| " + " | ".join(cells) + " |")
+        lines.extend(["", "### Tail latency and configured service objectives", "",
+                      "Tail statistics use nearest-rank per-packet ICMP RTT probes, not application payload latency. Receiver delivery is derived from measured UDP receiver loss. Objective values are prototype policy assumptions, not medical standards or service guarantees.", "",
+                      "| Class | RTT probes | p95 RTT | p99 RTT | Deadline misses | Delay target | Delivery | Reliability target | Mean loss | Loss target |", "|---|---:|---:|---:|---:|---|---:|---|---:|---|"])
+        for traffic_class in classes:
+            def cell(value, suffix=""):
+                return "Unavailable" if value is None else "{:.3f}{}".format(value, suffix)
+            tail = statistics_by_scenario[scenario][traffic_class]["tail_latency"]
+            def state(value):
+                return "Unavailable" if value is None else "met" if value else "missed"
+            lines.append("| {} | {}/{} | {} | {} | {}/{} ({}) | {} | {} | {} | {} | {} |".format(
+                traffic_class, tail["sample_count"], tail["probe_count"],
+                cell(tail.get("p95_ms"), " ms"),
+                cell(tail.get("p99_ms"), " ms"),
+                tail.get("deadline_miss_count") if tail.get("deadline_miss_count") is not None else "Unavailable",
+                tail.get("probe_count", 0), cell(tail.get("deadline_miss_rate_pct"), "%"),
+                state(tail.get("delay_target_met")),
+                cell(tail.get("receiver_delivery_reliability_pct"), "%"),
+                state(tail.get("reliability_target_met")),
+                cell(tail.get("mean_packet_loss_pct"), "%"),
+                state(tail.get("packet_loss_target_met"))))
+        fairness = statistics_by_scenario[scenario]["_throughput_fairness"]
+        lines.extend(["", "Jain throughput fairness index: {} ({}/{} classes with complete throughput).".format(
+            "Unavailable" if fairness.get("jain_index") is None else
+            "{:.4f}".format(fairness["jain_index"]), fairness.get("n_classes", 0),
+            fairness.get("expected_classes", 0)), ""])
     if config.get("dataset_used") is True:
         dataset = config.get("dataset_workload", {})
         scenario_policy = config.get("scenario_workload", {})

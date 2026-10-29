@@ -17,7 +17,8 @@ LIVE_SPEC.loader.exec_module(LIVE)
 
 class ExperimentMethodTests(unittest.TestCase):
     def test_available_methods_returns_stable_method_ids(self):
-        self.assertEqual(MODULE.available_methods(), ("M1", "M2", "M3"))
+        self.assertEqual(MODULE.available_methods(), ("M1", "M2", "M3", "M4"))
+        self.assertEqual(MODULE.defined_methods(), ("M1", "M2", "M3", "M4"))
 
     def test_m1_is_static_baseline_without_qos_or_guard(self):
         method = MODULE.get_method("M1")
@@ -27,6 +28,7 @@ class ExperimentMethodTests(unittest.TestCase):
         self.assertFalse(method.qos_enabled)
         self.assertFalse(method.candidate_evaluation_enabled)
         self.assertFalse(method.braess_guard_enabled)
+        self.assertTrue(method.available)
 
     def test_m2_enables_qos_without_candidate_evaluation_or_guard(self):
         method = MODULE.get_method("M2")
@@ -36,19 +38,28 @@ class ExperimentMethodTests(unittest.TestCase):
         self.assertTrue(method.qos_enabled)
         self.assertFalse(method.candidate_evaluation_enabled)
         self.assertFalse(method.braess_guard_enabled)
+        self.assertTrue(method.available)
 
-    def test_m3_enables_qos_candidate_evaluation_and_guard(self):
+    def test_m3_congestion_aware_method_has_live_selector(self):
         method = MODULE.get_method("M3")
         self.assertEqual(method.method_id, "M3")
-        self.assertEqual(method.name, "qos_braess_guard")
-        self.assertEqual(method.initial_route, "baseline")
-        self.assertTrue(method.qos_enabled)
+        self.assertEqual(method.name, "measured_path_congestion_aware_without_braess_guard")
+        self.assertTrue(method.available)
+        self.assertEqual(tuple(MODULE.build_method_scenario_plan("M3")),
+                         ("normal_load", "emergency_surge", "mixed_priority_congestion"))
+
+    def test_m4_has_profile_tagged_live_candidate_evaluation(self):
+        method = MODULE.get_method("M4")
+        self.assertEqual(method.name, "criticality_aware_braess_detection_routing")
+        self.assertTrue(method.available)
         self.assertTrue(method.candidate_evaluation_enabled)
         self.assertTrue(method.braess_guard_enabled)
+        self.assertEqual(tuple(MODULE.build_method_scenario_plan("M4")),
+                         ("normal_load", "emergency_surge", "mixed_priority_congestion"))
 
     def test_unknown_method_id_raises_clear_value_error(self):
         with self.assertRaisesRegex(ValueError, "unknown experiment method"):
-            MODULE.get_method("M4")
+            MODULE.get_method("M5")
 
     def test_method_policy_is_immutable(self):
         method = MODULE.get_method("M1")
@@ -65,18 +76,19 @@ class ExperimentMethodTests(unittest.TestCase):
 
 
     def test_method_scenario_plan_keeps_policy_fixed(self):
-        for method_id, expected_qos in (("M1", False), ("M2", True), ("M3", True)):
+        for method_id, expected_qos in (("M1", False), ("M2", True), ("M3", True), ("M4", True)):
             with self.subTest(method=method_id):
                 plan = MODULE.build_method_scenario_plan(method_id)
-                self.assertEqual(tuple(plan), ("normal_load", "heavy_background"))
+                self.assertEqual(tuple(plan), ("normal_load", "emergency_surge", "mixed_priority_congestion"))
                 self.assertEqual(plan["normal_load"]["qos_enabled"], expected_qos)
-                self.assertEqual(plan["heavy_background"]["qos_enabled"], expected_qos)
+                self.assertEqual(plan["mixed_priority_congestion"]["qos_enabled"], expected_qos)
                 self.assertFalse(plan["normal_load"]["heavy_background"])
-                self.assertTrue(plan["heavy_background"]["heavy_background"])
+                self.assertTrue(plan["emergency_surge"]["emergency_surge"])
+                self.assertTrue(plan["mixed_priority_congestion"]["heavy_background"])
 
     def test_method_scenario_plan_rejects_unknown_method(self):
         with self.assertRaisesRegex(ValueError, "unknown experiment method"):
-            MODULE.build_method_scenario_plan("M4")
+            MODULE.build_method_scenario_plan("M5")
 
     def test_default_runner_plan_preserves_existing_scenario_behavior(self):
         self.assertEqual(LIVE.resolve_method_plan(), LIVE.SCENARIO_PLAN)
@@ -85,6 +97,7 @@ class ExperimentMethodTests(unittest.TestCase):
             "class_prioritization_no_congestion",
             "heavy_background_no_prioritization",
             "heavy_background_with_prioritization",
+            "emergency_surge",
         ])
 
     def test_method_policy_summary_and_plan_are_policy_specific(self):
@@ -94,8 +107,8 @@ class ExperimentMethodTests(unittest.TestCase):
         self.assertFalse(summary["braess_guard_enabled"])
         plan = LIVE.resolve_method_plan("M2")
         self.assertEqual(plan["normal_load"]["qos_enabled"], True)
-        self.assertEqual(plan["heavy_background"]["heavy_background"], True)
-        self.assertEqual(plan["heavy_background"]["qos_enabled"], True)
+        self.assertEqual(plan["mixed_priority_congestion"]["heavy_background"], True)
+        self.assertEqual(plan["mixed_priority_congestion"]["qos_enabled"], True)
 
     def test_qos_restore_helper_tracks_requested_policy(self):
         calls = []
@@ -148,9 +161,9 @@ class ExperimentMethodTests(unittest.TestCase):
             "catalog profile broken has incomplete live execution or forwarding evidence"
         ])
 
-    def test_m3_catalog_matrix_incomplete_entries_fail_validation(self):
+    def test_catalog_matrix_incomplete_entries_fail_validation(self):
         matrix_summary, validation_errors = LIVE.catalog_matrix_validation(
-            "M3", [{"complete": False, "profile": "profile_1"}])
+            "M2", [{"complete": False, "profile": "profile_1"}])
         self.assertFalse(matrix_summary["skipped"])
         self.assertEqual(validation_errors, [
             "catalog profile profile_1 has incomplete live execution or forwarding evidence"

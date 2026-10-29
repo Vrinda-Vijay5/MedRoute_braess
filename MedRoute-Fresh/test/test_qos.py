@@ -1,4 +1,5 @@
 import importlib.util
+import copy
 import pathlib
 import subprocess
 import unittest
@@ -20,6 +21,18 @@ class QosTests(unittest.TestCase):
                   "ICU": {**CLASSES["classes"]["ICU"], "tcp_port": 5101}}}
         with self.assertRaisesRegex(ValueError, "ports must be unique"):
             QOS.validate_classes(invalid)
+
+    def test_service_objectives_reject_malformed_or_out_of_range_values(self):
+        for key, value in (("delay_deadline_ms", float("nan")),
+                           ("delay_deadline_ms", 0),
+                           ("max_packet_loss_pct", 101),
+                           ("min_reliability_pct", -1),
+                           ("max_packet_loss_pct", "0.1")):
+            invalid = copy.deepcopy(CLASSES)
+            invalid["classes"]["ECG"]["objectives"][key] = value
+            with self.subTest(key=key, value=value):
+                with self.assertRaisesRegex(ValueError, "objectives"):
+                    QOS.validate_classes(invalid)
 
     def test_rules_cover_service_ports_dscp_and_conservative_default(self):
         rules = QOS.flow_specs(ROUTES, CLASSES)

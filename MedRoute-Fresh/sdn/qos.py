@@ -1,5 +1,6 @@
 """Pure helpers for deterministic MedRoute class rules and OVS HTB queues."""
 import json
+import math
 import subprocess
 from pathlib import Path
 
@@ -57,6 +58,23 @@ def validate_classes(config):
             value = profile.get(key)
             if not isinstance(value, (int, float)) or not 0 <= value <= 1:
                 raise ValueError("{}.{} must be between 0 and 1".format(name, key))
+        objectives = profile.get("objectives", {})
+        if not isinstance(objectives, dict):
+            raise ValueError("{}.objectives must be an object".format(name))
+        for key in ("delay_deadline_ms", "max_packet_loss_pct", "min_reliability_pct"):
+            if key not in objectives:
+                continue
+            value = objectives[key]
+            if (isinstance(value, bool) or not isinstance(value, (int, float)) or
+                    not math.isfinite(value)):
+                raise ValueError("{}.objectives.{} must be finite numeric".format(name, key))
+            upper = 100 if key != "delay_deadline_ms" else float("inf")
+            lower_ok = value > 0 if key == "delay_deadline_ms" else 0 <= value <= upper
+            if not lower_ok:
+                raise ValueError("{}.objectives.{} is outside its valid range".format(name, key))
+        source = objectives.get("target_source")
+        if source is not None and (not isinstance(source, str) or not source.strip()):
+            raise ValueError("{}.objectives.target_source must be a non-empty string".format(name))
     if minimum_total > capacity:
         raise ValueError("sum of class minimum rates exceeds link capacity")
     if seen_queues != set(range(1, len(CLASS_NAMES) + 1)):

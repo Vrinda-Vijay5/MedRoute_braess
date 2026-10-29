@@ -1,4 +1,4 @@
-# MedRoute AI: a Braess-paradox-aware SDN framework for prioritized healthcare traffic
+# Braess-Paradox-Aware, Criticality-Constrained Routing in Software-Defined Networks for Life-Critical Healthcare Traffic
 
 ## Purpose and scope
 
@@ -24,9 +24,24 @@ Current implementation status is best described as:
 - Implemented and inspected: deterministic controller logic, QoS configuration, topology, analysis helpers, scenario runner, evidence outputs, and tests.
 - Verified by saved evidence: harmful-shortcut prevention on the historical WSL run in `artifacts/wsl-final-20261023T0015Z/`.
 - Verified by analytical model: Braess paradox example in `artifacts/analytical-review-20261028/`.
-- Verified by repository tests: the offline Python suite passed in the current session with 40 tests passing and 0 failures.
+- Current offline validation: the latest Python run in this session executed 69 tests with 0 failures and skipped 8 Ryu-dependent tests because Ryu is not installed in this Windows interpreter. A prior project validation recorded 25 Node tests passing; that Node result was not rerun in this session. A fresh WSL2 pilot (`artifacts/research-pilot-20261029T080424Z/`) completed two repetitions of each of the four existing scenarios, with complete scenario validation and successful link-failure recovery. Across its two shortcut comparisons, one decision was neutral and one harmful; the harmful candidate was rejected and its baseline forwarding was verified. This deterministic two-repeat pilot is smoke evidence, not an independent-seed study. `data/CICIoMT2024/raw/healthcare_traffic_profiles.csv` is the six-row synthetic healthcare workload catalog in this checkout; it is not a raw CICIoMT packet trace.
 - Not claimed as live clinical validation: no hospital, patient, or live-production deployment was conducted.
 - Needs verification before reuse: any newer runner or data-path change that has not been exercised against live infrastructure.
+
+## Implementation and evidence progress
+
+| Area | Current status | What is actually supported |
+|---|---|---|
+| M1 shortest-path baseline | Implemented offline | Baseline route with QoS, candidate evaluation, and Braess guard disabled. |
+| M2 QoS-aware routing | Implemented offline | Baseline route with QoS enabled and candidate evaluation disabled. |
+| M3 congestion-aware routing | Implemented offline; live verification pending | Selects among measured route options using path congestion without the CBDR guard. |
+| M4 CBDR routing | Implemented offline; live verification pending | Evaluates named catalog profiles, hard objectives, fairness, and measured network cost before selecting a route. |
+| Candidate telemetry and barriers | Implemented; historical live evidence exists | Freshness/completeness checks, controller decision recording, flow verification, and barrier-confirmed installation are represented. |
+| Queue occupancy | Implemented with explicit unavailable state | Uses `tc` class backlog counters; missing counters remain incomplete rather than fabricated. |
+| Seeded workloads | Implemented | `--seed` is recorded and deterministically perturbs synthetic offered rates. |
+| Ablation controls | Implemented in runner CLI | M4 supports disabling Braess detection, priority handling, or candidate-link evaluation; matched live ablation results are pending. |
+| Four-method matched study | Pending | No saved matrix comparing M1–M4 under identical seeds, topology, workload, and repetitions has been verified. |
+| Clinical or production validation | Not implemented / not claimed | The project is a networking prototype, not a medical validation study. |
 
 ## Architecture and implemented components
 
@@ -82,6 +97,59 @@ The implemented decision policy is:
 
 The implementation records the decision and the route chosen; a harmful-shortcut decision must still be backed by complete follow-up telemetry and verified forwarding evidence before it is treated as a prevention success.
 
+### 3a. Research metrics and scenario coverage
+
+The live scenario summary now derives per-class p95/p99 RTT, deadline-miss rate,
+packet-loss objective status, and Jain throughput fairness from the saved raw
+probe and receiver measurements. These are emitted with sample counts in
+`scenario_results.json` and included in the generated report. A missing target
+or missing measurement is reported as unavailable, never as a pass. Controller
+route-change telemetry records actual mode changes, per-switch flow-programming
+requests, submitted rule counts, and controller-side programming-call time in
+`controller.jsonl`. Route and QoS update calls now wait cooperatively for all
+required OpenFlow barrier replies with a bounded timeout. Their wall time
+includes the barrier wait; it is not a per-switch acknowledgement latency.
+
+`sdn/classes.json` now names the prototype traffic mappings and provides
+explicit delay, loss, and reliability targets. They are policy assumptions for
+experiment wiring only; the file labels them as requiring validation against
+the selected application's requirements and applicable standards. They are
+not clinical service guarantees. The current class mapping remains four
+classes, so video/EHR/imaging/backup are grouped rather than independently
+validated.
+
+The current runner contains normal-load, emergency-surge, mixed-priority
+congestion, shortcut-evaluation, and primary-link failure-recovery paths. It
+also exposes M1 shortest-path, M2 QoS-only, M3 congestion-aware, and M4 CBDR
+method paths, plus M4 ablation controls. The repository has not yet produced a
+matched live M1-M4 multi-topology/multi-seed study or completed live ablation
+matrix, so those remain pending and are not inferred from historical artifacts.
+The intended comparison reports deadline misses, p95/p99, recovery time and
+loss, route changes, controller overhead, Jain fairness, queue occupancy where
+`tc` exposes it, and uncertainty across independent seeds. The illustrative
+table from the project brief is not used as data. Use `--repetitions N` and
+`--seed N` with `scripts/live_experiment.py`; both values are saved in the run
+configuration. Repetitions without different seeds are not independent
+replications.
+
+`config/healthcare_qos.json` adds six named healthcare workload profiles mapped
+onto the existing four live policy classes. Its service targets are explicitly
+unvalidated experimental assumptions. `sdn/cbdr.py` returns structured
+beneficial/neutral/harmful/inconclusive/constraint-violation decisions, reason
+codes, freshness and completeness details, and a separate controller action.
+The live candidate probes are aggregate; they do not support per-class
+constraint claims. Neutral policy in the standalone evaluator retains baseline;
+the legacy runner preserves its prior neutral-route behavior.
+
+The method catalogue exposes four distinct runner paths. M1 uses the baseline
+route without QoS or candidate evaluation. M2 uses the baseline route with QoS.
+M3 measures baseline, alternate, and shortcut route conditions and selects from
+their congestion scores without CBDR. M4 measures each catalog profile before
+and after the shortcut, evaluates the CBDR objective, hard-constraint status,
+fairness, and network cost, then verifies the selected route. These paths are
+implemented and unit-tested, but the complete live comparison remains
+unverified. See `docs/experimental_methodology.md`.
+
 ### 4. Controller and evidence system
 
 The project records:
@@ -115,8 +183,8 @@ The current workload profile file used by the repo contains:
 - dataset: `CICIoMT2024`
 - training split: `train`
 - benign-only aggregate profile design
-- `profile_version`: present in the supplied profile as `ciciomt-benign-v1`
-- `source_kind`: present in the supplied profile as `benign IoMT traffic characterization`
+- `profile_version`: not defined in the supplied profile; runtime fallback is `unspecified`
+- `source_kind`: not defined in the supplied profile; runtime fallback is `training-derived aggregate profile`
 - SHA-256 of the supplied profile: `a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c`
 
 The project uses two aggregate training profiles:
@@ -215,16 +283,22 @@ This is a mathematical Wardrop demonstration of a Braess paradox scenario; it re
 ### Implemented and supported
 
 - deterministic route selection and policy evaluation
+- per-class tail RTT, configurable deadline/loss objective checks, and Jain throughput fairness in scenario statistics
+- controller route-update and install-time telemetry
 - class-based QoS queueing as configured in `sdn/classes.json`
 - controlled route failure/recovery checks
 - evidence generation and artifact storage under `artifacts/`
 - analytical Braess cost model
 - offline unit testing for policy and scenario helpers
+- modular candidate-route evaluation with explicit telemetry and constraint status
+- six-profile versioned QoS mapping to the current four queue classes
+- per-run manifests and SHA-256 lists for new live runs
 
 ### Open or needs-verification items
 
 - full live replay / package setup on every machine
 - explicit validation of all newer method-policy branches under live Ryu/Mininet conditions
+- distinct M3 congestion-aware routing, complete live M4 integration, ablations, seed sweeps, and resume support
 - metadata provenance cleanup when the preferred profile file is absent
 - distinction between analytical results and live measured results in every user-facing explanation
 - any future ML component would need a dedicated, leakage-safe dataset and separate validation plan; it is not part of the current implementation
@@ -238,12 +312,10 @@ The repository should be treated as an offline + live hybrid prototype. The work
 3. run the live Mininet/Ryu workflow only in a controlled environment
 4. inspect saved `summary.json`, `scenario_results.json`, and `controller.jsonl` before making claims
 
-No live Mininet, OVS, or traffic generation should be started without an explicit, environment-ready execution step. This README intentionally avoids claiming revalidation of any step that has not been performed in the current environment.
+Use the controlled pilot command in `docs/reproducibility.md` only in the configured WSL environment. This README does not claim a live run for code changes unless a new run directory contains complete measurements and forwarding evidence.
 
 ## Summary
 
 MedRoute AI is a rule-based, deterministic SDN prototype that demonstrates healthcare-style traffic prioritization, route-cost comparison, and harmful-shortcut detection in an analytical and network-emulated environment. The project has a real evidence trail and a separate analytical Braess model, but it is not a clinical system, not a production deployment, and not an ML-based controller.
 
-The strongest implemented claim supported by saved evidence is that the historical WSL run in `artifacts/wsl-final-20261023T0015Z/` records a harmful shortcut being prevented by selecting the baseline route under the project’s measured conditions. The project should be presented as a prototype and research artifact, not as a guaranteed prevention mechanism for all networks.
-t is saved as
-`failure_recovery.json`; a failed or incomplete recovery check fails the live run.
+The current two-repetition WSL2 pilot records one harmful candidate being prevented by selecting the baseline route, alongside one neutral comparison where the shortcut was accepted. These outcomes apply only to the saved synthetic workload and setup. The project should be presented as a prototype and research artifact, not as a guaranteed prevention mechanism for all networks.

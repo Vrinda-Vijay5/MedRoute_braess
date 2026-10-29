@@ -8,6 +8,8 @@
   "link_capacity_mbps": 100,
   "classes": {
     "ECG": {
+      "application": "emergency alarms and ECG telemetry",
+      "objectives": {"delay_deadline_ms": 500, "max_packet_loss_pct": 5, "min_reliability_pct": 99.9, "target_source": "ITU-T Y.3143 (2024) Appendix I Table I.1 ECG reference; delay budget is 2x one-way latency for symmetric RTT probes; generic 5% telemedicine loss reference ITU-T F.780.4 §8.5.2; experimental only"},
       "dscp": 46,
       "tcp_port": 5101,
       "udp_port": 5101,
@@ -18,6 +20,8 @@
       "loss_sensitivity": 1.0
     },
     "ICU": {
+      "application": "real-time ICU vital-sign telemetry",
+      "objectives": {"delay_deadline_ms": 500, "max_packet_loss_pct": 5, "min_reliability_pct": 99.9, "target_source": "ITU-T Y.3143 (2024) Appendix I Table I.1 remote health monitoring reference; delay budget is 2x one-way latency for symmetric RTT probes; generic 5% telemedicine loss reference ITU-T F.780.4 §8.5.2; experimental only"},
       "dscp": 34,
       "tcp_port": 5102,
       "udp_port": 5102,
@@ -28,6 +32,8 @@
       "loss_sensitivity": 0.9
     },
     "WEARABLE": {
+      "application": "wearable telemetry and clinical video",
+      "objectives": {"delay_deadline_ms": 200, "max_packet_loss_pct": 5, "min_reliability_pct": 99.9999, "target_source": "ITU-T Y.3143 (2024) Appendix I Table I.2 remote medical consultation; delay is 2x one-way latency for symmetric RTT probes; generic loss reference ITU-T F.780.4 §8.5.2; experimental only"},
       "dscp": 18,
       "tcp_port": 5103,
       "udp_port": 5103,
@@ -38,6 +44,8 @@
       "loss_sensitivity": 0.55
     },
     "BACKGROUND": {
+      "application": "EHR transactions, imaging transfers, backups, and routine data",
+      "objectives": {"target_source": "No directly applicable numerical EHR/bulk-transfer objective was identified; record measurements and request application-owner limits before target checks"},
       "dscp": 0,
       "tcp_port": 5104,
       "udp_port": 5104,

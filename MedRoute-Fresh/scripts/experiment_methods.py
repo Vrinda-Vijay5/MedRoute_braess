@@ -1,9 +1,4 @@
-"""Definitions for the explicit MedRoute routing comparison methods.
-
-The method policies are intentionally independent of the live experiment
-runner. They describe which existing controls a future runner integration may
-enable; they do not start services or change controller state.
-"""
+"""Definitions for the explicit MedRoute routing comparison methods."""
 from dataclasses import dataclass
 from types import MappingProxyType
 from typing import Mapping, Tuple
@@ -19,6 +14,8 @@ class ExperimentMethod:
     qos_enabled: bool
     candidate_evaluation_enabled: bool
     braess_guard_enabled: bool
+    available: bool
+    unavailable_reason: str
 
 
 _METHODS: Mapping[str, ExperimentMethod] = MappingProxyType({
@@ -29,6 +26,8 @@ _METHODS: Mapping[str, ExperimentMethod] = MappingProxyType({
         qos_enabled=False,
         candidate_evaluation_enabled=False,
         braess_guard_enabled=False,
+        available=True,
+        unavailable_reason="",
     ),
     "M2": ExperimentMethod(
         method_id="M2",
@@ -37,20 +36,40 @@ _METHODS: Mapping[str, ExperimentMethod] = MappingProxyType({
         qos_enabled=True,
         candidate_evaluation_enabled=False,
         braess_guard_enabled=False,
+        available=True,
+        unavailable_reason="",
     ),
     "M3": ExperimentMethod(
         method_id="M3",
-        name="qos_braess_guard",
+        name="measured_path_congestion_aware_without_braess_guard",
+        initial_route="baseline",
+        qos_enabled=True,
+        candidate_evaluation_enabled=False,
+        braess_guard_enabled=False,
+        available=True,
+        unavailable_reason="",
+    ),
+    "M4": ExperimentMethod(
+        method_id="M4",
+        name="criticality_aware_braess_detection_routing",
         initial_route="baseline",
         qos_enabled=True,
         candidate_evaluation_enabled=True,
         braess_guard_enabled=True,
+        available=True,
+        unavailable_reason="",
     ),
 })
 
 
 def available_methods() -> Tuple[str, ...]:
-    """Return the supported method IDs in stable comparison order."""
+    """Return only methods faithfully supported by the live runner."""
+
+    return tuple(method_id for method_id, method in _METHODS.items() if method.available)
+
+
+def defined_methods() -> Tuple[str, ...]:
+    """Return the full requested research catalogue, including unavailable methods."""
 
     return tuple(_METHODS)
 
@@ -74,18 +93,28 @@ def get_method(method_id: str) -> ExperimentMethod:
 
 
 def build_method_scenario_plan(method_id: str):
-    """Return matched normal/heavy scenarios with the method policy held fixed."""
+    """Return matched scenarios while holding the selected method controls fixed."""
     method = get_method(method_id)
+    if not method.available:
+        raise ValueError("{} is unavailable: {}".format(method_id, method.unavailable_reason))
     return {
         "normal_load": {
             "qos_enabled": method.qos_enabled,
             "heavy_background": False,
+            "bottleneck": False,
         },
-        "heavy_background": {
+        "emergency_surge": {
+            "qos_enabled": method.qos_enabled,
+            "heavy_background": False,
+            "emergency_surge": True,
+            "bottleneck": True,
+        },
+        "mixed_priority_congestion": {
             "qos_enabled": method.qos_enabled,
             "heavy_background": True,
+            "bottleneck": True,
         },
     }
 
 
-__all__ = ["ExperimentMethod", "available_methods", "get_method", "build_method_scenario_plan"]
+__all__ = ["ExperimentMethod", "available_methods", "defined_methods", "get_method", "build_method_scenario_plan"]

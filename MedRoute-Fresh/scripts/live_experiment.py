@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """Owned-resource Mininet/Ryu demonstration using derived CICIoMT workloads."""
 import argparse
+import hashlib
 import json
 import math
 import os
 import re
+import random
+import secrets
 import signal
 import statistics
 import subprocess
 import sys
 import traceback
 import time
+from datetime import datetime, timezone
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -22,8 +26,11 @@ if str(SCRIPTS_DIR) not in sys.path:
 if str(ROOT / "sdn") not in sys.path:
     sys.path.insert(0, str(ROOT / "sdn"))
 from qos import queue_command
+from cbdr import evaluate_candidate as evaluate_cbdr_candidate
 from dataset_workload import build_scenario_workloads, load_profiles, load_traffic_catalog
 from experiment_methods import available_methods, build_method_scenario_plan, get_method
+from evidence_manifest import write_manifest
+from generate_stage6 import confidence_interval_95
 
 API = "http://127.0.0.1:8080/medroute/mode"
 METRICS_API = "http://127.0.0.1:8080/medroute/metrics"
@@ -42,6 +49,8 @@ SCENARIO_PLAN = {
     "class_prioritization_no_congestion": {"qos_enabled": True, "heavy_background": False},
     "heavy_background_no_prioritization": {"qos_enabled": False, "heavy_background": True},
     "heavy_background_with_prioritization": {"qos_enabled": True, "heavy_background": True},
+    "emergency_surge": {"qos_enabled": True, "heavy_background": False,
+                         "emergency_surge": True, "bottleneck": True},
 }
 # Explicit policy references, independent of measured stage values.
 COST_REFERENCES = {"latency_ms": 20.0, "jitter_ms": 5.0, "packet_loss_pct": 1.0}
@@ -99,22 +108,45 @@ def wait_switches(timeout=20):
 
 
 def set_mode(mode, reason):
-    result = request_json("POST", {"mode": mode, "reason": reason}, timeout=3)
+    try:
+        result = request_json("POST", {"mode": mode, "reason": reason}, timeout=6)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        try:
+            detail = json.loads(body).get("error", body)
+        except (json.JSONDecodeError, AttributeError):
+            detail = body or str(exc)
+        raise RuntimeError("controller route update failed: {}".format(detail)) from exc
+    if result.get("switch_barrier_confirmed") is not True:
+        raise RuntimeError("controller returned without confirming all route barriers")
     deadline = time.monotonic() + 5
     while time.monotonic() < deadline:
         current = request_json(timeout=1)
-        if current.get("mode") == mode and current.get("active_dpids") == EXPECTED_DPIDS:
+        if (current.get("mode") == mode and current.get("active_dpids") == EXPECTED_DPIDS and
+                current.get("route_installation_confirmed") is True):
             return result
         time.sleep(.1)
     raise TimeoutError("controller did not report mode " + mode)
 
 
 def set_qos_enabled(enabled):
-    result = request_json("POST", {"enabled": enabled}, timeout=3, endpoint=QOS_API)
+    try:
+        result = request_json("POST", {"enabled": enabled}, timeout=6, endpoint=QOS_API)
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        try:
+            detail = json.loads(body).get("error", body)
+        except (json.JSONDecodeError, AttributeError):
+            detail = body or str(exc)
+        raise RuntimeError("controller QoS update failed: {}".format(detail)) from exc
+    if result.get("switch_barrier_confirmed") is not True:
+        raise RuntimeError("controller returned without confirming all QoS barriers")
     deadline = time.monotonic() + 5
     while time.monotonic() < deadline:
         state = request_json(timeout=1, endpoint=QOS_API)
-        if state.get("qos_enabled") is enabled and state.get("active_dpids") == EXPECTED_DPIDS:
+        if (state.get("qos_enabled") is enabled and
+                state.get("active_dpids") == EXPECTED_DPIDS and
+                state.get("qos_state_confirmed") is True):
             return result
         time.sleep(.1)
     raise TimeoutError("controller did not report QoS enabled=" + str(enabled))
@@ -155,6 +187,8 @@ def summarize_method_policy(method_id=None):
             "qos_enabled": None,
             "candidate_evaluation_enabled": None,
             "braess_guard_enabled": None,
+            "available_for_research_comparison": None,
+            "unavailable_reason": None,
         }
     method = get_method(method_id)
     return {
@@ -165,6 +199,8 @@ def summarize_method_policy(method_id=None):
         "qos_enabled": method.qos_enabled,
         "candidate_evaluation_enabled": method.candidate_evaluation_enabled,
         "braess_guard_enabled": method.braess_guard_enabled,
+        "available_for_research_comparison": method.available,
+        "unavailable_reason": method.unavailable_reason or None,
     }
 
 
@@ -211,7 +247,7 @@ def combine_validation_errors(existing_errors, matrix_errors=None):
 def braess_validation_result(method_id=None, braess_repetitions=None):
     """Return policy-aware Braess validation semantics for default vs explicit methods."""
     repetitions = [] if braess_repetitions is None else braess_repetitions
-    if method_id is not None and method_id in {"M1", "M2"}:
+    if method_id is not None and method_id in {"M1", "M2", "M3"}:
         return {"status": "not_run", "passed": False, "not_applicable": True}
     if not repetitions:
         return {"status": "not_run", "passed": False, "not_applicable": True}
@@ -484,6 +520,60 @@ def calculate_link_utilization(before, after, capacity_mbps, capacity_overrides=
             "capacity_mbps": capacity_mbps, "links": links}
 
 
+def parse_tc_queue_occupancy(output):
+    """Parse Linux tc class backlog bytes/packets without guessing queue IDs."""
+    records = []
+    current = None
+    for line in output.splitlines():
+        class_match = re.search(r"\bclass\s+\S+\s+([0-9a-fA-F]+:[0-9a-fA-F]+)", line)
+        if class_match:
+            current = {"class_id": class_match.group(1)}
+            records.append(current)
+        backlog = re.search(r"\bbacklog\s+(\d+)b\s+(\d+)p", line)
+        if backlog and current is not None:
+            current["backlog_bytes"] = int(backlog.group(1))
+            current["backlog_packets"] = int(backlog.group(2))
+    complete = bool(records) and all("backlog_bytes" in row and
+                                     "backlog_packets" in row for row in records)
+    return {"complete": complete, "classes": records,
+            "reason": None if complete else "tc did not expose per-class backlog counters"}
+
+
+def collect_queue_occupancy(port_name):
+    try:
+        proc = subprocess.run(["tc", "-s", "class", "show", "dev", port_name],
+                              cwd=ROOT, capture_output=True, text=True, timeout=5)
+    except (OSError, subprocess.SubprocessError) as exc:
+        return {"complete": False, "port": port_name, "classes": [],
+                "reason": type(exc).__name__ + ": " + str(exc)}
+    parsed = parse_tc_queue_occupancy(proc.stdout)
+    parsed["port"] = port_name
+    parsed["command_returncode"] = proc.returncode
+    if proc.returncode:
+        parsed["complete"] = False
+        parsed["reason"] = proc.stderr.strip() or "tc command failed"
+    parsed["raw"] = proc.stdout
+    return parsed
+
+
+def summarize_queue_occupancy(before, after):
+    before_rows = {row["class_id"]: row for row in before.get("classes", [])}
+    after_rows = {row["class_id"]: row for row in after.get("classes", [])}
+    common = sorted(set(before_rows) & set(after_rows))
+    complete = bool(common) and before.get("complete") and after.get("complete")
+    return {"complete": bool(complete), "port": after.get("port"),
+            "class_count": len(common),
+            "classes": [{"class_id": class_id,
+                "before_backlog_bytes": before_rows[class_id]["backlog_bytes"],
+                "after_backlog_bytes": after_rows[class_id]["backlog_bytes"],
+                "peak_observed_backlog_bytes": max(before_rows[class_id]["backlog_bytes"],
+                                                    after_rows[class_id]["backlog_bytes"]),
+                "before_backlog_packets": before_rows[class_id]["backlog_packets"],
+                "after_backlog_packets": after_rows[class_id]["backlog_packets"]}
+                for class_id in common],
+            "reason": None if complete else "per-class queue counters unavailable or class set changed"}
+
+
 def sample_class_traffic(net, traffic_class, profile):
     """Run a real TCP class flow alongside DSCP-marked ICMP probes."""
     h1, h2 = net.get("h1", "h2")
@@ -683,6 +773,7 @@ def measure_route_condition(net, mode, shortcut_link, evidence_dir, routes, clas
     set_mode(mode, "paired route comparison")
     flows = verify_flows("decision_" + mode, mode, evidence_dir, routes, class_config)
     h1, h2 = net.get("h1", "h2")
+    before_ports = collect_port_snapshot()
     server = h2.popen(["iperf3", "-s", "-1"], stdout=subprocess.PIPE,
                       stderr=subprocess.STDOUT, text=True)
     time.sleep(.3)
@@ -730,24 +821,76 @@ def measure_route_condition(net, mode, shortcut_link, evidence_dir, routes, clas
         except (json.JSONDecodeError, AttributeError):
             pass
     metrics = summarize_samples(samples)
+    after_ports = collect_port_snapshot()
+    path_utilization = calculate_link_utilization(
+        before_ports, after_ports, class_config["link_capacity_mbps"])
     valid_count = sum(sample["rtt_ms"] is not None for sample in samples)
     complete = bool(metrics and metrics["complete"] and throughput is not None and flows["verified"])
     return {"mode": mode, "samples": samples, "valid_count": valid_count,
             "metrics": metrics, "throughput_mbps": throughput,
-            "flow_evidence": flows, "complete": complete,
+            "flow_evidence": flows, "path_link_utilization": path_utilization,
+            "complete": complete,
             "error": None if complete else "incomplete paired route telemetry"}
+
+
+def route_congestion_score(route_name, route_rows, utilization):
+    """Return max measured egress utilization for a route's forward path."""
+    route_ports = {(int(dpid), int(out_port)) for dpid, _, out_port, src, dst in route_rows
+                   if src == "10.0.0.1" and dst == "10.0.0.2"}
+    link_rows = {(int(row["switch"][1:]), int(row["port"])): row
+                 for row in utilization.get("links", [])}
+    used = [link_rows.get(key) for key in route_ports]
+    if (not route_ports or len(used) != len(route_ports) or
+            any(row is None or not row.get("complete") or
+                not isinstance(row.get("tx_utilization_pct"), (int, float)) or
+                not math.isfinite(row["tx_utilization_pct"]) for row in used)):
+        return None
+    return max(row["tx_utilization_pct"] for row in used)
+
+
+def select_congestion_route(measurements, routes):
+    """Select the complete path with the lowest observed bottleneck utilization.
+
+    Missing path counters fail closed to baseline. This selector optimizes
+    measured path congestion only; it does not classify Braess harm or apply
+    CBDR's criticality constraints.
+    """
+    scores = {}
+    for row in measurements:
+        name = row.get("mode")
+        score = route_congestion_score(name, routes.get(name, []),
+                                       row.get("path_link_utilization", {}))
+        if not row.get("complete") or score is None:
+            return {"selected_route": "baseline", "complete": False,
+                    "reason_code": "INCOMPLETE_PATH_UTILIZATION",
+                    "scores_pct": scores,
+                    "reason": "At least one candidate path lacks complete congestion measurements; retain baseline."}
+        scores[name] = score
+    if not scores:
+        return {"selected_route": "baseline", "complete": False,
+                "reason_code": "NO_CANDIDATE_PATHS", "scores_pct": {},
+                "reason": "No candidate paths were measured."}
+    selected = min(scores, key=lambda route: (scores[route], len(routes[route]), route))
+    return {"selected_route": selected, "complete": True,
+            "reason_code": "MINIMUM_MEASURED_BOTTLENECK_UTILIZATION",
+            "scores_pct": scores,
+            "reason": "Selected the route with the lowest maximum measured egress utilization."}
 
 
 def sample_scenario_traffic(net, scenario, repetition, qos_enabled,
                             heavy_background, evidence_dir, routes, class_config,
-                            bottleneck_evidence, workload):
+                            bottleneck_evidence, workload, bottleneck_congested=None,
+                            route_mode="baseline", shortcut_link=None):
     """Run simultaneous DSCP-marked UDP classes from training-derived profiles."""
+    if shortcut_link is not None:
+        set_shortcut_link(shortcut_link, route_mode == "shortcut")
     set_qos_enabled(qos_enabled)
-    set_mode("baseline", "scenario {} repetition {}".format(scenario, repetition))
-    flows = verify_flows(scenario + "_r" + str(repetition), "baseline", evidence_dir,
+    set_mode(route_mode, "scenario {} repetition {}".format(scenario, repetition))
+    flows = verify_flows(scenario + "_r" + str(repetition), route_mode, evidence_dir,
                          routes, class_config)
     h1, h2 = net.get("h1", "h2")
     before = collect_port_snapshot()
+    queue_before = collect_queue_occupancy(SCENARIO_BOTTLENECK_PORT)
     servers, clients, pings, ping_started = {}, {}, {}, {}
     outputs = {}
     duration = 4
@@ -846,7 +989,9 @@ def sample_scenario_traffic(net, scenario, repetition, qos_enabled,
                  udp_loss / COST_REFERENCES["packet_loss_pct"]) / 3) if complete else None
         class_results[name] = {"complete": complete,
             "metrics": {"complete": complete, "latency_ms": latency, "jitter_ms": jitter,
-                        "packet_loss_pct": udp_loss, "ping_packet_loss_pct":
+                        "packet_loss_pct": udp_loss,
+                        "reliability_pct": 100 - udp_loss if udp_loss is not None else None,
+                        "ping_packet_loss_pct":
                             ping_metrics.get("packet_loss_pct") if ping_metrics else None,
                         "cost": cost},
             "throughput_mbps": received_mbps,
@@ -859,16 +1004,21 @@ def sample_scenario_traffic(net, scenario, repetition, qos_enabled,
         scenario, repetition, evidence_dir, class_config, qos_enabled)
     flows["class_traffic_usage"] = class_flow_usage
     after = collect_port_snapshot()
+    queue_after = collect_queue_occupancy(SCENARIO_BOTTLENECK_PORT)
+    bottleneck_active = (heavy_background if bottleneck_congested is None
+                         else bottleneck_congested)
     capacity_overrides = ({("s1", 2): SCENARIO_BOTTLENECK_CAPACITY_MBPS}
-                          if heavy_background else {})
+                          if bottleneck_active else {})
     links = calculate_link_utilization(before, after,
         class_config["link_capacity_mbps"], capacity_overrides)
     record = {"scenario": scenario, "repetition": repetition,
         "qos_enabled": qos_enabled, "heavy_background": heavy_background,
-        "route": "baseline", "duration_seconds": duration,
+        "route": route_mode, "duration_seconds": duration,
+        "bottleneck_congested": bottleneck_active,
         "latency_probe_count": SCENARIO_PING_SAMPLES,
         "bottleneck": bottleneck_evidence,
         "per_class_metrics": class_results, "link_utilization": links,
+        "queue_occupancy": summarize_queue_occupancy(queue_before, queue_after),
         "flow_evidence": flows,
         "complete": (all(item["complete"] for item in class_results.values()) and
                      links["complete"] and class_flow_usage["complete"]),
@@ -925,6 +1075,181 @@ def run_braess_repetition(net, repetition, shortcut_link, evidence_dir, routes, 
                                   decision_record["controller_recorded"]}
 
 
+def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir,
+                                    routes, class_config):
+    """Choose a route from observed path bottleneck utilization, without CBDR."""
+    route_rows = []
+    for mode in ("baseline", "alternate", "shortcut"):
+        route_rows.append(measure_route_condition(
+            net, mode, shortcut_link, evidence_dir, routes, class_config))
+    selection = select_congestion_route(route_rows, routes)
+    selected = selection["selected_route"]
+    set_shortcut_link(shortcut_link, selected == "shortcut")
+    set_mode(selected, "M3 minimum measured path congestion")
+    flow_evidence = verify_flows(
+        "m3_selected_r{}".format(repetition), selected, evidence_dir,
+        routes, class_config)
+    record = {"repetition": repetition, "method": "M3",
+        "selected_route": selected, "selection": selection,
+        "route_measurements": route_rows,
+        "route_selection_verified": bool(selection["complete"] and flow_evidence["verified"]),
+        "flow_evidence": flow_evidence,
+        "complete": bool(selection["complete"] and flow_evidence["verified"])}
+    decision = {"repetition": repetition, "verdict": "congestion_selected",
+        "selected_route": selected, "reason": selection["reason"],
+        "reason_code": selection["reason_code"],
+        "path_congestion_scores_pct": selection["scores_pct"],
+        "route_selection_verified": record["route_selection_verified"],
+        "prevention_verified": False, "flows_verified": flow_evidence["verified"]}
+    try:
+        posted = request_json("POST", decision, timeout=3, endpoint=DECISION_API)
+        decision["controller_recorded"] = bool(posted.get("recorded"))
+    except Exception as exc:
+        decision["controller_recorded"] = False
+        decision["controller_error"] = type(exc).__name__ + ": " + str(exc)
+    record["decision"] = decision
+    record["complete"] = bool(record["complete"] and decision["controller_recorded"])
+    return record
+
+
+CBDR_PROFILE_BY_CATALOG = {
+    "ECG": "EMERGENCY_ALARM",
+    "ICU": "CRITICAL_PHYSIOLOGICAL_TELEMETRY",
+    "TELEMEDICINE": "REAL_TIME_CLINICAL_VIDEO",
+    "EHR": "EHR_TRANSACTIONS",
+    "IMAGING": "MEDICAL_IMAGING",
+    "CCTV": "CCTV_BACKGROUND",
+}
+
+
+def jain_index(values):
+    if not values or any(not isinstance(value, (int, float)) or
+                         not math.isfinite(value) or value < 0 for value in values):
+        return None
+    denominator = len(values) * sum(value * value for value in values)
+    return sum(values) ** 2 / denominator if denominator > 0 else None
+
+
+def _profile_objective_record(row, profile_name, route):
+    metrics = dict(row.get("metrics") or {})
+    complete = bool(row.get("complete") and metrics.get("complete"))
+    return {"topology": "four_switch_diamond" + ("_with_shortcut" if route == "shortcut" else ""),
+            "route": route, "timestamp": row.get("captured_at"),
+            "complete": complete, "metrics": metrics,
+            "source": "measured_catalog_service_flow:{}".format(profile_name)}
+
+
+def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
+                        class_config, traffic_catalog, qos_enabled=True,
+                        random_seed=None, ablation=None):
+    """Run paired class-tagged profile probes and apply the CBDR objective."""
+    from cbdr import load_config, evaluate_class_aware_candidate
+    policy_config = load_config()
+    before_by_class, after_by_class = {}, {}
+    baseline_rows, candidate_rows = [], []
+    if ablation == "disable_link_change_evaluation":
+        set_shortcut_link(shortcut_link, False)
+        set_mode("baseline", "M4 ablation: link-change evaluation disabled")
+        baseline_only = run_catalog_profile_matrix(net, traffic_catalog, class_config,
+            evidence_dir, routes, method_qos_enabled=qos_enabled,
+            route_mode="baseline", shortcut_link=shortcut_link,
+            run_tag="r{}_baseline_only".format(repetition), random_seed=random_seed)
+        verified = bool(baseline_only) and all(row.get("complete") for row in baseline_only)
+        record = {"repetition": repetition, "method": "M4", "complete": verified,
+                  "ablation": ablation,
+                  "decision": {"selected_route": "baseline", "verdict": "not_evaluated",
+                               "reason": "candidate link evaluation disabled by ablation",
+                               "route_selection_verified": verified,
+                               "flows_verified": verified},
+                  "baseline_profiles": baseline_only, "candidate_profiles": []}
+        save_json(evidence_dir / "cbdr_repetition_r{}.json".format(repetition), record)
+        return record
+    for source in traffic_catalog["rows"]:
+        profile_name = CBDR_PROFILE_BY_CATALOG.get(source["traffic_type"])
+        if profile_name not in policy_config["classes"]:
+            return {"repetition": repetition, "method": "M4", "complete": False,
+                    "error": "catalog profile has no CBDR policy mapping: " + source["traffic_type"]}
+        baseline = run_catalog_profile_matrix(net, traffic_catalog, class_config,
+            evidence_dir, routes, method_qos_enabled=qos_enabled,
+            route_mode="baseline", shortcut_link=shortcut_link,
+            profile_rows=[source], run_tag="r{}_baseline".format(repetition),
+            save_output=False, random_seed=random_seed)[0]
+        candidate = run_catalog_profile_matrix(net, traffic_catalog, class_config,
+            evidence_dir, routes, method_qos_enabled=qos_enabled,
+            route_mode="shortcut", shortcut_link=shortcut_link,
+            profile_rows=[source], run_tag="r{}_shortcut".format(repetition),
+            save_output=False, random_seed=random_seed)[0]
+        before_by_class[profile_name] = _profile_objective_record(
+            baseline, profile_name, "baseline")
+        after_by_class[profile_name] = _profile_objective_record(
+            candidate, profile_name, "shortcut")
+        baseline["cbdr_profile"] = profile_name
+        candidate["cbdr_profile"] = profile_name
+        baseline_rows.append(baseline)
+        candidate_rows.append(candidate)
+    if len(before_by_class) != len(policy_config["classes"]):
+        return {"repetition": repetition, "method": "M4", "complete": False,
+                "error": "CBDR profile set does not match measured catalog profiles"}
+    baseline_path_util = [route_congestion_score("baseline", routes["baseline"],
+        row.get("link_utilization", {})) for row in baseline_rows]
+    candidate_path_util = [route_congestion_score("shortcut", routes["shortcut"],
+        row.get("link_utilization", {})) for row in candidate_rows]
+    complete = (all(row.get("complete") for row in baseline_rows + candidate_rows) and
+                all(score is not None for score in baseline_path_util + candidate_path_util))
+    if not complete:
+        return {"repetition": repetition, "method": "M4", "complete": False,
+                "error": "one or more per-profile measurements or route counters are incomplete",
+                "baseline_profiles": baseline_rows, "candidate_profiles": candidate_rows}
+    base_fairness = jain_index([
+        row["metrics"]["throughput_mbps"] / (row["offered_rate_bps"] / 1_000_000)
+        for row in baseline_rows])
+    candidate_fairness = jain_index([
+        row["metrics"]["throughput_mbps"] / (row["offered_rate_bps"] / 1_000_000)
+        for row in candidate_rows])
+    evaluation = evaluate_class_aware_candidate(
+        current_by_class=before_by_class, candidate_by_class=after_by_class,
+        current_network_cost_pct=max(baseline_path_util),
+        candidate_network_cost_pct=max(candidate_path_util),
+        config=policy_config, current_fairness=base_fairness,
+        candidate_fairness=candidate_fairness, now=time.time(),
+        max_age_seconds=MAX_AGE)
+    selected = ("shortcut" if evaluation["decision"] == "accept_candidate"
+                else "baseline")
+    if ablation == "disable_braess_detection":
+        selected = "shortcut"
+        evaluation["ablation_override"] = "disabled_rejection_and_accept_shortcut"
+    set_shortcut_link(shortcut_link, selected == "shortcut")
+    set_mode(selected, "M4 CBDR {} decision".format(evaluation["classification"]))
+    final_flows = verify_flows("m4_selected_r{}".format(repetition), selected,
+                               evidence_dir, routes, class_config)
+    evaluation["route_installation_verified"] = bool(final_flows["verified"])
+    evaluation["route_installation_verification_status"] = (
+        "verified" if final_flows["verified"] else "failed")
+    decision = {"repetition": repetition, "method": "M4", "verdict": evaluation["classification"],
+        "selected_route": selected, "reason": evaluation["explanation"],
+        "reason_code": evaluation["reason_code"], "evaluation": evaluation,
+        "route_selection_verified": bool(final_flows["verified"] and complete),
+        "flows_verified": final_flows["verified"],
+        "prevention_verified": bool(evaluation["classification"] in ("harmful", "constraint_violation") and
+                                     selected == "baseline" and final_flows["verified"])}
+    try:
+        posted = request_json("POST", decision, timeout=3, endpoint=DECISION_API)
+        decision["controller_recorded"] = bool(posted.get("recorded"))
+    except Exception as exc:
+        decision["controller_recorded"] = False
+        decision["controller_error"] = type(exc).__name__ + ": " + str(exc)
+    record = {"repetition": repetition, "method": "M4", "complete": complete and
+        decision["controller_recorded"] and decision["route_selection_verified"],
+        "decision": decision, "evaluation": evaluation,
+        "baseline_profiles": baseline_rows, "candidate_profiles": candidate_rows,
+        "final_flow_evidence": final_flows,
+        "baseline_fairness": base_fairness,
+        "candidate_fairness": candidate_fairness,
+        "ablation": ablation}
+    save_json(evidence_dir / "cbdr_repetition_r{}.json".format(repetition), record)
+    return record
+
+
 def summarize_scenario_repetitions(repetitions, class_config):
     summary = {"repetition_count": len(repetitions), "classes": {}}
     fields = ("latency_ms", "jitter_ms", "packet_loss_pct", "throughput_mbps")
@@ -940,9 +1265,104 @@ def summarize_scenario_repetitions(repetitions, class_config):
                 item = repetition.get("per_class_metrics", {}).get(traffic_class, {})
                 value = ((item.get("metrics") or {}).get(field) if field != "throughput_mbps"
                          else item.get(field))
-                if isinstance(value, (int, float)) and math.isfinite(value):
+                if (isinstance(value, (int, float)) and not isinstance(value, bool) and
+                        math.isfinite(value) and value >= 0 and
+                        (field != "packet_loss_pct" or value <= 100)):
                     values.append(value)
             summary["classes"][traffic_class][field] = stats(values)
+        # Per-packet probe samples support tail latency and configurable deadline
+        # accounting. These are network experiment targets, not clinical SLAs.
+        probe_samples = [sample
+            for repetition in repetitions
+            for sample in (repetition.get("per_class_metrics", {}).get(
+                traffic_class, {}).get("ping_samples")
+                if isinstance(repetition.get("per_class_metrics", {}).get(
+                    traffic_class, {}).get("ping_samples"), list) else [])]
+        samples = [sample["rtt_ms"] for sample in probe_samples
+            if isinstance(sample, dict) and
+            isinstance(sample.get("rtt_ms"), (int, float)) and
+            not isinstance(sample.get("rtt_ms"), bool) and
+            math.isfinite(sample["rtt_ms"]) and sample["rtt_ms"] >= 0]
+        raw_objectives = class_config["classes"][traffic_class].get("objectives", {})
+        objectives = raw_objectives if isinstance(raw_objectives, dict) else {}
+        deadline = objectives.get("delay_deadline_ms")
+        if (isinstance(deadline, bool) or not isinstance(deadline, (int, float)) or
+                not math.isfinite(deadline) or deadline <= 0):
+            deadline = None
+        tail = {"sample_count": len(samples), "p95_ms": None, "p99_ms": None,
+                "deadline_ms": deadline, "deadline_miss_count": None,
+                "deadline_miss_rate_pct": None,
+                "probe_count": len(probe_samples),
+                "target_source": objectives.get("target_source", "unspecified")}
+        if samples:
+            ordered = sorted(samples)
+            tail["p95_ms"] = ordered[max(0, math.ceil(.95 * len(ordered)) - 1)]
+            tail["p99_ms"] = ordered[max(0, math.ceil(.99 * len(ordered)) - 1)]
+        if deadline is not None and probe_samples:
+            timely = sum(value <= deadline for value in samples)
+            misses = len(probe_samples) - timely
+            tail["deadline_miss_count"] = misses
+            tail["deadline_miss_rate_pct"] = 100 * misses / len(probe_samples)
+        loss_values = []
+        expected_repetitions = len(repetitions)
+        invalid_loss = False
+        for repetition in repetitions:
+            value = ((repetition.get("per_class_metrics", {}).get(traffic_class, {}).get(
+                "metrics") or {}).get("packet_loss_pct"))
+            if (isinstance(value, (int, float)) and not isinstance(value, bool) and
+                    math.isfinite(value) and 0 <= value <= 100):
+                loss_values.append(value)
+            else:
+                invalid_loss = True
+        max_loss = objectives.get("max_packet_loss_pct")
+        min_reliability = objectives.get("min_reliability_pct")
+        if (isinstance(max_loss, bool) or not isinstance(max_loss, (int, float)) or
+                not math.isfinite(max_loss) or not 0 <= max_loss <= 100):
+            max_loss = None
+        if (isinstance(min_reliability, bool) or not isinstance(min_reliability, (int, float)) or
+                not math.isfinite(min_reliability) or not 0 <= min_reliability <= 100):
+            min_reliability = None
+        tail["mean_packet_loss_pct"] = statistics.mean(loss_values) if loss_values else None
+        tail["loss_observation_count"] = len(loss_values)
+        tail["max_packet_loss_pct"] = max_loss
+        tail["min_reliability_pct"] = min_reliability
+        complete_loss = (expected_repetitions > 0 and len(loss_values) == expected_repetitions
+                         and not invalid_loss)
+        tail["receiver_delivery_reliability_pct"] = (
+            100 - statistics.mean(loss_values) if complete_loss else None)
+        tail["packet_loss_target_met"] = (
+            statistics.mean(loss_values) <= max_loss
+            if complete_loss and max_loss is not None else None)
+        tail["delay_target_met"] = (None if tail["deadline_miss_rate_pct"] is None else
+                                     tail["deadline_miss_rate_pct"] == 0)
+        tail["reliability_target_met"] = (
+            tail["receiver_delivery_reliability_pct"] >= min_reliability
+            if tail["receiver_delivery_reliability_pct"] is not None and
+            min_reliability is not None else None)
+        summary["classes"][traffic_class]["tail_latency"] = tail
+    # Report Jain fairness only when every configured class has complete, valid
+    # throughput observations. Omitting a missing class would overstate coverage.
+    rates = [entry["throughput_mbps"]["mean"]
+             for entry in summary["classes"].values()]
+    fairness_complete = bool(repetitions) and bool(rates) and all(
+        entry["throughput_mbps"]["n"] == len(repetitions) and
+        entry["throughput_mbps"]["mean"] is not None and
+        entry["throughput_mbps"]["mean"] >= 0
+        for entry in summary["classes"].values())
+    denominator = len(rates) * sum(x * x for x in rates) if fairness_complete else 0
+    summary["throughput_fairness"] = {
+        "metric": "jain_fairness_index", "n_classes": sum(
+            entry["throughput_mbps"]["n"] == len(repetitions) and bool(repetitions)
+            for entry in summary["classes"].values()),
+        "expected_classes": len(class_config["classes"]),
+        "complete": fairness_complete and denominator > 0,
+        "unavailable_reason": (None if fairness_complete and denominator > 0 else
+            "missing_or_invalid_class_throughput" if not fairness_complete else
+            "total_throughput_is_zero"),
+        "jain_index": (sum(rates) ** 2 / denominator)
+            if fairness_complete and denominator > 0 else None,
+        "class_throughput_mbps": {name: entry["throughput_mbps"]["mean"]
+            for name, entry in summary["classes"].items()}}
     links = {}
     for repetition in repetitions:
         for link in repetition.get("link_utilization", {}).get("links", []):
@@ -957,10 +1377,61 @@ def summarize_scenario_repetitions(repetitions, class_config):
     return summary
 
 
+def summarize_telemetry_completeness(records, scenario_statistics,
+                                     scenario_repetitions, candidate_evaluations=()):
+    """Separate required route telemetry from optional metric coverage."""
+    stages = [record for record in records if isinstance(record, dict)]
+    required_complete = bool(stages) and all(
+        bool((record.get("metrics") or {}).get("complete")) for record in stages)
+    fairness_statuses = [
+        (evaluation.get("fairness") or {}).get("status")
+        for evaluation in candidate_evaluations
+        if isinstance(evaluation, dict)
+    ]
+    scenario_fairness = [
+        (stats.get("throughput_fairness") or {}).get("complete")
+        for stats in scenario_statistics.values()
+        if isinstance(stats, dict) and "throughput_fairness" in stats
+    ]
+    queue_records = [
+        row.get("queue_occupancy", {})
+        for rows in scenario_repetitions.values()
+        for row in rows
+        if isinstance(row, dict)
+    ]
+    optional = {
+        "candidate_evaluation_fairness": (
+            all(status == "measured" for status in fairness_statuses)
+            if fairness_statuses else None
+        ),
+        "scenario_throughput_fairness": (
+            all(value is True for value in scenario_fairness)
+            if scenario_fairness else None
+        ),
+        "queue_occupancy": (
+            all(record.get("complete") is True for record in queue_records)
+            if queue_records else None
+        ),
+    }
+    applicable_optional = [value for value in optional.values() if value is not None]
+    return {
+        "required_telemetry_complete": required_complete,
+        "optional_telemetry": optional,
+        "optional_telemetry_complete": (
+            bool(applicable_optional) and all(applicable_optional)
+        ),
+        "all_telemetry_complete": (
+            required_complete and bool(applicable_optional) and
+            all(applicable_optional)
+        ),
+    }
+
+
 def summarize_braess_repetitions(repetitions):
     output = {"repetition_count": len(repetitions), "verdict_counts": {},
               "prevention_verified_count": sum(bool(item.get("prevention_verified"))
                                                 for item in repetitions),
+              "uncertainty_kind": "descriptive_interval_over_current_repetitions; independent seeds required for inference",
               "costs": {}}
     for item in repetitions:
         verdict = item.get("decision", {}).get("verdict", "unavailable")
@@ -976,12 +1447,48 @@ def summarize_braess_repetitions(repetitions):
             "mean": statistics.mean(values) if values else None,
             "standard_deviation": statistics.stdev(values) if len(values) > 1 else None}
         if len(values) > 1:
-            entry["confidence_interval_95"] = [
-                entry["mean"] - 1.96 * entry["standard_deviation"] / math.sqrt(len(values)),
-                entry["mean"] + 1.96 * entry["standard_deviation"] / math.sqrt(len(values))
-            ]
+            entry["confidence_interval_95"] = confidence_interval_95(values)
         output["costs"][route] = entry
     return output
+
+
+def summarize_repeated_decisions(repetitions):
+    """Aggregate every route decision without letting an early trial mask later harm."""
+    if not repetitions:
+        return {"live_experiment": "inconclusive", "aggregate_verdict": "inconclusive", "passed": False,
+                "harmful_candidate_count": 0, "prevention_verified_count": 0,
+                "verdict_counts": {}, "errors": ["no candidate decisions were recorded"]}
+    counts = {}
+    errors = []
+    harmful = []
+    for row in repetitions:
+        decision = row.get("decision", {})
+        verdict = decision.get("verdict", "unavailable")
+        counts[verdict] = counts.get(verdict, 0) + 1
+        if not row.get("complete") or not decision.get("controller_recorded") or not decision.get("route_selection_verified"):
+            errors.append("repetition {} lacks complete measurements, controller decision, or route verification".format(
+                row.get("repetition", "unknown")))
+        if verdict == "harmful":
+            harmful.append(row)
+            if not decision.get("prevention_verified"):
+                errors.append("harmful candidate in repetition {} was not verified as prevented".format(
+                    row.get("repetition", "unknown")))
+        elif verdict == "inconclusive":
+            errors.append("repetition {} produced an inconclusive candidate decision".format(
+                row.get("repetition", "unknown")))
+    if harmful:
+        status = "harmful_shortcut_prevented" if not errors else "prevention_failed"
+    elif errors:
+        status = "inconclusive"
+    else:
+        status = "shortcut_not_harmful_under_test"
+    aggregate_verdict = next(iter(counts)) if len(counts) == 1 else "mixed"
+    return {"live_experiment": status, "aggregate_verdict": aggregate_verdict,
+            "passed": not errors,
+            "harmful_candidate_count": len(harmful),
+            "prevention_verified_count": sum(bool(row.get("decision", {}).get("prevention_verified"))
+                                                for row in harmful),
+            "verdict_counts": counts, "errors": errors}
 
 
 def harmful_shortcut_prevented(verdict, selected_route, prevention_complete,
@@ -1069,45 +1576,82 @@ def classify(baseline, candidate, now=None):
         return {"verdict": "inconclusive", "mode": "baseline", "reason": "invalid cost telemetry"}
     if b == 0:
         return {"verdict": "inconclusive", "mode": "baseline", "reason": "baseline cost is zero; relative comparison undefined"}
-    ratio = c / b
-    if ratio > 1 + THRESHOLD:
-        return {"verdict": "harmful", "mode": "baseline", "ratio": ratio}
-    if ratio < 1 - THRESHOLD:
-        return {"verdict": "beneficial", "mode": "shortcut", "ratio": ratio}
-    return {"verdict": "neutral", "mode": "shortcut", "ratio": ratio}
+    # These route-comparison probes are aggregate path measurements; they do
+    # not identify a clinical traffic class. Keep that distinction explicit.
+    baseline_stamp = max(sample["timestamp"] for sample in baseline["samples"])
+    candidate_stamp = max(sample["timestamp"] for sample in candidate["samples"])
+    evaluation = evaluate_cbdr_candidate(
+        current={"topology": "four_switch_diamond", "route": baseline.get("mode", "baseline"),
+                 "timestamp": baseline_stamp, "complete": True, "metrics": bm,
+                 "source": "measured_aggregate_probe"},
+        candidate={"topology": "four_switch_diamond_with_candidate_link",
+                   "route": candidate.get("mode", "shortcut"), "timestamp": candidate_stamp,
+                   "complete": True, "metrics": cm, "source": "measured_aggregate_probe"},
+        now=now, max_age_seconds=MAX_AGE, constraint_mode="experimental",
+        neutral_policy="accept_candidate")
+    evaluation["route_installation_verification_status"] = "pending_controller_action"
+    evaluation["fairness"] = {
+        "status": "unavailable",
+        "reason": "aggregate_route_probe_has_no_per_class_throughput",
+    }
+    return {"verdict": evaluation["classification"], "mode":
+            "shortcut" if evaluation["decision"] == "accept_candidate" else "baseline",
+            "ratio": c / b if b else None,
+            "reason": evaluation["explanation"],
+            "reason_code": evaluation["reason_code"],
+            "structured_evaluation": evaluation}
 
 
 def run_catalog_profile_matrix(net, traffic_catalog, class_config, evidence_dir,
-                               routes, method_qos_enabled=True):
+                               routes, method_qos_enabled=True, route_mode="baseline",
+                               shortcut_link=None, profile_rows=None, run_tag="",
+                               save_output=True, random_seed=None):
     """Exercise each catalog profile through its deterministic MedRoute class.
 
     Catalog ports are metadata and are not controller policy ports. Each profile
     therefore uses the existing policy port/DSCP for its mapped class, while the
     original catalog values remain recorded for provenance.
     """
+    if shortcut_link is not None:
+        set_shortcut_link(shortcut_link, route_mode == "shortcut")
     set_qos_enabled(method_qos_enabled)
-    set_mode("baseline", "catalog profile matrix")
+    set_mode(route_mode, "catalog profile matrix {}".format(run_tag or route_mode))
     h1, h2 = net.get("h1", "h2")
+    from cbdr import load_config as load_cbdr_config
+    cbdr_profiles = load_cbdr_config()["classes"]
     results = []
+    catalog_rows = profile_rows if profile_rows is not None else traffic_catalog["rows"]
     try:
-        for row in traffic_catalog["rows"]:
+        for row in catalog_rows:
             score = float(row["criticality"]) * 20
             traffic_class = ("ECG" if score >= 90 else "ICU" if score >= 70 else
                              "WEARABLE" if score >= 40 else "BACKGROUND")
             policy = class_config["classes"][traffic_class]
-            stage = "catalog_" + str(row["traffic_type"]).lower()
-            flow_evidence = verify_flows(stage, "baseline", evidence_dir, routes,
+            tag = "_".join(part for part in (str(row["traffic_type"]).lower(),
+                                              route_mode, str(run_tag)) if part)
+            stage = "catalog_" + tag
+            flow_evidence = verify_flows(stage, route_mode, evidence_dir, routes,
                                          class_config)
             port = int(policy["udp_port"])
             tos = int(policy["dscp"]) << 2
             duration = max(2, min(4, int(float(row["duration_seconds"]))))
+            seed_material = "{}:{}".format(random_seed, row["traffic_type"])
+            rate_factor = (random.Random(int(hashlib.sha256(
+                seed_material.encode("utf-8")).hexdigest()[:16], 16)).uniform(.9, 1.1)
+                if random_seed is not None else 1.0)
+            profile_name = CBDR_PROFILE_BY_CATALOG.get(row["traffic_type"])
+            minimum_rate = ((cbdr_profiles.get(profile_name, {}).get("objectives", {})
+                             .get("min_throughput_mbps") or 0) * 1_000_000)
+            offered_rate_bps = max(float(row["offered_rate_bps"]), minimum_rate) * rate_factor
+            ports_before = collect_port_snapshot()
+            queue_before = collect_queue_occupancy(SCENARIO_BOTTLENECK_PORT)
             server = h2.popen(["iperf3", "-s", "-1", "-p", str(port)],
                               stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                               text=True)
             time.sleep(.25)
             client = h1.popen([
                 "iperf3", "-c", "10.0.0.2", "-p", str(port), "-u",
-                "-b", "{}M".format(float(row["offered_rate_bps"]) / 1_000_000),
+                "-b", "{}M".format(offered_rate_bps / 1_000_000),
                 "-l", str(int(row["packet_size_bytes"])), "-t", str(duration),
                 "-J", "--get-server-output", "-S", str(tos)
             ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
@@ -1179,9 +1723,20 @@ def run_catalog_profile_matrix(net, traffic_catalog, class_config, evidence_dir,
                 pass
             latency = ping_metrics.get("latency_ms") if ping_metrics else None
             jitter = ping_metrics.get("jitter_ms") if ping_metrics else None
+            ports_after = collect_port_snapshot()
+            queue_after = collect_queue_occupancy(SCENARIO_BOTTLENECK_PORT)
+            path_utilization = calculate_link_utilization(
+                ports_before, ports_after, class_config["link_capacity_mbps"])
+            queue_metrics = summarize_queue_occupancy(queue_before, queue_after)
             complete = bool(flow_evidence.get("verified") and latency is not None and
                             jitter is not None and received_mbps is not None and
                             udp_loss is not None)
+            result_metrics = {
+                "complete": complete, "latency_ms": latency,
+                "jitter_ms": jitter, "packet_loss_pct": udp_loss,
+                "reliability_pct": 100 - udp_loss if udp_loss is not None else None,
+                "throughput_mbps": received_mbps,
+            }
             results.append({
                 "profile": row["traffic_type"],
                 "catalog": row,
@@ -1190,14 +1745,18 @@ def run_catalog_profile_matrix(net, traffic_catalog, class_config, evidence_dir,
                 "policy_port": port,
                 "policy_dscp": int(policy["dscp"]),
                 "expected_queue_id": policy["queue_id"],
+                "route": route_mode,
+                "captured_at": time.time(),
+                "seed_rate_factor": rate_factor,
+                "offered_rate_bps": offered_rate_bps,
                 "flow_evidence": flow_evidence,
                 "metrics": {
-                    "complete": complete, "latency_ms": latency,
-                    "jitter_ms": jitter, "packet_loss_pct": udp_loss,
-                    "throughput_mbps": received_mbps,
+                    **result_metrics,
                     "ping_packet_loss_pct": ping_metrics.get("packet_loss_pct")
                         if ping_metrics else None
                 },
+                "link_utilization": path_utilization,
+                "queue_occupancy": queue_metrics,
                 "complete": complete,
                 "raw_process_output": {
                     "ping": ping_output, "client": client_output,
@@ -1207,40 +1766,62 @@ def run_catalog_profile_matrix(net, traffic_catalog, class_config, evidence_dir,
             })
     finally:
         set_qos_enabled(method_qos_enabled)
-    save_json(evidence_dir / "profile_matrix.json", {
+    matrix = {
         "source": traffic_catalog["source_file"],
         "source_sha256": traffic_catalog["sha256"],
-        "mapping_policy": "catalog criticality * 20 mapped to the existing four "
-                           "MedRoute policy classes; catalog ports remain metadata",
+        "mapping_policy": "catalog criticality * 20 mapped to the four queue classes; service profile and source port are recorded",
         "profiles": results,
-        "all_profiles_executed": len(results) == traffic_catalog["row_count"],
+        "all_profiles_executed": len(results) == len(catalog_rows),
         "all_profiles_complete": all(row["complete"] for row in results)
-    })
+    }
+    if save_output:
+        save_json(evidence_dir / "profile_matrix.json", matrix)
     return results
 
 
 def main():
+    global SCENARIO_REPETITIONS
     def terminate_cleanly(signum, frame):
         raise SystemExit("received signal " + str(signum))
     signal.signal(signal.SIGTERM, terminate_cleanly)
     parser = argparse.ArgumentParser()
     parser.add_argument("--evidence-dir", required=True, type=Path)
+    parser.add_argument("--repetitions", type=int, default=SCENARIO_REPETITIONS,
+                        help="repetitions per scenario (default: 3)")
+    parser.add_argument("--seed", type=int,
+                        help="reproducible workload seed; generated and recorded when omitted")
     parser.add_argument("--method", choices=available_methods(),
-                        help="M1=shortest-path baseline, M2=QoS only, M3=QoS + Braess guard")
+                        help="M1=shortest-path baseline, M2=QoS-aware, M3=congestion-aware, M4=CBDR")
+    parser.add_argument("--ablation", choices=("disable_braess_detection",
+                        "disable_priority_handling", "disable_link_change_evaluation"),
+                        help="M4 ablation; run separately for a controlled comparison")
+    parser.add_argument("--topology-profile", choices=("balanced_diamond", "asymmetric_diamond", "low_capacity_diamond"),
+                        default="balanced_diamond", help="link-rate and propagation-delay topology condition")
     parser.add_argument("--skip-failure-recovery", action="store_true",
                         help="skip the controlled primary-link failure demonstration")
     args = parser.parse_args()
+    if args.ablation and args.method != "M4":
+        parser.error("--ablation is available only with --method M4")
+    if args.repetitions < 2:
+        parser.error("--repetitions must be at least 2 to support variability estimates")
+    if args.seed is not None and args.seed < 0:
+        parser.error("--seed must be a non-negative integer")
+    SCENARIO_REPETITIONS = args.repetitions
+    random_seed = secrets.randbits(32) if args.seed is None else args.seed
     method_id = args.method
     selected_method = get_method(method_id) if method_id is not None else None
     scenario_plan = resolve_method_plan(method_id)
     out = args.evidence_dir.resolve()
+    if out.exists() and any(out.iterdir()):
+        parser.error("evidence directory already contains files; choose a new run directory")
     out.mkdir(parents=True, exist_ok=True)
+    run_started_at = datetime.now(timezone.utc).isoformat()
     class_config = json.loads((ROOT / "sdn" / "classes.json").read_text(encoding="utf-8"))
     dataset_provenance = load_profiles(ROOT)
     traffic_catalog = load_traffic_catalog(ROOT)
     scenario_workloads = build_scenario_workloads(
         dataset_provenance, scenario_plan, class_config["classes"],
-        SCENARIO_BOTTLENECK_CAPACITY_MBPS)
+        SCENARIO_BOTTLENECK_CAPACITY_MBPS, random_seed=random_seed)
     save_json(out / "dataset_workload.json", {
         "provenance": dataset_provenance,
         "catalog": traffic_catalog,
@@ -1284,6 +1865,8 @@ def main():
               "traffic_classes": class_config,
               "required_scenarios": scenario_plan,
               "required_repetitions_per_scenario": SCENARIO_REPETITIONS,
+              "random_seed": random_seed,
+              "workload_randomization": "seeded +/-10% offered-rate perturbations by scenario and class; identical seed reproduces configured rates",
               "scenario_workload": {"traffic": "simultaneous DSCP-marked UDP flows using CICIoMT2024 training-derived synthetic rate and packet-size profiles",
                   "dataset_profile_file": dataset_provenance["source_file"],
                   "dataset_profile_version": dataset_provenance["profile_version"],
@@ -1300,6 +1883,10 @@ def main():
               "traffic_catalog": traffic_catalog,
               "dataset_interpretation": "training-derived aggregate benign traffic profiles shape synthetic scenario offered rates and UDP packet sizes; raw packet replay and healthcare labels are not inferred",
               "acceptance": "if harmful, verify the selected baseline route using complete follow-up telemetry, the recorded controller decision, and matching baseline OpenFlow actions; retain measured follow-up cost separately. For neutral or beneficial decisions, verify the actual route matches the selected mode"}
+    config["cbdr_policy"] = json.loads((ROOT / "config" / "healthcare_qos.json").read_text(encoding="utf-8"))
+    config["traffic_class_measurement_scope"] = (
+        "Candidate baseline/shortcut decision probes are aggregate route measurements; "
+        "they do not establish per-class objective satisfaction.")
     save_json(out / "config.json", config)
     routes = json.loads((ROOT / "sdn" / "routes.json").read_text(encoding="utf-8"))
     os.environ["MEDROUTE_LOG"] = str(out / "controller.jsonl")
@@ -1313,12 +1900,15 @@ def main():
         from mininet.link import TCLink
         sys.path.insert(0, str(ROOT / "sdn"))
         from topology import MedRouteTopo
+        ryu_manager = Path(sys.executable).with_name("ryu-manager")
+        if not ryu_manager.is_file():
+            raise RuntimeError("ryu-manager is not installed beside the active Python interpreter: {}".format(sys.executable))
         with (out / "ryu.stdout.log").open("w", encoding="utf-8") as log:
-            ryu = subprocess.Popen(["ryu-manager", "--ofp-tcp-listen-port", "6653",
+            ryu = subprocess.Popen([str(ryu_manager), "--ofp-tcp-listen-port", "6653",
                 "--wsapi-port", "8080", "sdn/controller.py"], cwd=ROOT,
                 stdout=log, stderr=subprocess.STDOUT, env=os.environ.copy())
             wait_controller(ryu)
-            net = Mininet(topo=MedRouteTopo(), controller=None, link=TCLink,
+            net = Mininet(topo=MedRouteTopo(profile=args.topology_profile), controller=None, link=TCLink,
                           autoSetMacs=True, build=True)
             net.addController("c0", controller=RemoteController, ip="127.0.0.1", port=6653)
             net.start()
@@ -1352,6 +1942,11 @@ def main():
                     read_qos_fn=lambda: request_json(timeout=1, endpoint=QOS_API).get("qos_enabled"))
                 if not qos_verified:
                     raise RuntimeError("selected method {} did not restore the required QoS state".format(selected_method.method_id))
+                if args.ablation == "disable_priority_handling":
+                    set_qos_enabled(False)
+                    observed_qos = request_json(timeout=1, endpoint=QOS_API).get("qos_enabled")
+                    if observed_qos is not False:
+                        raise RuntimeError("priority-handling ablation did not confirm QoS disabled")
                 set_mode(selected_method.initial_route, "selected method {}".format(selected_method.method_id))
                 verify_flows("method_{}".format(selected_method.method_id.lower()),
                              selected_method.initial_route, out, routes, class_config)
@@ -1363,7 +1958,8 @@ def main():
                     net, failed_link, shortcut_link, out, routes, class_config,
                     method_qos_enabled=(selected_method.qos_enabled if selected_method is not None else True))}
             baseline = sample_stage(net, "baseline", "baseline", out, routes, class_config)
-            if selected_method is None or selected_method.method_id == "M3":
+            congestion_repetitions = []
+            if selected_method is None:
                 set_shortcut_link(shortcut_link, True)
                 candidate = sample_stage(net, "shortcut", "shortcut", out, routes, class_config)
                 paired_baseline = measure_route_condition(net, "baseline", shortcut_link,
@@ -1388,7 +1984,7 @@ def main():
                 baseline["sample_count"] = len(paired_baseline["samples"])
                 baseline["valid_count"] = paired_baseline["valid_count"]
                 baseline["metrics"] = paired_baseline["metrics"]
-            if selected_method is None or selected_method.method_id == "M3":
+            if selected_method is None:
                 decision = classify(baseline, candidate)
                 if not decision.get("reason"):
                     decision["reason"] = ("shortcut cost exceeded baseline by more than {:.0%} threshold".format(THRESHOLD)
@@ -1414,6 +2010,7 @@ def main():
                     live_status = "shortcut_not_harmful_under_test" if passed else "inconclusive"
                 decision_record = {"repetition": 1, "verdict": decision["verdict"], "selected_route": prevention_mode,
                     "reason": decision["reason"], "threshold_fraction": THRESHOLD,
+                    "structured_evaluation": decision.get("structured_evaluation"),
                     "metrics_used": {"baseline": baseline["metrics"], "shortcut": candidate["metrics"]},
                     "sample_timestamps": {
                         "baseline": [sample["timestamp"] for sample in baseline["samples"]],
@@ -1447,6 +2044,55 @@ def main():
                 for repetition in range(2, SCENARIO_REPETITIONS + 1):
                     braess_repetitions.append(run_braess_repetition(
                         net, repetition, shortcut_link, out, routes, class_config))
+            elif selected_method.method_id == "M3":
+                for repetition in range(1, SCENARIO_REPETITIONS + 1):
+                    congestion_repetitions.append(run_congestion_route_repetition(
+                        net, repetition, shortcut_link, out, routes, class_config))
+                last_congestion = congestion_repetitions[-1]
+                decision = last_congestion["selection"]
+                decision_record = last_congestion["decision"]
+                prevention_mode = last_congestion["selected_route"]
+                prevention = {"metrics": next((item.get("metrics") for item in
+                    last_congestion["route_measurements"]
+                    if item.get("mode") == prevention_mode), None),
+                    "complete": last_congestion["complete"], "samples": []}
+                candidate = next((item for item in last_congestion["route_measurements"]
+                                  if item.get("mode") == "shortcut"), None)
+                records = {"baseline": baseline, "shortcut": candidate,
+                           "prevention": prevention}
+                save_json(out / "measurements.json", records)
+                verified = all(item["flow_evidence"].get("verified")
+                               for item in last_congestion["route_measurements"])
+                complete = all(item.get("complete") for item in congestion_repetitions)
+                passed = complete and verified
+                live_status = "congestion_route_selected" if passed else "inconclusive"
+                braess_repetitions = []
+            elif selected_method.method_id == "M4":
+                cbdr_repetitions = []
+                for repetition in range(1, SCENARIO_REPETITIONS + 1):
+                    cbdr_repetitions.append(run_cbdr_repetition(
+                        net, repetition, shortcut_link, out, routes, class_config,
+                        traffic_catalog, qos_enabled=(selected_method.qos_enabled and
+                            args.ablation != "disable_priority_handling"),
+                        random_seed=random_seed, ablation=args.ablation))
+                last_cbdr = cbdr_repetitions[-1]
+                decision = last_cbdr.get("evaluation", {})
+                decision_record = last_cbdr.get("decision", {})
+                prevention_mode = last_cbdr.get("decision", {}).get("selected_route", "baseline")
+                prevention = {"metrics": None, "complete": last_cbdr.get("complete", False),
+                              "samples": []}
+                candidate = {"complete": last_cbdr.get("complete", False),
+                             "metrics": {"complete": last_cbdr.get("complete", False)},
+                             "profiles": last_cbdr.get("candidate_profiles", [])}
+                records = {"baseline": baseline, "shortcut": candidate,
+                           "prevention": prevention}
+                save_json(out / "measurements.json", records)
+                verified = all(row.get("decision", {}).get("flows_verified")
+                               for row in cbdr_repetitions)
+                complete = all(row.get("complete") for row in cbdr_repetitions)
+                passed = complete and verified
+                live_status = "cbdr_route_selected" if passed else "inconclusive"
+                braess_repetitions = []
             else:
                 braess_repetitions = []
                 decision = {"verdict": "not_run", "mode": selected_method.initial_route,
@@ -1470,14 +2116,17 @@ def main():
             scenario_validation_errors = []
             for scenario, spec in scenario_plan.items():
                 bottleneck_evidence = configure_scenario_bottleneck(
-                    spec["heavy_background"], class_config)
+                    spec.get("bottleneck", spec["heavy_background"]), class_config)
                 rows = []
+                scenario_route = (prevention_mode if selected_method is not None and
+                    selected_method.method_id in ("M3", "M4") else "baseline")
                 for repetition in range(1, SCENARIO_REPETITIONS + 1):
-                    set_shortcut_link(shortcut_link, False)
                     rows.append(sample_scenario_traffic(net, scenario, repetition,
-                        spec["qos_enabled"], spec["heavy_background"], out, routes,
+                        (False if args.ablation == "disable_priority_handling" else spec["qos_enabled"]), spec["heavy_background"], out, routes,
                         class_config, bottleneck_evidence,
-                        scenario_workloads[scenario]))
+                        scenario_workloads[scenario],
+                        bottleneck_congested=spec.get("bottleneck", spec["heavy_background"]),
+                        route_mode=scenario_route, shortcut_link=shortcut_link))
                 scenario_repetitions[scenario] = rows
                 saved_rows = [json.loads((out / "scenario_{}_r{}.json".format(scenario, i)).read_text(encoding="utf-8"))
                               for i in range(1, SCENARIO_REPETITIONS + 1)]
@@ -1535,6 +2184,9 @@ def main():
             for trial in braess_repetitions:
                 decision_entry = trial["decision"]
                 if trial["repetition"] == 1 and not decision_entry.get("controller_recorded"):
+                    scenario_validation = False
+                    scenario_validation_errors.append(
+                        "Braess r1 decision was not recorded by controller")
                     continue
                 if trial["repetition"] > 1 and not decision_entry.get("controller_recorded"):
                     scenario_validation = False
@@ -1543,33 +2195,51 @@ def main():
                             trial["repetition"]))
                 if (decision_entry.get("verdict") == "harmful" and
                         not decision_entry.get("prevention_verified")):
+                    scenario_validation = False
                     scenario_validation_errors.append(
                         "Braess r{} harmful shortcut did not meet prevention verification".format(
                             trial["repetition"]))
                 if not trial.get("complete") or not decision_entry.get("route_selection_verified"):
+                    scenario_validation = False
                     scenario_validation_errors.append(
                         "Braess r{} has incomplete metrics or route selection evidence".format(
                             trial["repetition"]))
             braess_validation = braess_validation_result(
                 selected_method.method_id if selected_method is not None else None,
                 braess_repetitions)
-            if selected_method is None or selected_method.method_id == "M3":
+            if selected_method is None:
                 scenario_validation = scenario_validation and braess_validation["passed"]
+            elif selected_method.method_id == "M3":
+                scenario_validation = scenario_validation and all(
+                    item.get("complete") and item.get("decision", {}).get("controller_recorded") and
+                    item.get("route_selection_verified") for item in congestion_repetitions)
+                braess_validation = {"status": "not_run", "passed": False,
+                                     "not_applicable": True}
             else:
                 braess_validation["status"] = "not_run"
                 braess_validation["passed"] = False
                 braess_validation["not_applicable"] = True
             braess_statistics = summarize_braess_repetitions(braess_repetitions)
+            repeated_decision_summary = summarize_repeated_decisions(braess_repetitions)
+            candidate_evaluations = []
+            if isinstance(decision_record, dict):
+                candidate_evaluations.append(
+                    decision_record.get("structured_evaluation") or
+                    decision_record.get("evaluation") or {})
+            telemetry_completeness = summarize_telemetry_completeness(
+                records.values(), scenario_statistics, scenario_repetitions,
+                candidate_evaluations)
             scenario_result = {"required_repetitions": SCENARIO_REPETITIONS,
                 "scenarios": scenario_repetitions,
                 "statistics_from_saved_measurements": scenario_statistics,
                 "braess_shortcut_repetitions": braess_repetitions,
+                "congestion_route_repetitions": congestion_repetitions,
                 "braess_statistics": braess_statistics,
                 "braess_validation": braess_validation,
                 "validation_errors": scenario_validation_errors,
                 "validation_passed": bool(scenario_validation)}
             save_json(out / "scenario_results.json", scenario_result)
-            if selected_method is None or selected_method.method_id == "M3":
+            if selected_method is None:
                 selected_final = braess_repetitions[-1]["decision"]["selected_route"]
                 set_shortcut_link(shortcut_link, selected_final == "shortcut")
                 set_mode(selected_final, "restore final repeated Braess decision")
@@ -1577,23 +2247,41 @@ def main():
                                                     out, routes, class_config)
                 if not scenario_validation:
                     live_status = "scenario_validation_failed"
+                elif not repeated_decision_summary["passed"]:
+                    live_status = repeated_decision_summary["live_experiment"]
+                else:
+                    live_status = repeated_decision_summary["live_experiment"]
+                passed = bool(repeated_decision_summary["passed"] and scenario_validation)
                 decisions = {"shortcut_decision": decision, "route_decision": decision_record,
                              "prevention_mode": prevention_mode,
                              "baseline_cost": baseline["metrics"]["cost"] if baseline["metrics"] else None,
                              "shortcut_cost": candidate["metrics"]["cost"] if candidate and candidate["metrics"] else None,
                              "prevention_cost": prevention["metrics"]["cost"] if prevention["metrics"] else None}
-                summary = {"live_experiment": live_status, "live_prevention_verified": bool(passed and decision["verdict"] == "harmful"),
+                aggregate_verdict = repeated_decision_summary["aggregate_verdict"]
+                summary = {"live_experiment": live_status,
+                            "live_prevention_verified": bool(
+                                repeated_decision_summary["harmful_candidate_count"] > 0 and
+                                repeated_decision_summary["harmful_candidate_count"] ==
+                                repeated_decision_summary["prevention_verified_count"] and
+                                repeated_decision_summary["passed"]),
+                            "candidate_decision_aggregate": repeated_decision_summary,
                            "failure_recovery": recovery,
                            "dataset_used": True,
                            "dataset_profile_version": dataset_provenance["profile_version"],
                            "dataset_profile_sha256": dataset_provenance["source_sha256"],
-                           "shortcut_verdict": decision["verdict"], "all_flow_rules_verified": verified,
-                           "all_telemetry_complete": complete,
+                           "shortcut_verdict": aggregate_verdict,
+                           "shortcut_verdict_counts": repeated_decision_summary["verdict_counts"],
+                           "all_flow_rules_verified": verified,
+                           "all_telemetry_complete": telemetry_completeness["all_telemetry_complete"],
+                           "required_telemetry_complete": telemetry_completeness["required_telemetry_complete"],
+                           "optional_telemetry": telemetry_completeness["optional_telemetry"],
+                           "optional_telemetry_complete": telemetry_completeness["optional_telemetry_complete"],
                            "baseline_metrics": baseline["metrics"], "shortcut_metrics": candidate["metrics"] if candidate else None,
                            "prevention_metrics": prevention["metrics"],
                            "route_decision": decision_record,
                            "decision_metrics_used": decision_record.get("metrics_used"),
-                           "selected_route": prevention_mode,
+                           "selected_route": selected_final,
+                           "prevention_mode": prevention_mode,
                            "scenario_repetitions": {name: len(rows) for name, rows in scenario_repetitions.items()},
                            "catalog_profile_matrix": catalog_matrix_summary,
                            "braess_validation": braess_validation,
@@ -1613,6 +2301,44 @@ def main():
                            "link_utilization_complete": all(
                                bool(records[key].get("link_utilization", {}).get("complete"))
                                for key in records if isinstance(records.get(key), dict) and isinstance(records[key].get("link_utilization"), dict))}
+            elif selected_method.method_id == "M3":
+                selected_final = congestion_repetitions[-1]["selected_route"]
+                set_shortcut_link(shortcut_link, selected_final == "shortcut")
+                set_mode(selected_final, "restore final M3 congestion selection")
+                final_route_evidence = verify_flows("final_selected", selected_final,
+                                                    out, routes, class_config)
+                passed = bool(scenario_validation and all(
+                    row.get("complete") and row.get("route_selection_verified")
+                    for row in congestion_repetitions) and final_route_evidence["verified"])
+                live_status = "congestion_route_selected" if passed else "scenario_validation_failed"
+                decisions = {"congestion_route_repetitions": congestion_repetitions,
+                             "selected_route": selected_final}
+                summary = {"live_experiment": live_status,
+                           "live_prevention_verified": False,
+                           "method_policy": summarize_method_policy("M3"),
+                           "failure_recovery": recovery,
+                           "congestion_route_repetitions": len(congestion_repetitions),
+                           "congestion_scores_pct": [row["selection"]["scores_pct"]
+                               for row in congestion_repetitions],
+                           "route_decisions": [row["decision"] for row in congestion_repetitions],
+                           "all_flow_rules_verified": verified,
+                           "all_telemetry_complete": telemetry_completeness["all_telemetry_complete"],
+                           "required_telemetry_complete": telemetry_completeness["required_telemetry_complete"],
+                           "optional_telemetry": telemetry_completeness["optional_telemetry"],
+                           "optional_telemetry_complete": telemetry_completeness["optional_telemetry_complete"],
+                           "selected_route": selected_final,
+                           "final_repeated_route": selected_final,
+                           "final_route_verified": final_route_evidence["verified"],
+                           "scenario_repetitions": {name: len(rows) for name, rows in scenario_repetitions.items()},
+                           "catalog_profile_matrix": catalog_matrix_summary,
+                           "braess_validation": braess_validation,
+                           "braess_repetitions": 0,
+                           "scenario_validation_passed": bool(scenario_validation),
+                           "scenario_validation_errors": scenario_validation_errors,
+                           "scenario_statistics_file": "scenario_results.json",
+                           "controller_metrics_published": bool(isinstance(records.get("baseline"), dict) and records["baseline"].get("controller_metrics", {}).get("complete")),
+                           "per_class_metrics_complete": bool(isinstance(records.get("baseline"), dict) and all(bool(item.get("complete")) for item in records["baseline"].get("per_class_metrics", {}).values())),
+                           "link_utilization_complete": bool(isinstance(records.get("baseline"), dict) and records["baseline"].get("link_utilization", {}).get("complete"))}
             else:
                 selected_final = selected_method.initial_route
                 set_shortcut_link(shortcut_link, False)
@@ -1635,7 +2361,10 @@ def main():
                            "shortcut_verdict": "not_run",
                            "method_policy": summarize_method_policy(selected_method.method_id),
                            "all_flow_rules_verified": verified,
-                           "all_telemetry_complete": complete,
+                           "all_telemetry_complete": telemetry_completeness["all_telemetry_complete"],
+                           "required_telemetry_complete": telemetry_completeness["required_telemetry_complete"],
+                           "optional_telemetry": telemetry_completeness["optional_telemetry"],
+                           "optional_telemetry_complete": telemetry_completeness["optional_telemetry_complete"],
                            "baseline_metrics": baseline["metrics"],
                            "shortcut_metrics": None,
                            "prevention_metrics": None,
@@ -1712,6 +2441,15 @@ def main():
             except subprocess.TimeoutExpired:
                 ryu.kill()
                 ryu.wait()
+        try:
+            write_manifest(out, started_at=run_started_at)
+        except Exception as manifest_error:
+            try:
+                (out / "manifest_error.txt").write_text(
+                    type(manifest_error).__name__ + ": " + str(manifest_error),
+                    encoding="utf-8")
+            except OSError:
+                pass
 
 
 if __name__ == "__main__":

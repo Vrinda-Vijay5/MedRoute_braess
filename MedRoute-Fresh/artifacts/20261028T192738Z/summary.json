@@ -1,0 +1,161 @@
+{
+  "started_utc": "2026-10-28T19:27:38.958Z",
+  "completed_utc": "2026-10-28T19:32:35.193Z",
+  "platform": "linux",
+  "mathematical_verification": "passed",
+  "automated_tests": "passed",
+  "node_tests": "passed",
+  "class_policy_validation": "passed",
+  "python_metric_tests": "passed",
+  "required_root": true,
+  "root_available": true,
+  "wsl_status": "not applicable",
+  "live_experiment": "shortcut_not_harmful_under_test",
+  "live_prevention_verified": false,
+  "failure_recovery": {
+    "enabled": true,
+    "failed_link": [
+      "s1-eth2",
+      "s2-eth1"
+    ],
+    "selected_route": "recovery",
+    "connectivity": {
+      "received": 3,
+      "probe": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\r\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=7.68 ms\r\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=7.31 ms\r\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=6.63 ms\r\n\r\n--- 10.0.0.2 ping statistics ---\r\n3 packets transmitted, 3 received, 0% packet loss, time 1998ms\r\nrtt min/avg/max/mdev = 6.631/7.204/7.676/0.432 ms\r\n"
+    },
+    "flows_verified": true,
+    "complete": true
+  },
+  "dataset_used": true,
+  "dataset_profile_version": "unspecified",
+  "dataset_profile_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+  "shortcut_verdict": "beneficial",
+  "all_flow_rules_verified": true,
+  "all_telemetry_complete": true,
+  "baseline_metrics": {
+    "complete": true,
+    "latency_ms": 119,
+    "jitter_ms": 21.4,
+    "packet_loss_pct": 0,
+    "cost": 3.41
+  },
+  "shortcut_metrics": {
+    "complete": true,
+    "latency_ms": 115,
+    "jitter_ms": 17.655,
+    "packet_loss_pct": 0,
+    "cost": 3.093666666666667
+  },
+  "prevention_metrics": {
+    "complete": true,
+    "latency_ms": 127,
+    "jitter_ms": 16.205,
+    "packet_loss_pct": 0,
+    "cost": 3.1969999999999996
+  },
+  "route_decision": {
+    "repetition": 1,
+    "verdict": "beneficial",
+    "selected_route": "shortcut",
+    "reason": "shortcut cost was more than 5% below baseline",
+    "threshold_fraction": 0.05,
+    "metrics_used": {
+      "baseline": {
+        "complete": true,
+        "latency_ms": 119,
+        "jitter_ms": 21.4,
+        "packet_loss_pct": 0,
+        "cost": 3.41
+      },
+      "shortcut": {
+        "complete": true,
+        "latency_ms": 115,
+        "jitter_ms": 17.655,
+        "packet_loss_pct": 0,
+        "cost": 3.093666666666667
+      }
+    },
+    "sample_timestamps": {
+      "baseline": [
+        1793215721.3877451,
+        1793215721.553393,
+        1793215721.7421236,
+        1793215722.016793,
+        1793215722.304807
+      ],
+      "shortcut": [
+        1793215726.962747,
+        1793215727.1341789,
+        1793215727.3151898,
+        1793215727.584535,
+        1793215727.8634236
+      ]
+    },
+    "prevention_verified": false,
+    "route_selection_verified": true,
+    "flows_verified": true,
+    "prevention_metrics": {
+      "complete": true,
+      "latency_ms": 127,
+      "jitter_ms": 16.205,
+      "packet_loss_pct": 0,
+      "cost": 3.1969999999999996
+    },
+    "controller_recorded": true
+  },
+  "decision_metrics_used": {
+    "baseline": {
+      "complete": true,
+      "latency_ms": 119,
+      "jitter_ms": 21.4,
+      "packet_loss_pct": 0,
+      "cost": 3.41
+    },
+    "shortcut": {
+      "complete": true,
+      "latency_ms": 115,
+      "jitter_ms": 17.655,
+      "packet_loss_pct": 0,
+      "cost": 3.093666666666667
+    }
+  },
+  "selected_route": "shortcut",
+  "scenario_repetitions": {
+    "baseline_no_prioritization": 3,
+    "class_prioritization_no_congestion": 3,
+    "heavy_background_no_prioritization": 3,
+    "heavy_background_with_prioritization": 3
+  },
+  "catalog_profile_matrix": {
+    "profiles": 6,
+    "complete": true,
+    "file": "profile_matrix.json",
+    "skipped": false,
+    "status": "complete"
+  },
+  "braess_validation": {
+    "status": "passed",
+    "passed": true,
+    "not_applicable": false
+  },
+  "braess_repetitions": 3,
+  "scenario_validation_passed": true,
+  "scenario_validation_errors": [],
+  "scenario_statistics_file": "scenario_results.json",
+  "braess_prevention_verified_repetitions": 0,
+  "final_repeated_route": "shortcut",
+  "final_route_verified": true,
+  "controller_metrics_published": true,
+  "per_class_metrics_complete": true,
+  "link_utilization_complete": true,
+  "evidence_database": "evidence.sqlite",
+  "stage6_plots_generated": true,
+  "stage6_artifact_files": [
+    "plot_latency_ms.png",
+    "plot_throughput_mbps.png",
+    "plot_packet_loss_pct.png",
+    "plot_jitter_ms.png",
+    "experiment_report.md"
+  ],
+  "stage6_generation_error": null
+}

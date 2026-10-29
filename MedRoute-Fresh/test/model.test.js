@@ -25,6 +25,16 @@ test("shortcut equilibrium verifies the interior-demand region", () => {
   assert.ok(Math.abs(x.latencies.upper - x.latencies.zigzag) < 1e-12);
   assert.equal(x.latencies.upper, 90);
 });
+test("adding the link can be beneficial at low load and neutral at high load", () => {
+  const lowLoad = detectBraess(2000);
+  const highLoad = detectBraess(9000);
+  assert.equal(lowLoad.verdict, "beneficial");
+  assert.equal(lowLoad.paradox, false);
+  assert.equal(highLoad.verdict, "neutral");
+  assert.equal(highLoad.paradox, false);
+  assert.equal(lowLoad.wardrop.baseline && lowLoad.wardrop.shortcut, true);
+  assert.equal(highLoad.wardrop.baseline && highLoad.wardrop.shortcut, true);
+});
 test("reusable Wardrop and paradox APIs validate both configurations", () => {
   assert.equal(validateWardrop(evaluate(false)), true);
   assert.equal(validateWardrop(evaluate(true)), true);

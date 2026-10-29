@@ -1,0 +1,179 @@
+import sys
+import types
+import unittest
+from unittest.mock import patch
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "sdn"))
+
+try:
+    from ryu.lib import hub
+    import controller
+    from controller import MedRoute, RouteInstallError
+    RYU_AVAILABLE = True
+except ModuleNotFoundError:
+    RYU_AVAILABLE = False
+
+
+class FakeDatapath:
+    def __init__(self, dpid, on_barrier=None):
+        self.id = dpid
+        self._xid = 0
+        self.messages = []
+        self.on_barrier = on_barrier
+        self.ofproto_parser = types.SimpleNamespace(
+            OFPBarrierRequest=lambda dp: types.SimpleNamespace(datapath=dp))
+
+    def set_xid(self, message):
+        self._xid += 1
+        message.xid = self._xid
+
+    def send_msg(self, message):
+        self.messages.append(message)
+        if self.on_barrier:
+            self.on_barrier(self, message)
+
+
+def barrier_event(dp, message):
+    return types.SimpleNamespace(msg=types.SimpleNamespace(
+        datapath=dp, xid=message.xid))
+
+
+@unittest.skipUnless(RYU_AVAILABLE, "Ryu is required for OpenFlow barrier tests")
+class OpenFlowBarrierTests(unittest.TestCase):
+    def make_app(self, dps, timeout=0.05):
+        app = object.__new__(MedRoute)
+        app.datapaths = {dp.id: dp for dp in dps}
+        app.ready_datapaths = dict(app.datapaths)
+        app._update_lock = hub.Semaphore(1)
+        app.barrier_timeout = timeout
+        app._next_update_id = 0
+        app._pending_requests = {}
+        app._active_updates = {}
+        app.mode = "baseline"
+        app.route_state = "confirmed"
+        app.qos_enabled = True
+        app.qos_state_confirmed = True
+        app.last_route_update = None
+        app.route_change_history = []
+        app.route_decision = {"selected_route": "baseline"}
+        app.log = lambda *args, **kwargs: None
+        app.install_routes = types.MethodType(
+            lambda self, dp, mode, qos_enabled, operation:
+                self._send_barrier(operation, dp) and [], app)
+        return app
+
+    def reply_after(self, app, delay=0.001):
+        def on_barrier(dp, message):
+            hub.spawn_after(delay, app.barrier_reply, barrier_event(dp, message))
+        return on_barrier
+
+    def test_all_switches_confirm_before_success(self):
+        dps = [FakeDatapath(i) for i in (1, 2)]
+        app = self.make_app(dps)
+        for dp in dps:
+            dp.on_barrier = self.reply_after(app)
+        result = app.set_mode("shortcut")
+        self.assertTrue(result["switch_barrier_confirmed"])
+        self.assertEqual(result["active_dpids"], [1, 2])
+
+    def test_one_switch_timeout_is_reported(self):
+        dps = [FakeDatapath(1), FakeDatapath(2)]
+        app = self.make_app(dps)
+        dps[0].on_barrier = self.reply_after(app)
+        with self.assertRaises(RouteInstallError) as caught:
+            app.set_mode("shortcut")
+        self.assertIn("s2", caught.exception.failed_switches)
+        self.assertEqual(app.mode, "baseline")
+
+    def test_disconnect_during_update_fails_confirmation(self):
+        dp = FakeDatapath(1)
+        app = self.make_app([dp])
+        dp.on_barrier = lambda d, m: hub.spawn_after(
+            0.001, app._datapath_disconnected, d, "switch disconnected")
+        with self.assertRaises(RouteInstallError) as caught:
+            app.set_mode("shortcut")
+        self.assertIn("disconnected", caught.exception.failed_switches["s1"])
+
+    def test_stale_barrier_reply_cannot_confirm_new_operation(self):
+        dp = FakeDatapath(1)
+        app = self.make_app([dp], timeout=0.02)
+        old_messages = []
+        dp.on_barrier = lambda d, m: old_messages.append(m)
+        with self.assertRaises(RouteInstallError):
+            app.set_mode("shortcut")
+        self.assertEqual(len(old_messages), 1)
+
+        current_messages = []
+        dp.on_barrier = lambda d, m: current_messages.append(m)
+        result_box = []
+        greenlet = hub.spawn(lambda: result_box.append(app.set_mode("baseline")))
+        while not current_messages:
+            hub.sleep(0.001)
+        app.barrier_reply(barrier_event(dp, old_messages[0]))
+        hub.sleep(0.005)
+        self.assertFalse(greenlet.dead)
+        self.assertFalse(result_box)
+        app.barrier_reply(barrier_event(dp, current_messages[0]))
+        greenlet.wait()
+        self.assertTrue(result_box[0]["switch_barrier_confirmed"])
+
+    def test_overlapping_updates_are_serialized(self):
+        dp = FakeDatapath(1)
+        app = self.make_app([dp])
+        dp.on_barrier = self.reply_after(app, delay=0.02)
+        outcomes = []
+        first = hub.spawn(lambda: outcomes.append(app.set_mode("shortcut")))
+        hub.sleep(0.002)
+        second = hub.spawn(lambda: outcomes.append(app.set_mode("baseline")))
+        first.wait()
+        second.wait()
+        self.assertEqual(len(outcomes), 2)
+        self.assertTrue(all(item["switch_barrier_confirmed"] for item in outcomes))
+        self.assertEqual(app.mode, "baseline")
+
+    def test_incomplete_confirmation_never_reports_success(self):
+        dps = [FakeDatapath(1), FakeDatapath(2)]
+        app = self.make_app(dps)
+        dps[0].on_barrier = self.reply_after(app)
+        with self.assertRaises(RouteInstallError) as caught:
+            app.set_mode("shortcut")
+        self.assertFalse(app.last_route_update["confirmed"])
+        self.assertEqual(app.last_route_update["failed_switches"],
+                         caught.exception.failed_switches)
+        self.assertEqual(app.mode, "baseline")
+        self.assertEqual(app.route_state, "unknown")
+
+    def test_openflow_error_fails_even_if_barrier_reply_arrives(self):
+        dp = FakeDatapath(1)
+        app = self.make_app([dp])
+
+        def error_then_reply(d, message):
+            error = types.SimpleNamespace(msg=types.SimpleNamespace(
+                datapath=d, xid=message.xid, type=3, code=1))
+            app.openflow_error(error)
+            hub.spawn_after(0.001, app.barrier_reply, barrier_event(d, message))
+
+        dp.on_barrier = error_then_reply
+        with self.assertRaises(RouteInstallError) as caught:
+            app.set_mode("shortcut")
+        self.assertIn("OpenFlow error", caught.exception.failed_switches["s1"])
+        self.assertEqual(app.mode, "baseline")
+
+    def test_route_oscillation_limit_rejects_excessive_changes(self):
+        dp = FakeDatapath(1)
+        app = self.make_app([dp])
+        dp.on_barrier = self.reply_after(app)
+        with patch.object(controller, "MAX_ROUTE_CHANGES_PER_WINDOW", 2):
+            app.set_mode("shortcut")
+            app.set_mode("baseline")
+            with self.assertRaises(RouteInstallError) as caught:
+                app.set_mode("shortcut")
+        self.assertEqual(caught.exception.failed_switches["controller"],
+                         "route_oscillation_limit")
+        self.assertEqual(app.mode, "baseline")
+
+
+if __name__ == "__main__":
+    unittest.main()

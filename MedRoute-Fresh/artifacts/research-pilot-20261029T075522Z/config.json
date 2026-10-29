@@ -1,0 +1,519 @@
+{
+  "acceptance": "if harmful, verify the selected baseline route using complete follow-up telemetry, the recorded controller decision, and matching baseline OpenFlow actions; retain measured follow-up cost separately. For neutral or beneficial decisions, verify the actual route matches the selected mode",
+  "cbdr_policy": {
+    "candidate_degradation_threshold": 0.05,
+    "classes": {
+      "CCTV_BACKGROUND": {
+        "catalog_port": 5006,
+        "catalog_profile": "CCTV",
+        "criticality_policy_class": "BACKGROUND",
+        "criticality_score": 10,
+        "dscp": 0,
+        "live_service_port": 5104,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 10000,
+          "max_packet_loss_pct": 2,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from BACKGROUND profile",
+          "validated": false
+        },
+        "priority": 6,
+        "queue_id": 4
+      },
+      "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+        "catalog_port": 5002,
+        "catalog_profile": "ICU",
+        "criticality_policy_class": "ICU",
+        "criticality_score": 90,
+        "dscp": 34,
+        "live_service_port": 5102,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 250,
+          "max_packet_loss_pct": 0.5,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from ICU profile",
+          "validated": false
+        },
+        "priority": 2,
+        "queue_id": 2
+      },
+      "EHR_TRANSACTIONS": {
+        "catalog_port": 5004,
+        "catalog_profile": "EHR",
+        "criticality_policy_class": "BACKGROUND",
+        "criticality_score": 10,
+        "dscp": 0,
+        "live_service_port": 5104,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 10000,
+          "max_packet_loss_pct": 2,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from BACKGROUND profile",
+          "validated": false
+        },
+        "priority": 4,
+        "queue_id": 4
+      },
+      "EMERGENCY_ALARM": {
+        "catalog_port": 5001,
+        "catalog_profile": "ECG",
+        "criticality_policy_class": "ECG",
+        "criticality_score": 100,
+        "dscp": 46,
+        "live_service_port": 5101,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 100,
+          "max_packet_loss_pct": 0.1,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from ECG profile",
+          "validated": false
+        },
+        "priority": 1,
+        "queue_id": 1
+      },
+      "MEDICAL_IMAGING": {
+        "catalog_port": 5005,
+        "catalog_profile": "IMAGING",
+        "criticality_policy_class": "BACKGROUND",
+        "criticality_score": 10,
+        "dscp": 0,
+        "live_service_port": 5104,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 10000,
+          "max_packet_loss_pct": 2,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from BACKGROUND profile",
+          "validated": false
+        },
+        "priority": 5,
+        "queue_id": 4
+      },
+      "REAL_TIME_CLINICAL_VIDEO": {
+        "catalog_port": 5003,
+        "catalog_profile": "TELEMEDICINE",
+        "criticality_policy_class": "WEARABLE",
+        "criticality_score": 58,
+        "dscp": 18,
+        "live_service_port": 5103,
+        "objectives": {
+          "hard_constraint": false,
+          "max_jitter_ms": null,
+          "max_latency_ms": 500,
+          "max_packet_loss_pct": 1,
+          "min_throughput_mbps": null,
+          "source": "experimental assumption mapped from WEARABLE profile",
+          "validated": false
+        },
+        "priority": 3,
+        "queue_id": 3
+      }
+    },
+    "configuration_mode": "experimental",
+    "cost_model": {
+      "formula": "(latency_ms/20 + jitter_ms/5 + packet_loss_pct/1)/3",
+      "jitter_reference_ms": 5,
+      "latency_reference_ms": 20,
+      "loss_reference_pct": 1,
+      "version": "normalized_latency_jitter_loss_v1"
+    },
+    "neutral_policy": "retain_baseline",
+    "provenance": "Prototype policy mapping to sdn/classes.json and the synthetic healthcare_traffic_profiles.csv catalog. Thresholds are experimental assumptions, not clinical standards.",
+    "schema_version": 1
+  },
+  "cost_formula": "(latency_ms/20 + jitter_ms/5 + packet_loss_pct/1)/3; relative stage cost threshold 5%",
+  "cost_references": {
+    "jitter_ms": 5.0,
+    "latency_ms": 20.0,
+    "packet_loss_pct": 1.0
+  },
+  "dataset_interpretation": "training-derived aggregate benign traffic profiles shape synthetic scenario offered rates and UDP packet sizes; raw packet replay and healthcare labels are not inferred",
+  "dataset_used": true,
+  "dataset_workload": {
+    "dataset": "CICIoMT2024",
+    "limitations": [
+      "Flow-feature records characterize captured IoMT network traffic, not patient signals or clinical priority.",
+      "AVG is a flow-feature average packet size; it is mapped approximately to UDP payload bytes by subtracting IPv4 and UDP headers.",
+      "The profile shapes synthetic iperf packet size only; it does not replay captured packets or set clinical class rates.",
+      "The benign test split is sampled for inventory/reproducibility only and is not used to derive the workload profile."
+    ],
+    "profile_version": "unspecified",
+    "source_file": "data/CICIoMT2024/processed/benign_training_profile.json",
+    "source_kind": "training-derived aggregate profile",
+    "source_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+    "test_source_files_excluded_from_workload_derivation": [
+      "Benign_test.pcap.csv"
+    ],
+    "train_source_files": [
+      "Benign_train.pcap.csv"
+    ]
+  },
+  "demand": "synthetic iperf3 TCP plus 5 route probes and 50 per-class scenario probes",
+  "max_sample_age_seconds": 30.0,
+  "method_mode": "default",
+  "metric_methods": {
+    "jitter_ms": "median absolute difference for adjacent successful RTT pairs; at least two pairs",
+    "latency_ms": "median successful one-packet ping RTT",
+    "packet_loss_pct": "100 * lost probes / 5"
+  },
+  "required_repetitions_per_scenario": 2,
+  "required_samples": 5,
+  "required_scenarios": {
+    "baseline_no_prioritization": {
+      "heavy_background": false,
+      "qos_enabled": false
+    },
+    "class_prioritization_no_congestion": {
+      "heavy_background": false,
+      "qos_enabled": true
+    },
+    "heavy_background_no_prioritization": {
+      "heavy_background": true,
+      "qos_enabled": false
+    },
+    "heavy_background_with_prioritization": {
+      "heavy_background": true,
+      "qos_enabled": true
+    }
+  },
+  "scenario_workload": {
+    "congestion_bottleneck": {
+      "active_only_in_heavy_background_scenarios": true,
+      "capacity_mbps": 20,
+      "port": "s1-eth2"
+    },
+    "dataset_profile_file": "data/CICIoMT2024/processed/benign_training_profile.json",
+    "dataset_profile_version": "unspecified",
+    "heavy_background_rate_policy": "configured bottleneck capacity plus the other classes' nominal training-profile offered rates; the resulting synthetic rate is scaled from the selected training-derived high profile rate",
+    "measurement": "per-class median RTT, adjacent RTT jitter, iperf UDP loss and received throughput; OpenFlow port-counter link utilization",
+    "scenario_ping_probe_count": 100,
+    "traffic": "simultaneous DSCP-marked UDP flows using CICIoMT2024 training-derived synthetic rate and packet-size profiles",
+    "workload_by_scenario_and_class": {
+      "baseline_no_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "class_prioritization_no_congestion": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "heavy_background_no_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 20000000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-high",
+          "offered_load_mbps": 21.5,
+          "offered_rate_bps": 21500000,
+          "scenario_scale_factor": 1.075
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      },
+      "heavy_background_with_prioritization": {
+        "BACKGROUND": {
+          "dataset_base_rate_bps": 20000000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-high",
+          "offered_load_mbps": 21.5,
+          "offered_rate_bps": 21500000,
+          "scenario_scale_factor": 1.075
+        },
+        "ECG": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "ICU": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        },
+        "WEARABLE": {
+          "dataset_base_rate_bps": 500000,
+          "dataset_packet_size_bytes": 55,
+          "dataset_profile": "ciciomt-benign-train-typical",
+          "offered_load_mbps": 0.5,
+          "offered_rate_bps": 500000,
+          "scenario_scale_factor": 1.0
+        }
+      }
+    }
+  },
+  "selected_method": {
+    "braess_guard_enabled": null,
+    "candidate_evaluation_enabled": null,
+    "initial_route": null,
+    "method_id": null,
+    "name": null,
+    "qos_enabled": null,
+    "selected_method": null
+  },
+  "stages": [
+    "failure_recovery",
+    "baseline",
+    "shortcut",
+    "prevention"
+  ],
+  "threshold_fraction": 0.05,
+  "topology": "4-switch diamond; S2-S3 shortcut physically down at baseline, enabled for candidate and recovery",
+  "traffic_catalog": {
+    "row_count": 6,
+    "rows": [
+      {
+        "criticality": "5",
+        "destination_port": "5001",
+        "destination_role": "clinical gateway",
+        "duration_seconds": "60",
+        "offered_rate_bps": "500000",
+        "packet_size_bytes": "256",
+        "source_role": "bedside monitor",
+        "traffic_type": "ECG",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Steady low-volume waveform metadata workload assumption"
+      },
+      {
+        "criticality": "5",
+        "destination_port": "5002",
+        "destination_role": "ICU monitoring station",
+        "duration_seconds": "60",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "512",
+        "source_role": "ICU monitor",
+        "traffic_type": "ICU",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Continuous vital-sign and alarm metadata workload assumption"
+      },
+      {
+        "criticality": "4",
+        "destination_port": "5003",
+        "destination_role": "remote clinician endpoint",
+        "duration_seconds": "60",
+        "offered_rate_bps": "4000000",
+        "packet_size_bytes": "1200",
+        "source_role": "consultation endpoint",
+        "traffic_type": "TELEMEDICINE",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Interactive media metadata workload assumption"
+      },
+      {
+        "criticality": "4",
+        "destination_port": "5004",
+        "destination_role": "EHR service",
+        "duration_seconds": "30",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "1024",
+        "source_role": "clinical workstation",
+        "traffic_type": "EHR",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Transactional record-transfer metadata workload assumption"
+      },
+      {
+        "criticality": "3",
+        "destination_port": "5005",
+        "destination_role": "image archive",
+        "duration_seconds": "30",
+        "offered_rate_bps": "20000000",
+        "packet_size_bytes": "1200",
+        "source_role": "imaging modality",
+        "traffic_type": "IMAGING",
+        "transport_protocol": "UDP",
+        "workload_rationale": "High-rate bulk-transfer metadata workload assumption"
+      },
+      {
+        "criticality": "1",
+        "destination_port": "5006",
+        "destination_role": "video recorder",
+        "duration_seconds": "60",
+        "offered_rate_bps": "8000000",
+        "packet_size_bytes": "1200",
+        "source_role": "surveillance camera",
+        "traffic_type": "CCTV",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Routine video-stream metadata workload assumption"
+      }
+    ],
+    "sha256": "0c6a465f8111c1f83cf307d9838de9ee4bf566de9a86efe2dbc8a26421a84e48",
+    "source_file": "data/CICIoMT2024/raw/healthcare_traffic_profiles.csv"
+  },
+  "traffic_class_measurement_scope": "Candidate baseline/shortcut decision probes are aggregate route measurements; they do not establish per-class objective satisfaction.",
+  "traffic_classes": {
+    "classes": {
+      "BACKGROUND": {
+        "application": "EHR transactions, imaging transfers, backups, and routine data",
+        "dscp": 0,
+        "latency_sensitivity": 0.1,
+        "loss_sensitivity": 0.1,
+        "max_rate_mbps": 20,
+        "min_rate_mbps": 5,
+        "objectives": {
+          "delay_deadline_ms": 10000,
+          "max_packet_loss_pct": 2.0,
+          "min_reliability_pct": 98.0,
+          "target_source": "prototype_policy_assumption; validate against applicable clinical/network standards before use"
+        },
+        "queue_id": 4,
+        "tcp_port": 5104,
+        "udp_port": 5104
+      },
+      "ECG": {
+        "application": "emergency alarms and ECG telemetry",
+        "dscp": 46,
+        "latency_sensitivity": 1.0,
+        "loss_sensitivity": 1.0,
+        "max_rate_mbps": 50,
+        "min_rate_mbps": 20,
+        "objectives": {
+          "delay_deadline_ms": 100,
+          "max_packet_loss_pct": 0.1,
+          "min_reliability_pct": 99.9,
+          "target_source": "prototype_policy_assumption; validate against applicable clinical/network standards before use"
+        },
+        "queue_id": 1,
+        "tcp_port": 5101,
+        "udp_port": 5101
+      },
+      "ICU": {
+        "application": "real-time ICU vital-sign telemetry",
+        "dscp": 34,
+        "latency_sensitivity": 0.9,
+        "loss_sensitivity": 0.9,
+        "max_rate_mbps": 80,
+        "min_rate_mbps": 30,
+        "objectives": {
+          "delay_deadline_ms": 250,
+          "max_packet_loss_pct": 0.5,
+          "min_reliability_pct": 99.5,
+          "target_source": "prototype_policy_assumption; validate against applicable clinical/network standards before use"
+        },
+        "queue_id": 2,
+        "tcp_port": 5102,
+        "udp_port": 5102
+      },
+      "WEARABLE": {
+        "application": "wearable telemetry and clinical video",
+        "dscp": 18,
+        "latency_sensitivity": 0.6,
+        "loss_sensitivity": 0.55,
+        "max_rate_mbps": 50,
+        "min_rate_mbps": 10,
+        "objectives": {
+          "delay_deadline_ms": 500,
+          "max_packet_loss_pct": 1.0,
+          "min_reliability_pct": 99.0,
+          "target_source": "prototype_policy_assumption; validate against applicable clinical/network standards before use"
+        },
+        "queue_id": 3,
+        "tcp_port": 5103,
+        "udp_port": 5103
+      }
+    },
+    "classification": {
+      "precedence": [
+        "transport_port",
+        "ipv4_dscp",
+        "default"
+      ],
+      "transport_port_direction": "source_or_destination",
+      "unknown_class": "BACKGROUND"
+    },
+    "link_capacity_mbps": 100,
+    "version": 2
+  }
+}

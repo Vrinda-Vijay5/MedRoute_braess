@@ -1,0 +1,62 @@
+import importlib.util
+import pathlib
+import unittest
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+SPEC = importlib.util.spec_from_file_location(
+    "experiment_methods", ROOT / "scripts" / "experiment_methods.py")
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+
+
+class ExperimentMethodTests(unittest.TestCase):
+    def test_available_methods_returns_stable_method_ids(self):
+        self.assertEqual(MODULE.available_methods(), ("M1", "M2", "M3"))
+
+    def test_m1_is_static_baseline_without_qos_or_guard(self):
+        method = MODULE.get_method("M1")
+        self.assertEqual(method.method_id, "M1")
+        self.assertEqual(method.name, "shortest_path_baseline")
+        self.assertEqual(method.initial_route, "baseline")
+        self.assertFalse(method.qos_enabled)
+        self.assertFalse(method.candidate_evaluation_enabled)
+        self.assertFalse(method.braess_guard_enabled)
+
+    def test_m2_enables_qos_without_candidate_evaluation_or_guard(self):
+        method = MODULE.get_method("M2")
+        self.assertEqual(method.method_id, "M2")
+        self.assertEqual(method.name, "qos_only")
+        self.assertEqual(method.initial_route, "baseline")
+        self.assertTrue(method.qos_enabled)
+        self.assertFalse(method.candidate_evaluation_enabled)
+        self.assertFalse(method.braess_guard_enabled)
+
+    def test_m3_enables_qos_candidate_evaluation_and_guard(self):
+        method = MODULE.get_method("M3")
+        self.assertEqual(method.method_id, "M3")
+        self.assertEqual(method.name, "qos_braess_guard")
+        self.assertEqual(method.initial_route, "baseline")
+        self.assertTrue(method.qos_enabled)
+        self.assertTrue(method.candidate_evaluation_enabled)
+        self.assertTrue(method.braess_guard_enabled)
+
+    def test_unknown_method_id_raises_clear_value_error(self):
+        with self.assertRaisesRegex(ValueError, "unknown experiment method"):
+            MODULE.get_method("M4")
+
+    def test_method_policy_is_immutable(self):
+        method = MODULE.get_method("M1")
+        with self.assertRaises(AttributeError):
+            method.qos_enabled = True
+
+    def test_retrieved_policy_cannot_mutate_stored_definition(self):
+        method = MODULE.get_method("M1")
+        with self.assertRaises(AttributeError):
+            method.name = "changed"
+        self.assertEqual(MODULE.get_method("M1").name, "shortest_path_baseline")
+        self.assertFalse(MODULE.get_method("M1").qos_enabled)
+
+
+if __name__ == "__main__":
+    unittest.main()

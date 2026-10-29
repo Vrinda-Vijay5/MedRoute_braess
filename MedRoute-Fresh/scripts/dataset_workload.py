@@ -6,6 +6,7 @@ packets or clinical class labels. Only this derived JSON is read by the experime
 import hashlib
 import json
 import math
+import random
 from pathlib import Path
 
 
@@ -94,7 +95,8 @@ def load_traffic_catalog(project_root):
             "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
 
 
-def build_scenario_workloads(provenance, scenario_plan, class_names, bottleneck_mbps):
+def build_scenario_workloads(provenance, scenario_plan, class_names, bottleneck_mbps,
+                             random_seed=None):
     """Build deterministic scenario flow settings from the saved train profiles.
 
     The intentional background overload is derived as bottleneck capacity plus the
@@ -106,6 +108,9 @@ def build_scenario_workloads(provenance, scenario_plan, class_names, bottleneck_
         raise ValueError("bottleneck capacity must be a positive finite number")
     profiles = provenance["profiles"]
     typical, high = profiles[TYPICAL_PROFILE], profiles[HIGH_PROFILE]
+    if random_seed is not None and (isinstance(random_seed, bool) or
+            not isinstance(random_seed, int) or random_seed < 0):
+        raise ValueError("random_seed must be a non-negative integer or None")
     output = {}
     for scenario, spec in scenario_plan.items():
         heavy = bool(spec.get("heavy_background"))
@@ -115,13 +120,28 @@ def build_scenario_workloads(provenance, scenario_plan, class_names, bottleneck_
                                        if heavy and class_name == "BACKGROUND"
                                        else (TYPICAL_PROFILE, typical))
             base_bps = selected["offered_rate_bps"]
+            seed_material = "{}:{}:{}".format(random_seed, scenario, class_name)
+            stable_seed = int(hashlib.sha256(seed_material.encode("utf-8")).hexdigest()[:16], 16)
+            rate_factor = random.Random(stable_seed).uniform(0.9, 1.1)
+            offered_rate = round(base_bps * rate_factor) if random_seed is not None else base_bps
             flows[class_name] = {
                 "dataset_profile": selected_name,
                 "dataset_base_rate_bps": base_bps,
                 "dataset_packet_size_bytes": selected["packet_size_bytes"],
-                "offered_rate_bps": base_bps,
-                "offered_load_mbps": base_bps / 1_000_000,
+                "seed_rate_factor": rate_factor,
+                "offered_rate_bps": offered_rate,
+                "offered_load_mbps": offered_rate / 1_000_000,
             }
+        if spec.get("emergency_surge"):
+            for name, multiplier in (("ECG", 40), ("ICU", 30)):
+                if name in flows:
+                    profile = class_names[name]
+                    surged = max(flows[name]["offered_rate_bps"],
+                                 int(multiplier * typical["offered_rate_bps"]))
+                    flows[name]["offered_rate_bps"] = surged
+                    flows[name]["offered_load_mbps"] = surged / 1_000_000
+                    flows[name]["emergency_surge_multiplier"] = multiplier
+                    flows[name]["emergency_surge_rate_cap_mbps"] = profile["max_rate_mbps"]
         if heavy and "BACKGROUND" in flows:
             critical_demand_bps = sum(flow["offered_rate_bps"]
                                       for name, flow in flows.items()

@@ -107,7 +107,14 @@ class LiveMetricTests(unittest.TestCase):
         now = 1004
         baseline = stage([10, 11, 10, 11, 10])
         harmful = stage([20, 21, 20, 21, 20])
-        self.assertEqual(LIVE.classify(baseline, harmful, now)["verdict"], "harmful")
+        decision = LIVE.classify(baseline, harmful, now)
+        self.assertEqual(decision["verdict"], "harmful")
+        self.assertEqual(
+            decision["structured_evaluation"]["route_installation_verification_status"],
+            "pending_controller_action")
+        self.assertEqual(
+            decision["structured_evaluation"]["fairness"]["reason"],
+            "aggregate_route_probe_has_no_per_class_throughput")
         harmful["metrics"] = {"complete": False, "cost": None}
         self.assertEqual(LIVE.classify(baseline, harmful, now)["verdict"], "inconclusive")
 
@@ -132,6 +139,25 @@ class LiveMetricTests(unittest.TestCase):
         self.assertEqual(LIVE.classify(baseline, stage([20, 21, 20, 21, 20]), 1004)["verdict"], "harmful")
         self.assertEqual(LIVE.classify(baseline, stage([5, 6, 5, 6, 5]), 1004)["verdict"], "beneficial")
         self.assertEqual(LIVE.classify(baseline, stage([10.2, 11.2, 10.2, 11.2, 10.2]), 1004)["verdict"], "neutral")
+
+    def test_repeated_decision_summary_does_not_mask_later_harmful_candidate(self):
+        trials = [
+            {"repetition": 1, "complete": True, "decision": {
+                "verdict": "neutral", "controller_recorded": True,
+                "route_selection_verified": True, "prevention_verified": False}},
+            {"repetition": 2, "complete": True, "decision": {
+                "verdict": "harmful", "controller_recorded": True,
+                "route_selection_verified": True, "prevention_verified": True}},
+        ]
+        summary = LIVE.summarize_repeated_decisions(trials)
+        self.assertEqual(summary["live_experiment"], "harmful_shortcut_prevented")
+        self.assertEqual(summary["harmful_candidate_count"], 1)
+        self.assertEqual(summary["prevention_verified_count"], 1)
+        self.assertEqual(summary["aggregate_verdict"], "mixed")
+        trials[1]["decision"]["prevention_verified"] = False
+        failed = LIVE.summarize_repeated_decisions(trials)
+        self.assertEqual(failed["live_experiment"], "prevention_failed")
+        self.assertFalse(failed["passed"])
 
     def test_harmful_shortcut_prevention_requires_measured_baseline_forwarding(self):
         self.assertTrue(LIVE.harmful_shortcut_prevented(
@@ -169,6 +195,86 @@ class LiveMetricTests(unittest.TestCase):
         self.assertEqual(latency["mean"], 2.0)
         self.assertEqual(latency["standard_deviation"], 1.0)
         self.assertTrue(latency["complete"])
+
+    def test_tail_percentiles_use_nearest_rank_and_lost_probes_miss_deadline(self):
+        class_config = json.loads((ROOT / "sdn" / "classes.json").read_text(encoding="utf-8"))
+        rows = [{"per_class_metrics": {"ECG": {
+            "ping_samples": [{"rtt_ms": float(i)} for i in range(1, 100)] +
+                            [{"rtt_ms": None}],
+            "metrics": {"packet_loss_pct": 0.0}, "throughput_mbps": 1.0}}}]
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        tail = result["classes"]["ECG"]["tail_latency"]
+        self.assertEqual((tail["p95_ms"], tail["p99_ms"]), (95.0, 99.0))
+        self.assertEqual(tail["probe_count"], 100)
+        self.assertEqual(tail["deadline_miss_count"], 1)  # The lost probe is a miss.
+        self.assertEqual(tail["deadline_miss_rate_pct"], 1.0)
+
+        rows[0]["per_class_metrics"]["ECG"]["ping_samples"] = [
+            {"rtt_ms": None}, {"rtt_ms": None}]
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        tail = result["classes"]["ECG"]["tail_latency"]
+        self.assertIsNone(tail["p95_ms"])
+        self.assertEqual(tail["deadline_miss_count"], 2)
+        self.assertEqual(tail["deadline_miss_rate_pct"], 100.0)
+
+    def test_loss_and_reliability_objectives_are_unavailable_when_a_repetition_is_missing(self):
+        class_config = json.loads((ROOT / "sdn" / "classes.json").read_text(encoding="utf-8"))
+        rows = [
+            {"per_class_metrics": {"ECG": {"metrics": {"packet_loss_pct": 0.0}, "throughput_mbps": 1.0}}},
+            {"per_class_metrics": {"ECG": {"metrics": {"packet_loss_pct": None}, "throughput_mbps": 1.0}}},
+        ]
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        tail = result["classes"]["ECG"]["tail_latency"]
+        self.assertIsNone(tail["receiver_delivery_reliability_pct"])
+        self.assertIsNone(tail["packet_loss_target_met"])
+        self.assertIsNone(tail["reliability_target_met"])
+
+    def test_fairness_requires_all_class_throughputs_and_handles_zero_total(self):
+        class_config = json.loads((ROOT / "sdn" / "classes.json").read_text(encoding="utf-8"))
+        rows = [{"per_class_metrics": {name: {"throughput_mbps": 1.0}
+                                        for name in class_config["classes"]}}]
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        self.assertEqual(result["throughput_fairness"]["jain_index"], 1.0)
+        del rows[0]["per_class_metrics"]["BACKGROUND"]
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        self.assertIsNone(result["throughput_fairness"]["jain_index"])
+        self.assertFalse(result["throughput_fairness"]["complete"])
+        rows[0]["per_class_metrics"]["BACKGROUND"] = {"throughput_mbps": 0.0}
+        for name in class_config["classes"]:
+            rows[0]["per_class_metrics"][name]["throughput_mbps"] = 0.0
+        result = LIVE.summarize_scenario_repetitions(rows, class_config)
+        self.assertIsNone(result["throughput_fairness"]["jain_index"])
+        self.assertEqual(result["throughput_fairness"]["unavailable_reason"],
+                         "total_throughput_is_zero")
+
+    def test_telemetry_summary_distinguishes_required_and_optional_metrics(self):
+        records = {
+            "baseline": {"metrics": {"complete": True}},
+            "shortcut": {"metrics": {"complete": True}},
+            "prevention": {"metrics": {"complete": True}},
+        }
+        scenario_statistics = {
+            "normal": {"throughput_fairness": {"complete": True}},
+        }
+        scenario_repetitions = {
+            "normal": [{"queue_occupancy": {"complete": True}}],
+        }
+        result = LIVE.summarize_telemetry_completeness(
+            records.values(), scenario_statistics, scenario_repetitions,
+            [{"fairness": {"status": "unavailable"}}])
+        self.assertTrue(result["required_telemetry_complete"])
+        self.assertFalse(result["optional_telemetry"]["candidate_evaluation_fairness"])
+        self.assertTrue(result["optional_telemetry"]["scenario_throughput_fairness"])
+        self.assertFalse(result["optional_telemetry_complete"])
+        self.assertFalse(result["all_telemetry_complete"])
+
+    def test_telemetry_summary_requires_optional_metrics_when_applicable(self):
+        records = {"baseline": {"metrics": {"complete": True}}}
+        result = LIVE.summarize_telemetry_completeness(
+            records.values(), {}, {}, [])
+        self.assertTrue(result["required_telemetry_complete"])
+        self.assertFalse(result["optional_telemetry_complete"])
+        self.assertFalse(result["all_telemetry_complete"])
 
 
 if __name__ == "__main__":
