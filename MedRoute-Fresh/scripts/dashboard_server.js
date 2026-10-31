@@ -9,6 +9,17 @@ const controllerUrl = process.env.MEDROUTE_CONTROLLER_URL || "http://127.0.0.1:8
 const mime = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".log": "text/plain; charset=utf-8", ".png": "image/png" };
 function json(res, value) { res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" }); res.end(JSON.stringify(value)); }
 function readJson(folder, name) { try { return JSON.parse(fs.readFileSync(path.join(folder, name), "utf8")); } catch { return null; } }
+function latestAnalyticalRun() {
+  const candidates = fs.readdirSync(artifacts, { withFileTypes: true })
+    .filter(x => x.isDirectory() && fs.existsSync(path.join(artifacts, x.name, "analytical.json")))
+    .map(x => {
+      const folder = path.join(artifacts, x.name);
+      const summary = readJson(folder, "summary.json") || {};
+      return { name: x.name, time: summary.completed_utc || summary.started_utc || "" };
+    });
+  return sortRunNames(candidates.map(x => x.name),
+    Object.fromEntries(candidates.map(x => [x.name, x.time])))[0] || null;
+}
 async function liveTopology() {
   // The dashboard never substitutes the simulation graph if the controller is down.
   try {
@@ -73,6 +84,7 @@ function latestProfileMatrixRun() {
 }
 function createServer() {
   let simulationTopology = JSON.parse(JSON.stringify(DEFAULT_TOPOLOGY));
+  const simulationHistory = [];
   return http.createServer(async (req, res) => {
     let pathname, requestUrl;
     try { requestUrl = new URL(req.url, "http://localhost"); pathname = decodeURIComponent(requestUrl.pathname); }
@@ -98,6 +110,24 @@ function createServer() {
       } catch (error) {
         return jsonWithStatus(res, 400, { error: "invalid JSON", details: [error.message] });
       }
+    }
+    if (pathname === "/api/simulation/history") {
+      if (req.method === "GET") return json(res, { mode: "simulation", history: simulationHistory });
+      if (req.method !== "POST") { res.writeHead(405).end("Use GET or POST"); return; }
+      try {
+        let body = "";
+        for await (const chunk of req) {
+          body += chunk;
+          if (body.length > 512 * 1024) { res.writeHead(413).end("History payload too large"); return; }
+        }
+        const parsed = JSON.parse(body);
+        if (!parsed || typeof parsed !== "object" || parsed.simulated !== true || !parsed.methods) {
+          return jsonWithStatus(res, 400, { error: "simulation result must include simulated=true and methods" });
+        }
+        simulationHistory.unshift(parsed);
+        if (simulationHistory.length > 50) simulationHistory.length = 50;
+        return json(res, { mode: "simulation", saved: parsed, history: simulationHistory });
+      } catch (error) { return jsonWithStatus(res, 400, { error: "invalid simulation result", details: [error.message] }); }
     }
     if (pathname === "/api/simulation/path") {
       if (req.method !== "GET") { res.writeHead(405).end("Read only"); return; }
@@ -128,9 +158,16 @@ function createServer() {
       const folder = path.resolve(artifacts, api[1]);
       if (path.dirname(folder) !== artifacts || !fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) { res.writeHead(404).end("Not found"); return; }
       const files = fs.readdirSync(folder).filter(n => fs.statSync(path.join(folder, n)).isFile()).sort();
+      const summary = readJson(folder, "summary.json") || {};
+      const manifest = readJson(folder, "manifest.json") || {};
+      const enrichedSummary = { ...summary };
+      if (!enrichedSummary.started_utc && manifest.started_at_utc) enrichedSummary.started_utc = manifest.started_at_utc;
+      if (!enrichedSummary.completed_utc && manifest.finished_at_utc) enrichedSummary.completed_utc = manifest.finished_at_utc;
       const matrixRun = latestProfileMatrixRun();
       const matrixFolder = matrixRun ? path.join(artifacts, matrixRun) : null;
-      return json(res, { summary: readJson(folder, "summary.json"), analytical: readJson(folder, "analytical.json"), config: readJson(folder, "config.json"), measurements: readJson(folder, "measurements.json"), profile_matrix: readJson(folder, "profile_matrix.json") || (matrixFolder ? readJson(matrixFolder, "profile_matrix.json") : null), profile_matrix_run: fs.existsSync(path.join(folder, "profile_matrix.json")) ? api[1] : matrixRun, scenario_results: dashboardScenarioResults(readJson(folder, "scenario_results.json")), files });
+      const analyticalRun = fs.existsSync(path.join(folder, "analytical.json")) ? api[1] : latestAnalyticalRun();
+      const analyticalFolder = analyticalRun ? path.join(artifacts, analyticalRun) : null;
+      return json(res, { summary: enrichedSummary, analytical: readJson(folder, "analytical.json") || (analyticalFolder ? readJson(analyticalFolder, "analytical.json") : null), analytical_run: analyticalRun, config: readJson(folder, "config.json"), measurements: readJson(folder, "measurements.json"), profile_matrix: readJson(folder, "profile_matrix.json") || (matrixFolder ? readJson(matrixFolder, "profile_matrix.json") : null), profile_matrix_run: fs.existsSync(path.join(folder, "profile_matrix.json")) ? api[1] : matrixRun, scenario_results: dashboardScenarioResults(readJson(folder, "scenario_results.json")), files });
     }
     const artifact = pathname.match(/^\/artifact\/([^/]+)\/([^/]+)$/);
     if (artifact) {
@@ -145,6 +182,11 @@ function createServer() {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       fs.createReadStream(playground).pipe(res);
       return;
+    }
+    if (relative === "playground-simulation.js") {
+      const simulation = path.join(root, "src", "playground_simulation.js");
+      res.writeHead(200, { "Content-Type": "application/javascript; charset=utf-8" });
+      fs.createReadStream(simulation).pipe(res); return;
     }
     const target = path.resolve(root, "dashboard", relative);
     if (path.dirname(target) !== path.resolve(root, "dashboard") || !fs.existsSync(target) || !fs.statSync(target).isFile()) { res.writeHead(404).end("Not found"); return; }

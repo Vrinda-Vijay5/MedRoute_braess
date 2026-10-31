@@ -315,7 +315,7 @@ The repository should be treated as an offline + live hybrid prototype. The work
 
 Use the controlled pilot command in `docs/reproducibility.md` only in the configured WSL environment. This README does not claim a live run for code changes unless a new run directory contains complete measurements and forwarding evidence.
 
-Start the evidence dashboard from the repository root with `npm run dashboard`, then open `http://127.0.0.1:8765`. The simulation-only topology editor is at `http://127.0.0.1:8765/playground`; its in-memory graph does not change Mininet or persist after the dashboard server stops. Run the Node checks with `npm test`. In the configured WSL environment, run Python checks with `PYTHONDONTWRITEBYTECODE=1 /home/subiw/ryu-env/bin/python -m unittest discover -s test -v`.
+Start the evidence dashboard from the repository root with `npm run dashboard`, then open `http://127.0.0.1:8765`. On PowerShell systems where script execution blocks `npm.ps1`, use `npm.cmd run dashboard`; similarly, use `npm.cmd test` for Node checks. The simulation-only topology editor is at `http://127.0.0.1:8765/playground`; its in-memory graph does not change Mininet or persist after the dashboard server stops. In the configured WSL environment, run Python checks with `PYTHONDONTWRITEBYTECODE=1 /home/subiw/ryu-env/bin/python -m unittest discover -s test -v`.
 
 ## Summary
 

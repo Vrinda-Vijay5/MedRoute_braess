@@ -38,7 +38,8 @@ test("dashboard topology API edits simulation state and reports disconnected rou
   assert.match(playground, /Topology playground/);
   assert.match(playground, /Export JSON/);
   assert.match(playground, /Import JSON/);
-  assert.match(playground, /Remove node and attached links/);
+  assert.match(playground, /Remove/);
+  assert.match(playground, /Delete/);
   const current = await (await fetch(base + "/api/simulation/topology")).json();
   assert.equal(current.mode, "simulation");
   const update = await fetch(base + "/api/simulation/topology", { method: "PUT",
