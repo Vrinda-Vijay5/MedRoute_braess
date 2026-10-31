@@ -1,0 +1,345 @@
+loading app sdn/controller.py
+loading app ryu.topology.switches
+loading app ryu.controller.ofp_handler
+creating context wsgi
+instantiating app sdn/controller.py of MedRoute
+instantiating app ryu.topology.switches of Switches
+instantiating app ryu.controller.ofp_handler of OFPHandler
+(11889) wsgi starting up on http://0.0.0.0:8080
+(11889) accepted ('127.0.0.1', 53354)
+127.0.0.1 - - [31/Oct/2026 08:27:14] "GET /medroute/mode HTTP/1.1" 200 447 0.001125
+MEDROUTE {"timestamp": 1793415435.2465281, "event": "switch_disconnected", "dpid": null, "reason": "switch disconnected", "route_state": "unconfirmed"}
+MEDROUTE {"timestamp": 1793415435.3155475, "event": "topology_switch_up", "dpid": 4}
+MEDROUTE {"timestamp": 1793415435.3215485, "event": "topology_switch_up", "dpid": 3}
+MEDROUTE {"timestamp": 1793415435.332326, "event": "topology_switch_up", "dpid": 1}
+MEDROUTE {"timestamp": 1793415435.3468008, "event": "topology_switch_up", "dpid": 2}
+MEDROUTE {"timestamp": 1793415435.4014947, "event": "switch_connected", "dpid": 4, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s4-eth1", "s4-eth2", "s4-eth3", "s4-eth4", "s4-eth5"], "switch_barrier_confirmed": true}
+MEDROUTE {"timestamp": 1793415435.4746554, "event": "switch_connected", "dpid": 1, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s1-eth1", "s1-eth2", "s1-eth3", "s1-eth6", "s1-eth7"], "switch_barrier_confirmed": true}
+MEDROUTE {"timestamp": 1793415435.5161138, "event": "switch_connected", "dpid": 3, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s3-eth1", "s3-eth2", "s3-eth3"], "switch_barrier_confirmed": true}
+(11889) accepted ('127.0.0.1', 53360)
+127.0.0.1 - - [31/Oct/2026 08:27:15] "GET /medroute/mode HTTP/1.1" 200 464 0.000273
+MEDROUTE {"timestamp": 1793415435.567261, "event": "switch_connected", "dpid": 2, "mode": "baseline", "qos_queues": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}, "qos_ports": ["s2-eth1", "s2-eth2", "s2-eth3"], "switch_barrier_confirmed": true}
+(11889) accepted ('127.0.0.1', 53372)
+127.0.0.1 - - [31/Oct/2026 08:27:15] "GET /medroute/mode HTTP/1.1" 200 464 0.000342
+MEDROUTE {"timestamp": 1793415435.8078802, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415435.8125966, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415435.8239841, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415435.8344176, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 1}
+(11889) accepted ('127.0.0.1', 53382)
+MEDROUTE {"timestamp": 1793415437.9899602, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 20.022, "flow_programming_enqueue_ms": 19.224, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.286, "s3": 5.244, "s1": 5.555, "s2": 0.676}, "switch_barrier_confirmed": true, "operation_id": 5}
+127.0.0.1 - - [31/Oct/2026 08:27:17] "POST /medroute/qos HTTP/1.1" 200 251 0.025885
+(11889) accepted ('127.0.0.1', 53392)
+127.0.0.1 - - [31/Oct/2026 08:27:17] "GET /medroute/qos HTTP/1.1" 200 269 0.000235
+MEDROUTE {"timestamp": 1793415438.004438, "event": "port_status", "dpid": 1, "port": 2, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415438.0097148, "event": "port_status", "dpid": 1, "port": 2, "reason": 2, "state": 1}
+(11889) accepted ('127.0.0.1', 53404)
+MEDROUTE {"timestamp": 1793415438.020048, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415438.0282218, "event": "port_status", "dpid": 2, "port": 1, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415438.0388224, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415438.0491729, "event": "port_status", "dpid": 2, "port": 1, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415438.064346, "event": "port_status", "dpid": 2, "port": 1, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415438.1076458, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "recovery", "reason": "primary link failure recovery", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 32.239, "flow_programming_enqueue_ms": 31.223, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.349, "s1": 5.334, "s3": 6.24, "s2": 0.863}, "switch_barrier_confirmed": true, "operation_id": 6, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:27:18] "POST /medroute/mode HTTP/1.1" 200 262 0.037451
+(11889) accepted ('127.0.0.1', 53406)
+127.0.0.1 - - [31/Oct/2026 08:27:18] "GET /medroute/mode HTTP/1.1" 200 568 0.000276
+(11889) accepted ('127.0.0.1', 53414)
+127.0.0.1 - - [31/Oct/2026 08:27:18] "GET /medroute/qos HTTP/1.1" 200 269 0.000236
+MEDROUTE {"timestamp": 1793415440.8016763, "event": "port_status", "dpid": 1, "port": 2, "reason": 2, "state": 4}
+(11889) accepted ('127.0.0.1', 41228)
+MEDROUTE {"timestamp": 1793415440.8090599, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415440.8177109, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415440.8283691, "event": "port_status", "dpid": 2, "port": 1, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415440.841799, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415440.8546417, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415440.8729944, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415440.9215293, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "submitted_rule_count": 168, "controller_flow_programming_ms": 30.656, "flow_programming_enqueue_ms": 30.089, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 6.126, "s1": 5.442, "s3": 4.955, "s2": 0.492}, "switch_barrier_confirmed": true, "operation_id": 7}
+127.0.0.1 - - [31/Oct/2026 08:27:20] "POST /medroute/qos HTTP/1.1" 200 251 0.036091
+(11889) accepted ('127.0.0.1', 41234)
+127.0.0.1 - - [31/Oct/2026 08:27:20] "GET /medroute/qos HTTP/1.1" 200 269 0.000237
+(11889) accepted ('127.0.0.1', 41250)
+MEDROUTE {"timestamp": 1793415440.9528701, "event": "forwarding_mode_changed", "previous": "recovery", "mode": "baseline", "reason": "stage baseline", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 21.498, "flow_programming_enqueue_ms": 20.944, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.017, "s1": 5.201, "s3": 5.264, "s2": 0.485}, "switch_barrier_confirmed": true, "operation_id": 8, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:27:20] "POST /medroute/mode HTTP/1.1" 200 262 0.026570
+(11889) accepted ('127.0.0.1', 41256)
+127.0.0.1 - - [31/Oct/2026 08:27:20] "GET /medroute/mode HTTP/1.1" 200 553 0.000241
+(11889) accepted ('127.0.0.1', 41264)
+127.0.0.1 - - [31/Oct/2026 08:27:20] "GET /medroute/qos HTTP/1.1" 200 269 0.000294
+(11889) accepted ('127.0.0.1', 34086)
+MEDROUTE {"timestamp": 1793415465.662328, "event": "metrics_published", "stage": "baseline", "per_class": ["ECG", "ICU", "WEARABLE", "BACKGROUND"], "link_metrics_complete": true}
+127.0.0.1 - - [31/Oct/2026 08:27:45] "POST /medroute/metrics HTTP/1.1" 200 219 0.005504
+(11889) accepted ('127.0.0.1', 34096)
+127.0.0.1 - - [31/Oct/2026 08:27:45] "GET /medroute/metrics HTTP/1.1" 200 13275 0.000488
+(11889) accepted ('127.0.0.1', 34102)
+MEDROUTE {"timestamp": 1793415465.6847053, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415465.6901717, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415465.7308328, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "stage shortcut", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 49.796, "flow_programming_enqueue_ms": 49.094, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 7.373, "s1": 5.908, "s3": 5.289, "s2": 0.622}, "switch_barrier_confirmed": true, "operation_id": 9, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:27:45] "POST /medroute/mode HTTP/1.1" 200 262 0.055012
+(11889) accepted ('127.0.0.1', 34110)
+127.0.0.1 - - [31/Oct/2026 08:27:45] "GET /medroute/mode HTTP/1.1" 200 553 0.000285
+(11889) accepted ('127.0.0.1', 34112)
+127.0.0.1 - - [31/Oct/2026 08:27:45] "GET /medroute/qos HTTP/1.1" 200 269 0.000364
+(11889) accepted ('127.0.0.1', 37336)
+MEDROUTE {"timestamp": 1793415490.5742614, "event": "metrics_published", "stage": "shortcut", "per_class": ["ECG", "ICU", "WEARABLE", "BACKGROUND"], "link_metrics_complete": true}
+127.0.0.1 - - [31/Oct/2026 08:28:10] "POST /medroute/metrics HTTP/1.1" 200 219 0.005947
+(11889) accepted ('127.0.0.1', 37350)
+127.0.0.1 - - [31/Oct/2026 08:28:10] "GET /medroute/metrics HTTP/1.1" 200 12843 0.000560
+(11889) accepted ('127.0.0.1', 37356)
+MEDROUTE {"timestamp": 1793415490.5989304, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415490.6032445, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415490.614359, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415490.6243608, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415490.6596735, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "baseline", "reason": "paired route comparison", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 64.129, "flow_programming_enqueue_ms": 63.52, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.494, "s1": 5.279, "s3": 5.087, "s2": 0.538}, "switch_barrier_confirmed": true, "operation_id": 10, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:10] "POST /medroute/mode HTTP/1.1" 200 263 0.070177
+(11889) accepted ('127.0.0.1', 37368)
+127.0.0.1 - - [31/Oct/2026 08:28:10] "GET /medroute/mode HTTP/1.1" 200 563 0.000256
+(11889) accepted ('127.0.0.1', 37376)
+127.0.0.1 - - [31/Oct/2026 08:28:10] "GET /medroute/qos HTTP/1.1" 200 269 0.000261
+(11889) accepted ('127.0.0.1', 37390)
+MEDROUTE {"timestamp": 1793415496.447946, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415496.4536202, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415496.4909546, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "paired route comparison", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 46.469, "flow_programming_enqueue_ms": 45.669, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.735, "s1": 4.286, "s3": 4.05, "s2": 0.648}, "switch_barrier_confirmed": true, "operation_id": 11, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:16] "POST /medroute/mode HTTP/1.1" 200 263 0.053150
+(11889) accepted ('127.0.0.1', 37398)
+127.0.0.1 - - [31/Oct/2026 08:28:16] "GET /medroute/mode HTTP/1.1" 200 562 0.000263
+(11889) accepted ('127.0.0.1', 37404)
+127.0.0.1 - - [31/Oct/2026 08:28:16] "GET /medroute/qos HTTP/1.1" 200 269 0.000237
+(11889) accepted ('127.0.0.1', 44780)
+MEDROUTE {"timestamp": 1793415502.347144, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "shortcut", "reason": "measurement decision: neutral", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 27.647, "flow_programming_enqueue_ms": 26.935, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.004, "s1": 4.32, "s3": 6.931, "s2": 0.603}, "switch_barrier_confirmed": true, "operation_id": 12, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:22] "POST /medroute/mode HTTP/1.1" 200 263 0.033385
+(11889) accepted ('127.0.0.1', 44792)
+127.0.0.1 - - [31/Oct/2026 08:28:22] "GET /medroute/mode HTTP/1.1" 200 569 0.000258
+(11889) accepted ('127.0.0.1', 44802)
+MEDROUTE {"timestamp": 1793415502.3910785, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "shortcut", "reason": "stage prevention", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 32.905, "flow_programming_enqueue_ms": 32.058, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.703, "s1": 7.396, "s3": 5.522, "s2": 0.741}, "switch_barrier_confirmed": true, "operation_id": 13, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:22] "POST /medroute/mode HTTP/1.1" 200 263 0.038870
+(11889) accepted ('127.0.0.1', 44804)
+127.0.0.1 - - [31/Oct/2026 08:28:22] "GET /medroute/mode HTTP/1.1" 200 556 0.000398
+(11889) accepted ('127.0.0.1', 44814)
+127.0.0.1 - - [31/Oct/2026 08:28:22] "GET /medroute/qos HTTP/1.1" 200 269 0.000330
+(11889) accepted ('127.0.0.1', 38534)
+MEDROUTE {"timestamp": 1793415526.8253803, "event": "metrics_published", "stage": "prevention", "per_class": ["ECG", "ICU", "WEARABLE", "BACKGROUND"], "link_metrics_complete": true}
+127.0.0.1 - - [31/Oct/2026 08:28:46] "POST /medroute/metrics HTTP/1.1" 200 221 0.006220
+(11889) accepted ('127.0.0.1', 38550)
+127.0.0.1 - - [31/Oct/2026 08:28:46] "GET /medroute/metrics HTTP/1.1" 200 12765 0.000661
+(11889) accepted ('127.0.0.1', 38564)
+MEDROUTE {"timestamp": 1793415526.851697, "event": "route_decision", "repetition": 1, "verdict": "neutral", "selected_route": "shortcut", "reason": "Measured change is within the configured neutral band; policy is accept_candidate.", "threshold_fraction": 0.05, "structured_evaluation": {"current_topology": "four_switch_diamond", "current_route": "baseline", "candidate_topology": "four_switch_diamond_with_candidate_link", "candidate_route": "shortcut", "traffic_class": null, "criticality_score": null, "measurement_source": {"current": "measured_aggregate_probe", "candidate": "measured_aggregate_probe"}, "measurement_timestamps": {"current": 1793415492.5502098, "candidate": 1793415498.4458296}, "measurement_ages_seconds": {"current": 9.762020826339722, "candidate": 3.866400957107544}, "baseline_cost": 5.157, "candidate_cost": 5.0569999999999995, "relative_change": -0.01939111886755876, "constraint_violations": [], "missing_constraints": [], "fairness": {"status": "unavailable", "reason": "aggregate_route_probe_has_no_per_class_throughput"}, "classification": "neutral", "decision": "accept_candidate", "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND", "explanation": "Measured change is within the configured neutral band; policy is accept_candidate.", "classical_braess_paradox": "not_established_by_measured_route_comparison", "controller_action": "request_candidate_route", "route_installation_verified": false, "safe_route_exists": true, "route_installation_verification_status": "pending_controller_action"}, "metrics_used": {"baseline": {"complete": true, "latency_ms": 142.0, "jitter_ms": 41.855000000000004, "packet_loss_pct": 0.0, "cost": 5.157}, "shortcut": {"complete": true, "latency_ms": 162.0, "jitter_ms": 35.355000000000004, "packet_loss_pct": 0.0, "cost": 5.0569999999999995}}, "sample_timestamps": {"baseline": [1793415491.5540626, 1793415491.7141051, 1793415491.929122, 1793415492.2244942, 1793415492.5502098], "shortcut": [1793415497.421949, 1793415497.5824416, 1793415497.79531, 1793415498.1161845, 1793415498.4458296]}, "prevention_verified": false, "route_selection_verified": true, "flows_verified": true, "prevention_metrics": {"complete": true, "latency_ms": 151.0, "jitter_ms": 34.644999999999996, "packet_loss_pct": 0.0, "cost": 4.826333333333333}}
+127.0.0.1 - - [31/Oct/2026 08:28:46] "POST /medroute/decision HTTP/1.1" 200 2425 0.007175
+(11889) accepted ('127.0.0.1', 38570)
+MEDROUTE {"timestamp": 1793415526.942809, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "submitted_rule_count": 168, "controller_flow_programming_ms": 80.416, "flow_programming_enqueue_ms": 79.262, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 7.886, "s1": 6.873, "s3": 7.707, "s2": 0.993}, "switch_barrier_confirmed": true, "operation_id": 14}
+127.0.0.1 - - [31/Oct/2026 08:28:46] "POST /medroute/qos HTTP/1.1" 200 252 0.085696
+(11889) accepted ('127.0.0.1', 38578)
+127.0.0.1 - - [31/Oct/2026 08:28:46] "GET /medroute/qos HTTP/1.1" 200 269 0.000307
+(11889) accepted ('127.0.0.1', 38586)
+MEDROUTE {"timestamp": 1793415526.9631393, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415526.9688153, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415526.9789171, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415526.9913342, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415527.0281544, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "baseline", "reason": "paired route comparison", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 69.878, "flow_programming_enqueue_ms": 69.378, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.666, "s1": 6.155, "s3": 5.972, "s2": 0.426}, "switch_barrier_confirmed": true, "operation_id": 15, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:47] "POST /medroute/mode HTTP/1.1" 200 263 0.074136
+(11889) accepted ('127.0.0.1', 38596)
+127.0.0.1 - - [31/Oct/2026 08:28:47] "GET /medroute/mode HTTP/1.1" 200 563 0.000399
+(11889) accepted ('127.0.0.1', 38600)
+127.0.0.1 - - [31/Oct/2026 08:28:47] "GET /medroute/qos HTTP/1.1" 200 269 0.000333
+(11889) accepted ('127.0.0.1', 38612)
+MEDROUTE {"timestamp": 1793415532.8549612, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415532.8595362, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415532.8995085, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "paired route comparison", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 48.495, "flow_programming_enqueue_ms": 47.857, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 6.157, "s1": 5.419, "s3": 5.016, "s2": 0.562}, "switch_barrier_confirmed": true, "operation_id": 16, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:52] "POST /medroute/mode HTTP/1.1" 200 263 0.053447
+(11889) accepted ('127.0.0.1', 38618)
+127.0.0.1 - - [31/Oct/2026 08:28:52] "GET /medroute/mode HTTP/1.1" 200 563 0.000322
+(11889) accepted ('127.0.0.1', 38628)
+127.0.0.1 - - [31/Oct/2026 08:28:52] "GET /medroute/qos HTTP/1.1" 200 269 0.000305
+(11889) accepted ('127.0.0.1', 52692)
+MEDROUTE {"timestamp": 1793415538.6668227, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "shortcut", "reason": "paired route comparison", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 30.71, "flow_programming_enqueue_ms": 29.637, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.737, "s1": 4.98, "s3": 5.677, "s2": 0.971}, "switch_barrier_confirmed": true, "operation_id": 17, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:28:58] "POST /medroute/mode HTTP/1.1" 200 263 0.035822
+(11889) accepted ('127.0.0.1', 52706)
+127.0.0.1 - - [31/Oct/2026 08:28:58] "GET /medroute/mode HTTP/1.1" 200 563 0.000301
+(11889) accepted ('127.0.0.1', 52720)
+127.0.0.1 - - [31/Oct/2026 08:28:58] "GET /medroute/qos HTTP/1.1" 200 269 0.000236
+(11889) accepted ('127.0.0.1', 52736)
+MEDROUTE {"timestamp": 1793415544.4446979, "event": "route_decision", "repetition": 2, "verdict": "beneficial", "selected_route": "shortcut", "reason": "Measured candidate cost is more than the configured threshold below baseline.", "threshold_fraction": 0.05, "metrics_used": {"baseline": {"complete": true, "latency_ms": 136.0, "jitter_ms": 40.55, "packet_loss_pct": 0.0, "cost": 4.97}, "shortcut": {"complete": true, "latency_ms": 141.0, "jitter_ms": 27.825, "packet_loss_pct": 0.0, "cost": 4.204999999999999}}, "prevention_metrics": {"complete": true, "latency_ms": 159.0, "jitter_ms": 31.294999999999998, "packet_loss_pct": 0.0, "cost": 4.7363333333333335}, "prevention_verified": false, "route_selection_verified": true, "flows_verified": true, "sample_timestamps": {"baseline": [1793415527.9556055, 1793415528.1241145, 1793415528.3385894, 1793415528.6332982, 1793415528.962418], "shortcut": [1793415533.7565973, 1793415533.9183896, 1793415534.1180928, 1793415534.4133148, 1793415534.7268386]}}
+127.0.0.1 - - [31/Oct/2026 08:29:04] "POST /medroute/decision HTTP/1.1" 200 1131 0.004761
+(11889) accepted ('127.0.0.1', 52748)
+MEDROUTE {"timestamp": 1793415544.4873574, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415544.4916673, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415544.5047302, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415544.516642, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 1}
+MEDROUTE {"timestamp": 1793415544.5671325, "event": "qos_mode_changed", "enabled": false, "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "submitted_rule_count": 168, "controller_flow_programming_ms": 84.096, "flow_programming_enqueue_ms": 83.364, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 8.017, "s1": 7.504, "s3": 6.082, "s2": 0.621}, "switch_barrier_confirmed": true, "operation_id": 18}
+127.0.0.1 - - [31/Oct/2026 08:29:04] "POST /medroute/qos HTTP/1.1" 200 253 0.088822
+(11889) accepted ('127.0.0.1', 52764)
+127.0.0.1 - - [31/Oct/2026 08:29:04] "GET /medroute/qos HTTP/1.1" 200 270 0.000499
+(11889) accepted ('127.0.0.1', 52772)
+MEDROUTE {"timestamp": 1793415544.6041598, "event": "forwarding_mode_changed", "previous": "shortcut", "mode": "baseline", "reason": "scenario baseline_no_prioritization repetition 1", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 25.552, "flow_programming_enqueue_ms": 24.695, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.697, "s1": 6.585, "s3": 6.802, "s2": 0.737}, "switch_barrier_confirmed": true, "operation_id": 19, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:04] "POST /medroute/mode HTTP/1.1" 200 263 0.031328
+(11889) accepted ('127.0.0.1', 52776)
+127.0.0.1 - - [31/Oct/2026 08:29:04] "GET /medroute/mode HTTP/1.1" 200 589 0.000289
+(11889) accepted ('127.0.0.1', 52786)
+127.0.0.1 - - [31/Oct/2026 08:29:04] "GET /medroute/qos HTTP/1.1" 200 270 0.000252
+(11889) accepted ('127.0.0.1', 57714)
+MEDROUTE {"timestamp": 1793415554.5120919, "event": "qos_mode_changed", "enabled": false, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 23.716, "flow_programming_enqueue_ms": 23.092, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.926, "s3": 6.81, "s1": 7.076, "s2": 0.498}, "switch_barrier_confirmed": true, "operation_id": 20}
+127.0.0.1 - - [31/Oct/2026 08:29:14] "POST /medroute/qos HTTP/1.1" 200 253 0.030249
+(11889) accepted ('127.0.0.1', 57726)
+127.0.0.1 - - [31/Oct/2026 08:29:14] "GET /medroute/qos HTTP/1.1" 200 270 0.000236
+(11889) accepted ('127.0.0.1', 57730)
+MEDROUTE {"timestamp": 1793415554.561807, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario baseline_no_prioritization repetition 2", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 36.693, "flow_programming_enqueue_ms": 36.107, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 13.131, "s1": 7.02, "s3": 6.807, "s2": 0.509}, "switch_barrier_confirmed": true, "operation_id": 21, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:14] "POST /medroute/mode HTTP/1.1" 200 263 0.041383
+(11889) accepted ('127.0.0.1', 57732)
+127.0.0.1 - - [31/Oct/2026 08:29:14] "GET /medroute/mode HTTP/1.1" 200 589 0.000266
+(11889) accepted ('127.0.0.1', 57734)
+127.0.0.1 - - [31/Oct/2026 08:29:14] "GET /medroute/qos HTTP/1.1" 200 270 0.000292
+(11889) accepted ('127.0.0.1', 50586)
+MEDROUTE {"timestamp": 1793415566.5311618, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 23.818, "flow_programming_enqueue_ms": 22.558, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.108, "s1": 5.556, "s3": 5.36, "s2": 1.126}, "switch_barrier_confirmed": true, "operation_id": 22}
+127.0.0.1 - - [31/Oct/2026 08:29:26] "POST /medroute/qos HTTP/1.1" 200 252 0.029952
+(11889) accepted ('127.0.0.1', 50598)
+127.0.0.1 - - [31/Oct/2026 08:29:26] "GET /medroute/qos HTTP/1.1" 200 269 0.000238
+(11889) accepted ('127.0.0.1', 50612)
+MEDROUTE {"timestamp": 1793415566.5590477, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario class_prioritization_no_congestion repetition 1", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 17.283, "flow_programming_enqueue_ms": 16.722, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.175, "s1": 4.167, "s3": 4.253, "s2": 0.493}, "switch_barrier_confirmed": true, "operation_id": 23, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:26] "POST /medroute/mode HTTP/1.1" 200 263 0.023046
+(11889) accepted ('127.0.0.1', 50622)
+127.0.0.1 - - [31/Oct/2026 08:29:26] "GET /medroute/mode HTTP/1.1" 200 596 0.000316
+(11889) accepted ('127.0.0.1', 50634)
+127.0.0.1 - - [31/Oct/2026 08:29:26] "GET /medroute/qos HTTP/1.1" 200 269 0.000230
+(11889) accepted ('127.0.0.1', 60152)
+MEDROUTE {"timestamp": 1793415576.4713643, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 19.247, "flow_programming_enqueue_ms": 18.341, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.57, "s1": 4.094, "s3": 4.204, "s2": 0.757}, "switch_barrier_confirmed": true, "operation_id": 24}
+127.0.0.1 - - [31/Oct/2026 08:29:36] "POST /medroute/qos HTTP/1.1" 200 252 0.025394
+(11889) accepted ('127.0.0.1', 60164)
+127.0.0.1 - - [31/Oct/2026 08:29:36] "GET /medroute/qos HTTP/1.1" 200 269 0.000257
+(11889) accepted ('127.0.0.1', 60166)
+MEDROUTE {"timestamp": 1793415576.509338, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario class_prioritization_no_congestion repetition 2", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 27.108, "flow_programming_enqueue_ms": 26.396, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.939, "s1": 7.88, "s3": 7.692, "s2": 0.631}, "switch_barrier_confirmed": true, "operation_id": 25, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:36] "POST /medroute/mode HTTP/1.1" 200 263 0.032341
+(11889) accepted ('127.0.0.1', 60168)
+127.0.0.1 - - [31/Oct/2026 08:29:36] "GET /medroute/mode HTTP/1.1" 200 596 0.000251
+(11889) accepted ('127.0.0.1', 60172)
+127.0.0.1 - - [31/Oct/2026 08:29:36] "GET /medroute/qos HTTP/1.1" 200 269 0.000309
+(11889) accepted ('127.0.0.1', 49894)
+MEDROUTE {"timestamp": 1793415588.0553617, "event": "qos_mode_changed", "enabled": false, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 29.698, "flow_programming_enqueue_ms": 28.962, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 8.556, "s1": 6.05, "s3": 6.18, "s2": 0.649}, "switch_barrier_confirmed": true, "operation_id": 26}
+127.0.0.1 - - [31/Oct/2026 08:29:48] "POST /medroute/qos HTTP/1.1" 200 253 0.035419
+(11889) accepted ('127.0.0.1', 49896)
+127.0.0.1 - - [31/Oct/2026 08:29:48] "GET /medroute/qos HTTP/1.1" 200 270 0.000270
+(11889) accepted ('127.0.0.1', 49902)
+MEDROUTE {"timestamp": 1793415588.092479, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario heavy_background_no_prioritization repetition 1", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 26.94, "flow_programming_enqueue_ms": 26.191, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.741, "s1": 6.281, "s3": 6.098, "s2": 0.663}, "switch_barrier_confirmed": true, "operation_id": 27, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:48] "POST /medroute/mode HTTP/1.1" 200 263 0.032056
+(11889) accepted ('127.0.0.1', 49904)
+127.0.0.1 - - [31/Oct/2026 08:29:48] "GET /medroute/mode HTTP/1.1" 200 597 0.000306
+(11889) accepted ('127.0.0.1', 49920)
+127.0.0.1 - - [31/Oct/2026 08:29:48] "GET /medroute/qos HTTP/1.1" 200 270 0.000292
+(11889) accepted ('127.0.0.1', 40282)
+MEDROUTE {"timestamp": 1793415599.7791398, "event": "qos_mode_changed", "enabled": false, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 23.862, "flow_programming_enqueue_ms": 23.207, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.815, "s1": 7.238, "s3": 6.722, "s2": 0.59}, "switch_barrier_confirmed": true, "operation_id": 28}
+127.0.0.1 - - [31/Oct/2026 08:29:59] "POST /medroute/qos HTTP/1.1" 200 253 0.030108
+(11889) accepted ('127.0.0.1', 40294)
+127.0.0.1 - - [31/Oct/2026 08:29:59] "GET /medroute/qos HTTP/1.1" 200 270 0.000258
+(11889) accepted ('127.0.0.1', 40310)
+MEDROUTE {"timestamp": 1793415599.809617, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario heavy_background_no_prioritization repetition 2", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 19.248, "flow_programming_enqueue_ms": 18.486, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 3.993, "s3": 5.457, "s1": 5.597, "s2": 0.645}, "switch_barrier_confirmed": true, "operation_id": 29, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:29:59] "POST /medroute/mode HTTP/1.1" 200 263 0.025188
+(11889) accepted ('127.0.0.1', 40322)
+127.0.0.1 - - [31/Oct/2026 08:29:59] "GET /medroute/mode HTTP/1.1" 200 597 0.000284
+(11889) accepted ('127.0.0.1', 40338)
+127.0.0.1 - - [31/Oct/2026 08:29:59] "GET /medroute/qos HTTP/1.1" 200 270 0.000262
+(11889) accepted ('127.0.0.1', 45858)
+MEDROUTE {"timestamp": 1793415610.0676978, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 17.908, "flow_programming_enqueue_ms": 17.324, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.232, "s1": 4.163, "s3": 4.048, "s2": 0.486}, "switch_barrier_confirmed": true, "operation_id": 30}
+127.0.0.1 - - [31/Oct/2026 08:30:10] "POST /medroute/qos HTTP/1.1" 200 252 0.023903
+(11889) accepted ('127.0.0.1', 45870)
+127.0.0.1 - - [31/Oct/2026 08:30:10] "GET /medroute/qos HTTP/1.1" 200 269 0.000225
+(11889) accepted ('127.0.0.1', 45880)
+MEDROUTE {"timestamp": 1793415610.0971076, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario heavy_background_with_prioritization repetition 1", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 18.348, "flow_programming_enqueue_ms": 17.567, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.294, "s1": 4.924, "s3": 4.805, "s2": 0.703}, "switch_barrier_confirmed": true, "operation_id": 31, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:30:10] "POST /medroute/mode HTTP/1.1" 200 263 0.024649
+(11889) accepted ('127.0.0.1', 45894)
+127.0.0.1 - - [31/Oct/2026 08:30:10] "GET /medroute/mode HTTP/1.1" 200 597 0.000296
+(11889) accepted ('127.0.0.1', 45908)
+127.0.0.1 - - [31/Oct/2026 08:30:10] "GET /medroute/qos HTTP/1.1" 200 269 0.000247
+(11889) accepted ('127.0.0.1', 50288)
+MEDROUTE {"timestamp": 1793415622.1923194, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 24.927, "flow_programming_enqueue_ms": 24.058, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.499, "s3": 7.105, "s1": 7.447, "s2": 0.738}, "switch_barrier_confirmed": true, "operation_id": 32}
+127.0.0.1 - - [31/Oct/2026 08:30:22] "POST /medroute/qos HTTP/1.1" 200 252 0.030750
+(11889) accepted ('127.0.0.1', 50298)
+127.0.0.1 - - [31/Oct/2026 08:30:22] "GET /medroute/qos HTTP/1.1" 200 269 0.000298
+(11889) accepted ('127.0.0.1', 50300)
+MEDROUTE {"timestamp": 1793415622.2229333, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario heavy_background_with_prioritization repetition 2", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 19.592, "flow_programming_enqueue_ms": 18.961, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.413, "s1": 5.514, "s3": 5.284, "s2": 0.527}, "switch_barrier_confirmed": true, "operation_id": 33, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:30:22] "POST /medroute/mode HTTP/1.1" 200 263 0.024220
+(11889) accepted ('127.0.0.1', 50316)
+127.0.0.1 - - [31/Oct/2026 08:30:22] "GET /medroute/mode HTTP/1.1" 200 598 0.000262
+(11889) accepted ('127.0.0.1', 50318)
+127.0.0.1 - - [31/Oct/2026 08:30:22] "GET /medroute/qos HTTP/1.1" 200 269 0.000337
+(11889) accepted ('127.0.0.1', 54016)
+MEDROUTE {"timestamp": 1793415634.442372, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 23.275, "flow_programming_enqueue_ms": 22.691, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.518, "s1": 5.871, "s3": 5.454, "s2": 0.489}, "switch_barrier_confirmed": true, "operation_id": 34}
+127.0.0.1 - - [31/Oct/2026 08:30:34] "POST /medroute/qos HTTP/1.1" 200 252 0.029236
+(11889) accepted ('127.0.0.1', 54020)
+127.0.0.1 - - [31/Oct/2026 08:30:34] "GET /medroute/qos HTTP/1.1" 200 269 0.000262
+(11889) accepted ('127.0.0.1', 54036)
+MEDROUTE {"timestamp": 1793415634.4747765, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario emergency_surge repetition 1", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 21.571, "flow_programming_enqueue_ms": 21.001, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.991, "s1": 5.707, "s3": 5.584, "s2": 0.499}, "switch_barrier_confirmed": true, "operation_id": 35, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:30:34] "POST /medroute/mode HTTP/1.1" 200 263 0.027993
+(11889) accepted ('127.0.0.1', 54042)
+127.0.0.1 - - [31/Oct/2026 08:30:34] "GET /medroute/mode HTTP/1.1" 200 577 0.000333
+(11889) accepted ('127.0.0.1', 54050)
+127.0.0.1 - - [31/Oct/2026 08:30:34] "GET /medroute/qos HTTP/1.1" 200 269 0.000231
+(11889) accepted ('127.0.0.1', 38304)
+MEDROUTE {"timestamp": 1793415644.6396363, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 19.139, "flow_programming_enqueue_ms": 18.56, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.95, "s1": 4.676, "s3": 4.531, "s2": 0.483}, "switch_barrier_confirmed": true, "operation_id": 36}
+127.0.0.1 - - [31/Oct/2026 08:30:44] "POST /medroute/qos HTTP/1.1" 200 252 0.025200
+(11889) accepted ('127.0.0.1', 38314)
+127.0.0.1 - - [31/Oct/2026 08:30:44] "GET /medroute/qos HTTP/1.1" 200 269 0.000254
+(11889) accepted ('127.0.0.1', 38324)
+MEDROUTE {"timestamp": 1793415644.671625, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "scenario emergency_surge repetition 2", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 20.946, "flow_programming_enqueue_ms": 20.184, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.505, "s3": 6.328, "s1": 6.482, "s2": 0.657}, "switch_barrier_confirmed": true, "operation_id": 37, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:30:44] "POST /medroute/mode HTTP/1.1" 200 263 0.025943
+(11889) accepted ('127.0.0.1', 38326)
+127.0.0.1 - - [31/Oct/2026 08:30:44] "GET /medroute/mode HTTP/1.1" 200 577 0.000287
+(11889) accepted ('127.0.0.1', 38338)
+127.0.0.1 - - [31/Oct/2026 08:30:44] "GET /medroute/qos HTTP/1.1" 200 269 0.000262
+(11889) accepted ('127.0.0.1', 56898)
+MEDROUTE {"timestamp": 1793415656.4056149, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 23.558, "flow_programming_enqueue_ms": 22.838, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.305, "s3": 6.336, "s1": 6.553, "s2": 0.652}, "switch_barrier_confirmed": true, "operation_id": 38}
+127.0.0.1 - - [31/Oct/2026 08:30:56] "POST /medroute/qos HTTP/1.1" 200 252 0.029409
+(11889) accepted ('127.0.0.1', 56908)
+127.0.0.1 - - [31/Oct/2026 08:30:56] "GET /medroute/qos HTTP/1.1" 200 269 0.000230
+(11889) accepted ('127.0.0.1', 56912)
+MEDROUTE {"timestamp": 1793415656.4425018, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "baseline", "reason": "catalog profile matrix baseline", "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "route_change_count": 0, "flow_programming_request_count": 4, "submitted_rule_count": 126, "controller_flow_programming_ms": 25.836, "flow_programming_enqueue_ms": 25.034, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 5.367, "s3": 8.164, "s1": 8.384, "s2": 0.677}, "switch_barrier_confirmed": true, "operation_id": 39, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:30:56] "POST /medroute/mode HTTP/1.1" 200 263 0.032036
+(11889) accepted ('127.0.0.1', 56924)
+127.0.0.1 - - [31/Oct/2026 08:30:56] "GET /medroute/mode HTTP/1.1" 200 571 0.000353
+(11889) accepted ('127.0.0.1', 56936)
+127.0.0.1 - - [31/Oct/2026 08:30:56] "GET /medroute/qos HTTP/1.1" 200 269 0.000412
+(11889) accepted ('127.0.0.1', 57082)
+127.0.0.1 - - [31/Oct/2026 08:31:01] "GET /medroute/qos HTTP/1.1" 200 269 0.000355
+(11889) accepted ('127.0.0.1', 57096)
+127.0.0.1 - - [31/Oct/2026 08:31:06] "GET /medroute/qos HTTP/1.1" 200 269 0.000412
+(11889) accepted ('127.0.0.1', 60990)
+127.0.0.1 - - [31/Oct/2026 08:31:10] "GET /medroute/qos HTTP/1.1" 200 269 0.000223
+(11889) accepted ('127.0.0.1', 32768)
+127.0.0.1 - - [31/Oct/2026 08:31:15] "GET /medroute/qos HTTP/1.1" 200 269 0.000461
+(11889) accepted ('127.0.0.1', 44722)
+127.0.0.1 - - [31/Oct/2026 08:31:20] "GET /medroute/qos HTTP/1.1" 200 269 0.000456
+(11889) accepted ('127.0.0.1', 44726)
+MEDROUTE {"timestamp": 1793415685.8062725, "event": "qos_mode_changed", "enabled": true, "active_dpids": [1, 2, 3, 4], "class_rule_count": 126, "submitted_rule_count": 126, "controller_flow_programming_ms": 18.3, "flow_programming_enqueue_ms": 17.537, "flow_mod_count": 134, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.488, "s3": 3.94, "s1": 4.082, "s2": 0.645}, "switch_barrier_confirmed": true, "operation_id": 40}
+127.0.0.1 - - [31/Oct/2026 08:31:25] "POST /medroute/qos HTTP/1.1" 200 252 0.024176
+(11889) accepted ('127.0.0.1', 44728)
+127.0.0.1 - - [31/Oct/2026 08:31:25] "GET /medroute/qos HTTP/1.1" 200 269 0.000249
+(11889) accepted ('127.0.0.1', 44736)
+MEDROUTE {"timestamp": 1793415685.914211, "event": "port_status", "dpid": 3, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415685.919087, "event": "port_status", "dpid": 2, "port": 3, "reason": 2, "state": 4}
+MEDROUTE {"timestamp": 1793415685.9536903, "event": "forwarding_mode_changed", "previous": "baseline", "mode": "shortcut", "reason": "restore final repeated Braess decision", "active_dpids": [1, 2, 3, 4], "class_rule_count": 168, "route_change_count": 1, "flow_programming_request_count": 4, "submitted_rule_count": 168, "controller_flow_programming_ms": 43.199, "flow_programming_enqueue_ms": 42.334, "flow_mod_count": 176, "barrier_count": 4, "barrier_confirmation_latency_ms_by_switch": {"s4": 4.321, "s1": 4.243, "s3": 5.899, "s2": 0.771}, "switch_barrier_confirmed": true, "operation_id": 41, "queue_map": {"ECG": 1, "ICU": 2, "WEARABLE": 3, "BACKGROUND": 4}}
+127.0.0.1 - - [31/Oct/2026 08:31:25] "POST /medroute/mode HTTP/1.1" 200 263 0.048921
+(11889) accepted ('127.0.0.1', 44752)
+127.0.0.1 - - [31/Oct/2026 08:31:25] "GET /medroute/mode HTTP/1.1" 200 578 0.000246
+(11889) accepted ('127.0.0.1', 44762)
+127.0.0.1 - - [31/Oct/2026 08:31:25] "GET /medroute/qos HTTP/1.1" 200 269 0.000250
+MEDROUTE {"timestamp": 1793415687.0417824, "event": "port_status", "dpid": 1, "port": 1, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415687.04724, "event": "port_status", "dpid": 1, "port": 1, "reason": 1, "state": 0}
+MEDROUTE {"timestamp": 1793415687.080875, "event": "port_status", "dpid": 4, "port": 3, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.1158562, "event": "port_status", "dpid": 1, "port": 6, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.13994, "event": "port_status", "dpid": 1, "port": 7, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415687.1447618, "event": "port_status", "dpid": 1, "port": 7, "reason": 1, "state": 0}
+MEDROUTE {"timestamp": 1793415687.203712, "event": "port_status", "dpid": 4, "port": 4, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.2283142, "event": "port_status", "dpid": 4, "port": 5, "reason": 2, "state": 0}
+MEDROUTE {"timestamp": 1793415687.2334878, "event": "port_status", "dpid": 4, "port": 5, "reason": 1, "state": 0}
+MEDROUTE {"timestamp": 1793415687.2745612, "event": "port_status", "dpid": 1, "port": 2, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.279066, "event": "port_status", "dpid": 2, "port": 1, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.3231635, "event": "port_status", "dpid": 1, "port": 3, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.327753, "event": "port_status", "dpid": 3, "port": 1, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.3462021, "event": "port_status", "dpid": 3, "port": 3, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.3508627, "event": "port_status", "dpid": 2, "port": 3, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.3717785, "event": "port_status", "dpid": 4, "port": 1, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.3762197, "event": "port_status", "dpid": 2, "port": 2, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.4374352, "event": "port_status", "dpid": 4, "port": 2, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.4422734, "event": "port_status", "dpid": 3, "port": 2, "reason": 1, "state": 4}
+MEDROUTE {"timestamp": 1793415687.5206563, "event": "switch_disconnected", "dpid": 4, "reason": "switch disconnected", "route_state": "confirmed"}
+MEDROUTE {"timestamp": 1793415687.5257318, "event": "topology_switch_down", "dpid": 4}
+MEDROUTE {"timestamp": 1793415687.5766149, "event": "switch_disconnected", "dpid": 1, "reason": "switch disconnected", "route_state": "confirmed"}
+MEDROUTE {"timestamp": 1793415687.5818324, "event": "topology_switch_down", "dpid": 1}
+MEDROUTE {"timestamp": 1793415687.6407118, "event": "switch_disconnected", "dpid": 3, "reason": "switch disconnected", "route_state": "confirmed"}
+MEDROUTE {"timestamp": 1793415687.6467845, "event": "topology_switch_down", "dpid": 3}
+MEDROUTE {"timestamp": 1793415687.7328026, "event": "switch_disconnected", "dpid": 2, "reason": "switch disconnected", "route_state": "unconfirmed"}

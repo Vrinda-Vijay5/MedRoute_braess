@@ -27,6 +27,13 @@ test("topology validation rejects invalid endpoints, duplicate links, and bad ca
   assert.deepEqual(shortestPath(DEFAULT_TOPOLOGY, "s1", "s4"), ["s1", "s2", "s4"]);
 });
 
+test("topology validation preserves editable jitter and packet-loss link properties", () => {
+  const valid = validateTopology({ nodes: ["a", "b"], links: [{ source: "a", target: "b", capacityMbps: 10, latencyMs: 2, jitterMs: 3, packetLossPct: 4 }] });
+  assert.equal(valid.valid, true);
+  assert.deepEqual(valid.topology.links[0], { source: "a", target: "b", capacityMbps: 10, latencyMs: 2, jitterMs: 3, packetLossPct: 4, enabled: true });
+  assert.equal(validateTopology({ nodes: ["a", "b"], links: [{ source: "a", target: "b", packetLossPct: 101 }] }).valid, false);
+});
+
 test("dashboard topology API edits simulation state and reports disconnected routes", async t => {
   const server = createServer();
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
@@ -65,4 +72,23 @@ test("live topology endpoint never falls back to the simulation graph", async t 
   assert.equal(body.source, "unavailable");
   assert.equal(body.connected, false);
   assert.deepEqual(body.switches, []);
+});
+
+test("live study API validates profiles and exposes saved-study index routes", async t => {
+  const server = createServer();
+  await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
+  t.after(() => new Promise(resolve => server.close(resolve)));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  const invalid = await fetch(base + "/api/live/study", { method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ topology_profile: "arbitrary_editor_graph", seeds: [1, 2], repetitions: 2 }) });
+  assert.equal(invalid.status, 400);
+  const status = await (await fetch(base + "/api/live/study")).json();
+  assert.equal(status.status, "idle");
+  const studies = await (await fetch(base + "/api/live/studies")).json();
+  assert.ok(Array.isArray(studies.studies));
+  const page = await (await fetch(base + "/playground")).text();
+  assert.match(page, /LIVE EXPERIMENT/);
+  assert.match(page, /Run LIVE M1–M4 experiment/);
+  assert.match(page, /Simulation only/);
 });

@@ -2,10 +2,16 @@
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const { spawn } = require("node:child_process");
 const { DEFAULT_TOPOLOGY, validateTopology, shortestPath, connectedComponents } = require("../src/topology");
 const root = path.resolve(__dirname, "..");
 const artifacts = path.join(root, "artifacts");
 const controllerUrl = process.env.MEDROUTE_CONTROLLER_URL || "http://127.0.0.1:8080";
+const LIVE_PROFILES = {
+  balanced_diamond: { primary_bw_mbps: 100, alternate_bw_mbps: 100, primary_delay: "1ms", alternate_delay: "1ms" },
+  asymmetric_diamond: { primary_bw_mbps: 100, alternate_bw_mbps: 40, primary_delay: "2ms", alternate_delay: "5ms" },
+  low_capacity_diamond: { primary_bw_mbps: 25, alternate_bw_mbps: 25, primary_delay: "3ms", alternate_delay: "3ms" }
+};
 const mime = { ".html": "text/html; charset=utf-8", ".json": "application/json; charset=utf-8", ".md": "text/markdown; charset=utf-8", ".txt": "text/plain; charset=utf-8", ".log": "text/plain; charset=utf-8", ".png": "image/png" };
 function json(res, value) { res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" }); res.end(JSON.stringify(value)); }
 function readJson(folder, name) { try { return JSON.parse(fs.readFileSync(path.join(folder, name), "utf8")); } catch { return null; } }
@@ -82,13 +88,80 @@ function latestProfileMatrixRun() {
   return sortRunNames(candidates.map(x => x.name),
     Object.fromEntries(candidates.map(x => [x.name, x.time])))[0] || null;
 }
+function shellQuote(value) { return "'" + String(value).replace(/'/g, "'\\''") + "'"; }
+function wslPath(value) {
+  const match = String(value).match(/^([A-Za-z]):[\\/](.*)$/);
+  return match ? "/mnt/" + match[1].toLowerCase() + "/" + match[2].replace(/\\/g, "/") : value;
+}
+function listLiveStudies() {
+  if (!fs.existsSync(artifacts)) return [];
+  return fs.readdirSync(artifacts, { withFileTypes: true })
+    .filter(entry => entry.isDirectory() && fs.existsSync(path.join(artifacts, entry.name, "matched_study.json")))
+    .map(entry => {
+      const folder = path.join(artifacts, entry.name);
+      return { id: entry.name, index: readJson(folder, "matched_study.json"), report: readJson(folder, "comparison_report.json") };
+    });
+}
 function createServer() {
   let simulationTopology = JSON.parse(JSON.stringify(DEFAULT_TOPOLOGY));
   const simulationHistory = [];
+  let liveStudy = { status: "idle", output_dir: null, started_at: null, finished_at: null,
+    exit_code: null, error: null, request: null };
+  let liveProcess = null;
+  function startLiveStudy(options) {
+    const runId = "matched-dashboard-" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+    const outputDir = path.join(artifacts, runId);
+    fs.mkdirSync(outputDir, { recursive: true });
+    const liveRoot = process.env.MEDROUTE_LIVE_ROOT || root;
+    const python = process.env.MEDROUTE_LIVE_PYTHON || "/home/subiw/ryu-env/bin/python";
+    const args = ["scripts/matched_study.py", "--output-dir", wslPath(outputDir), "--seeds", ...options.seeds.map(String),
+      "--repetitions", String(options.repetitions), "--topology-profile", options.topology_profile];
+    if (options.skip_ablations) args.push("--skip-ablations");
+    liveStudy = { status: "running", output_dir: outputDir, started_at: new Date().toISOString(),
+      finished_at: null, exit_code: null, error: null, request: options, command: [python, ...args] };
+    const log = fs.createWriteStream(path.join(outputDir, "dashboard_launcher.log"));
+    if (process.platform === "win32") {
+      const script = ["sudo", shellQuote(python), ...args.map(shellQuote)].join(" ");
+      liveProcess = spawn("wsl.exe", ["-e", "bash", "-lc", script], { cwd: liveRoot, stdio: ["ignore", log, log] });
+    } else {
+      liveProcess = spawn("sudo", [python, ...args], { cwd: liveRoot, stdio: ["ignore", log, log] });
+    }
+    liveProcess.on("error", error => { liveStudy.status = "failed"; liveStudy.error = error.message; liveStudy.finished_at = new Date().toISOString(); liveProcess = null; });
+    liveProcess.on("close", code => { liveStudy.status = code === 0 ? "complete" : "failed"; liveStudy.exit_code = code;
+      liveStudy.finished_at = new Date().toISOString(); liveStudy.report = readJson(outputDir, "comparison_report.json"); liveStudy.index = readJson(outputDir, "matched_study.json"); liveProcess = null; });
+    return liveStudy;
+  }
   return http.createServer(async (req, res) => {
     let pathname, requestUrl;
     try { requestUrl = new URL(req.url, "http://localhost"); pathname = decodeURIComponent(requestUrl.pathname); }
     catch { res.writeHead(400).end("Bad request"); return; }
+    if (pathname === "/api/live/study") {
+      if (req.method === "GET") return json(res, liveStudy);
+      if (req.method !== "POST") { res.writeHead(405).end("Use GET or POST"); return; }
+      if (liveProcess) return jsonWithStatus(res, 409, { error: "a live matched study is already running", status: liveStudy });
+      try {
+        let body = "";
+        for await (const chunk of req) { body += chunk; if (body.length > 32 * 1024) { res.writeHead(413).end("Study request too large"); return; } }
+        const parsed = JSON.parse(body);
+        const seeds = Array.isArray(parsed.seeds) ? parsed.seeds : [];
+        if (!Object.prototype.hasOwnProperty.call(LIVE_PROFILES, parsed.topology_profile) ||
+            seeds.length < 2 || seeds.length > 8 || seeds.some(seed => !Number.isInteger(seed) || seed < 0) ||
+            new Set(seeds).size !== seeds.length || !Number.isInteger(parsed.repetitions) || parsed.repetitions < 2 || parsed.repetitions > 10) {
+          return jsonWithStatus(res, 400, { error: "invalid live study configuration", allowed_profiles: Object.keys(LIVE_PROFILES),
+            requirements: "2-8 distinct non-negative seeds and 2-10 repetitions" });
+        }
+        return json(res, startLiveStudy({ topology_profile: parsed.topology_profile, seeds,
+          repetitions: parsed.repetitions, skip_ablations: parsed.skip_ablations !== false,
+          topology_profile_parameters: LIVE_PROFILES[parsed.topology_profile] }));
+      } catch (error) { return jsonWithStatus(res, 400, { error: "invalid live study JSON", details: [error.message] }); }
+    }
+    if (pathname === "/api/live/studies") return json(res, { studies: listLiveStudies() });
+    const liveStudyMatch = pathname.match(/^\/api\/live\/study\/([^/]+)$/);
+    if (liveStudyMatch) {
+      const folder = path.resolve(artifacts, liveStudyMatch[1]);
+      if (path.dirname(folder) !== artifacts || !fs.existsSync(folder)) { res.writeHead(404).end("Not found"); return; }
+      return json(res, { id: liveStudyMatch[1], index: readJson(folder, "matched_study.json"), report: readJson(folder, "comparison_report.json") });
+    }
     if (pathname === "/api/simulation/topology") {
       if (req.method === "GET") {
         return json(res, { mode: "simulation", topology: simulationTopology,

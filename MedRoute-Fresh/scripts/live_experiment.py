@@ -25,7 +25,7 @@ if str(SCRIPTS_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPTS_DIR))
 if str(ROOT / "sdn") not in sys.path:
     sys.path.insert(0, str(ROOT / "sdn"))
-from qos import queue_command
+from qos import DEFAULT_ROUTE_PRIORITY, flow_specs, queue_command
 from cbdr import evaluate_candidate as evaluate_cbdr_candidate
 from dataset_workload import build_scenario_workloads, load_profiles, load_traffic_catalog
 from experiment_methods import available_methods, build_method_scenario_plan, get_method
@@ -57,6 +57,20 @@ SCENARIO_PLAN = {
 }
 # Explicit policy references, independent of measured stage values.
 COST_REFERENCES = {"latency_ms": 20.0, "jitter_ms": 5.0, "packet_loss_pct": 1.0}
+# This is the ownership cookie installed by sdn/controller.py for every
+# MedRoute-owned drop and forwarding rule.  It is intentionally kept exact;
+# unrelated OVS/control-plane flows must not be classified as MedRoute rules.
+MEDROUTE_COOKIE = 0x4D52000000000001
+TOPOLOGY_PROFILE_PARAMETERS = {
+    "balanced_diamond": {"primary_bw_mbps": 100, "alternate_bw_mbps": 100,
+                          "primary_delay": "1ms", "alternate_delay": "1ms"},
+    "asymmetric_diamond": {"primary_bw_mbps": 100, "alternate_bw_mbps": 40,
+                            "primary_delay": "2ms", "alternate_delay": "5ms"},
+    "low_capacity_diamond": {"primary_bw_mbps": 25, "alternate_bw_mbps": 25,
+                              "primary_delay": "3ms", "alternate_delay": "3ms"},
+}
+DEFAULT_PROTECTED_CRITICAL_CLASSES = (
+    "EMERGENCY_ALARM", "CRITICAL_PHYSIOLOGICAL_TELEMETRY")
 
 
 def save_json(path, value):
@@ -273,17 +287,235 @@ def compute_exit_code(passed, scenario_validation, selected_method=None, final_q
     return baseline_result
 
 
+def parse_openflow_flow_line(line, switch=None):
+    """Parse the match/action fields emitted by ovs-ofctl OpenFlow13 dumps."""
+    if "actions=" not in line:
+        return None
+    match_text, actions_text = line.split("actions=", 1)
+    fields = {}
+    protocol_tokens = {"tcp": 6, "udp": 17, "icmp": 1}
+    ethertype_tokens = {"ip": 0x0800, "ipv6": 0x86DD}
+    for token in match_text.split(","):
+        token = token.strip()
+        if token in protocol_tokens:
+            fields["ip_proto"] = protocol_tokens[token]
+            continue
+        if token in ethertype_tokens:
+            fields["eth_type"] = ethertype_tokens[token]
+            continue
+        if "=" not in token:
+            continue
+        key, value = token.split("=", 1)
+        fields[key.strip()] = value.strip()
+    actions = [item.strip() for item in actions_text.split(",")]
+    outputs = []
+    queues = []
+    action_sequence = []
+    for action in actions:
+        output = re.fullmatch(r"output:(\d+)", action)
+        queue = re.fullmatch(r"set_queue:(\d+)", action)
+        if output:
+            port = int(output.group(1))
+            outputs.append(port)
+            action_sequence.append(("output", port))
+        if queue:
+            queue_id = int(queue.group(1))
+            queues.append(queue_id)
+            action_sequence.append(("set_queue", queue_id))
+    def number(value):
+        try:
+            return int(str(value).split("/", 1)[0], 0)
+        except (TypeError, ValueError):
+            return None
+    def ip_value(*names):
+        for name in names:
+            if name in fields:
+                return fields[name]
+        return None
+    tos = number(fields.get("nw_tos"))
+    protocol = number(fields.get("ip_proto", fields.get("nw_proto")))
+    transport_src = number(fields.get("tp_src", fields.get("tcp_src", fields.get("udp_src"))))
+    transport_dst = number(fields.get("tp_dst", fields.get("tcp_dst", fields.get("udp_dst"))))
+    switch_dpid = None
+    if isinstance(switch, str) and re.fullmatch(r"s\d+", switch):
+        switch_dpid = int(switch[1:])
+    return {"switch": switch, "raw": line.rstrip(), "fields": fields,
+            "dpid": switch_dpid,
+            "reported_dpid": number(fields.get("metadata")),
+            "cookie": number(fields.get("cookie")),
+            "priority": number(fields.get("priority")),
+            "in_port": number(fields.get("in_port")),
+            "source_ip": ip_value("ipv4_src", "nw_src", "ip_src"),
+            "destination_ip": ip_value("ipv4_dst", "nw_dst", "ip_dst"),
+            "eth_type": number(fields.get("eth_type", fields.get("dl_type"))),
+            "ip_proto": protocol,
+            "ip_dscp": number(fields.get("ip_dscp")) if "ip_dscp" in fields else
+                       (tos >> 2 if tos is not None else None),
+            "tcp_src": transport_src if protocol == 6 else None,
+            "tcp_dst": transport_dst if protocol == 6 else None,
+            "udp_src": transport_src if protocol == 17 else None,
+            "udp_dst": transport_dst if protocol == 17 else None,
+            "outputs": outputs, "queues": queues,
+            "action_sequence": action_sequence,
+            "default_route_rule": not any(key in fields for key in
+                ("ip_dscp", "nw_tos", "ip_proto", "nw_proto", "tcp_src", "tcp_dst",
+                 "udp_src", "udp_dst", "tp_src", "tp_dst"))}
+
+
+def _flow_field_value(flow, key):
+    if key == "eth_type":
+        if flow.get("eth_type") is not None:
+            return flow.get("eth_type")
+        # ovs-ofctl commonly prints IPv4 transport matches as ``tcp`` or
+        # ``udp`` without a separate ``ip`` token.  The protocol token is
+        # explicit, so recognizing its IPv4 EtherType is not protocol
+        # inference and keeps matching faithful to the controller's IPv4
+        # match specification.
+        if flow.get("ip_proto") in (1, 6, 17):
+            return 0x0800
+        return None
+    if key == "ipv4_src":
+        return flow.get("source_ip")
+    if key == "ipv4_dst":
+        return flow.get("destination_ip")
+    if key == "ip_dscp":
+        return flow.get("ip_dscp")
+    if key == "ip_proto":
+        return flow.get("ip_proto")
+    if key == "in_port":
+        return flow.get("in_port")
+    if key == "tcp_src":
+        return flow.get("tcp_src") if flow.get("ip_proto") == 6 else None
+    if key == "tcp_dst":
+        return flow.get("tcp_dst") if flow.get("ip_proto") == 6 else None
+    if key == "udp_src":
+        return flow.get("udp_src") if flow.get("ip_proto") == 17 else None
+    if key == "udp_dst":
+        return flow.get("udp_dst") if flow.get("ip_proto") == 17 else None
+    return None
+
+
+def _flow_matches_spec(flow, spec, require_default=False):
+    expected_dpid = spec["dpid"]
+    if (flow.get("switch") != "s{}".format(expected_dpid) or
+            flow.get("dpid") != expected_dpid):
+        return False
+    if require_default and not flow.get("default_route_rule"):
+        return False
+    for key, expected in spec.get("match", {}).items():
+        if _flow_field_value(flow, key) != expected:
+            return False
+    actions = flow.get("action_sequence", [])
+    output_positions = [index for index, action in enumerate(actions)
+                        if action == ("output", spec["out_port"])]
+    if not output_positions:
+        return False
+    queue_id = spec.get("queue_id")
+    if queue_id is not None:
+        queue_positions = [index for index, action in enumerate(actions)
+                           if action == ("set_queue", queue_id)]
+        if not queue_positions or min(queue_positions) > min(output_positions):
+            return False
+    return True
+
+
+def _expected_route_evidence(flows, mode, routes):
+    expected = [{"dpid": row[0], "in_port": row[1], "out_port": row[2],
+                 "source_ip": row[3], "destination_ip": row[4],
+                 "priority": DEFAULT_ROUTE_PRIORITY,
+                 "cookie": MEDROUTE_COOKIE}
+                for row in routes[mode]]
+    matched, missing, ambiguous = [], [], []
+    expected_identities = {(item["dpid"], item["in_port"], item["source_ip"],
+                            item["destination_ip"]): item for item in expected}
+
+    def is_owned_route_rule(flow):
+        return bool(flow.get("cookie") == MEDROUTE_COOKIE and
+                    flow.get("default_route_rule") and
+                    flow.get("in_port") is not None and
+                    flow.get("source_ip") is not None and
+                    flow.get("destination_ip") is not None and
+                    flow.get("outputs"))
+
+    def identity(flow):
+        return (flow.get("dpid"), flow.get("in_port"), flow.get("source_ip"),
+                flow.get("destination_ip"))
+
+    owned_route_rules = [flow for flow in flows if is_owned_route_rule(flow)]
+    unexpected = []
+    for item in expected:
+        candidates = [flow for flow in owned_route_rules
+                      if flow.get("switch") == "s{}".format(item["dpid"])
+                      and flow.get("dpid") == item["dpid"]
+                      and flow.get("in_port") == item["in_port"]
+                      and flow.get("source_ip") == item["source_ip"]
+                      and flow.get("destination_ip") == item["destination_ip"]
+                      and flow.get("priority") == item["priority"]
+                      and flow.get("outputs") == [item["out_port"]]]
+        if len(candidates) == 1:
+            matched.append({**item, "raw": candidates[0]["raw"]})
+        elif not candidates:
+            missing.append(item)
+        else:
+            ambiguous.append({**item, "match_count": len(candidates)})
+    for flow in owned_route_rules:
+        item = expected_identities.get(identity(flow))
+        exact_expected = bool(item and
+                              flow.get("switch") == "s{}".format(item["dpid"]) and
+                              flow.get("priority") == item["priority"] and
+                              flow.get("outputs") == [item["out_port"]])
+        if not exact_expected:
+            unexpected.append({"dpid": flow.get("dpid"),
+                               "switch": flow.get("switch"),
+                               "in_port": flow.get("in_port"),
+                               "source_ip": flow.get("source_ip"),
+                               "destination_ip": flow.get("destination_ip"),
+                               "priority": flow.get("priority"),
+                               "cookie": flow.get("cookie"),
+                               "outputs": flow.get("outputs", []),
+                               "raw": flow.get("raw")})
+    return {"expected_rules": expected, "matched_rules": matched,
+            "missing_rules": missing, "ambiguous_rules": ambiguous,
+            "unexpected_rules": unexpected,
+            "owned_route_rule_count": len(owned_route_rules),
+            "verified": bool(expected) and not missing and not ambiguous and
+                        not unexpected and len(matched) == len(expected)}
+
+
+def _class_queue_evidence(flows, mode, routes, class_config):
+    expected_specs = [spec for spec in flow_specs(routes[mode], class_config)
+                      if spec["traffic_class"] != "BACKGROUND" or spec["classifier"] != "default"]
+    rows, missing, ambiguous = [], [], []
+    for spec in expected_specs:
+        candidates = [flow for flow in flows if _flow_matches_spec(flow, spec) and
+                      spec["queue_id"] in flow.get("queues", [])]
+        expected = {"dpid": spec["dpid"], "traffic_class": spec["traffic_class"],
+                    "classifier": spec["classifier"], "queue_id": spec["queue_id"],
+                    "out_port": spec["out_port"], "match": spec["match"]}
+        if len(candidates) == 1:
+            rows.append({**expected, "raw": candidates[0]["raw"]})
+        elif not candidates:
+            missing.append(expected)
+        else:
+            ambiguous.append({**expected, "match_count": len(candidates)})
+    return {"expected_rules": expected_specs, "matched_rules": rows,
+            "missing_rules": missing, "ambiguous_rules": ambiguous,
+            "verified": bool(expected_specs) and not missing and not ambiguous and
+                        len(rows) == len(expected_specs)}
+
+
 def verify_flows(stage, mode, evidence_dir, routes, class_config):
-    expected = next(row for row in routes[mode] if row[0] == 2 and row[3] == "10.0.0.1")
-    marker = "in_port=" + str(expected[1])
-    action = "output:" + str(expected[2])
     queue_ids = sorted(profile["queue_id"] for profile in class_config["classes"].values())
     qos_enabled = request_json(timeout=2, endpoint=QOS_API).get("qos_enabled")
     deadline = time.monotonic() + 5
-    captured, error = [], ""
+    captured, parsed, error = [], [], ""
+    route_evidence = {"expected_rules": [], "matched_rules": [], "missing_rules": [],
+                      "ambiguous_rules": [], "unexpected_rules": [],
+                      "owned_route_rule_count": 0, "verified": False}
+    class_evidence = {"expected_rules": [], "matched_rules": [], "missing_rules": [],
+                      "ambiguous_rules": [], "verified": not qos_enabled}
     while time.monotonic() < deadline:
-        captured = []
-        error = ""
+        captured, parsed, error = [], [], ""
         for switch in ("s1", "s2", "s3", "s4"):
             proc = subprocess.run(["ovs-ofctl", "-O", "OpenFlow13", "dump-flows", switch],
                 cwd=ROOT, capture_output=True, text=True, timeout=8)
@@ -291,26 +523,33 @@ def verify_flows(stage, mode, evidence_dir, routes, class_config):
                 error = "ovs-ofctl failed for " + switch + ": " + proc.stderr
                 break
             captured.append("### " + switch + "\n" + proc.stdout)
-        lines = [line for block in captured for line in block.splitlines()]
-        route_ok = len(captured) == 4 and any(marker in line and action in line
-                                               for line in captured[1].splitlines())
-        seen_queues = {int(value) for line in lines
-                       for value in re.findall(r"set_queue:(\d+)", line)}
-        queue_actions_ok = (set(queue_ids).issubset(seen_queues) if qos_enabled else not seen_queues)
-        if route_ok and queue_actions_ok:
-            break
+            parsed.extend(flow for flow in
+                          (parse_openflow_flow_line(line, switch) for line in proc.stdout.splitlines())
+                          if flow is not None)
+        if not error and len(captured) == 4:
+            route_evidence = _expected_route_evidence(parsed, mode, routes)
+            class_evidence = (_class_queue_evidence(parsed, mode, routes, class_config)
+                              if qos_enabled else class_evidence)
+            seen_queues = sorted({queue for flow in parsed for queue in flow.get("queues", [])})
+            queue_actions_ok = class_evidence["verified"] and set(queue_ids).issubset(seen_queues) if qos_enabled else not seen_queues
+            if route_evidence["verified"] and queue_actions_ok:
+                break
         time.sleep(.2)
     text = "\n".join(captured)
+    evidence_text = {"route_verification": route_evidence,
+                     "class_queue_verification": class_evidence,
+                     "parsed_flow_count": len(parsed)}
+    text += "\n### Structured verification\n" + json.dumps(evidence_text, indent=2, sort_keys=True) + "\n"
     (evidence_dir / ("flows_" + stage + ".txt")).write_text(text, encoding="utf-8")
     if error:
         raise RuntimeError(error)
-    if len(captured) != 4 or not any(marker in line and action in line for line in captured[1].splitlines()):
-        raise RuntimeError("installed OpenFlow evidence does not show expected s2 route " + mode)
-    if qos_enabled and not set(queue_ids).issubset(seen_queues):
-        raise RuntimeError("installed OpenFlow evidence is missing configured QoS queues: " +
-                           repr(sorted(set(queue_ids) - seen_queues)))
+    seen_queues = sorted({queue for flow in parsed for queue in flow.get("queues", [])})
+    if not route_evidence["verified"]:
+        raise RuntimeError("full installed OpenFlow route verification failed for " + mode)
+    if qos_enabled and (not class_evidence["verified"] or not set(queue_ids).issubset(seen_queues)):
+        raise RuntimeError("class-to-queue OpenFlow verification failed for " + mode)
     if not qos_enabled and seen_queues:
-        raise RuntimeError("QoS-disabled scenario still has queue actions: " + repr(sorted(seen_queues)))
+        raise RuntimeError("QoS-disabled scenario still has queue actions: " + repr(seen_queues))
     qos_evidence = ["### HTB attachments"]
     attached = 0
     for switch in ("s1", "s2", "s3", "s4"):
@@ -333,7 +572,11 @@ def verify_flows(stage, mode, evidence_dir, routes, class_config):
             attached += 1
     text += "\n" + "\n".join(qos_evidence) + "\n"
     (evidence_dir / ("flows_" + stage + ".txt")).write_text(text, encoding="utf-8")
-    return {"mode": mode, "s2_h1_egress": expected[2], "verified": True,
+    s2_h1_rule = next((row for row in route_evidence["matched_rules"]
+                       if row["dpid"] == 2 and row["source_ip"] == "10.0.0.1"), None)
+    return {"mode": mode, "s2_h1_egress": s2_h1_rule["out_port"] if s2_h1_rule else None,
+            "route_verification": route_evidence,
+            "class_queue_verification": class_evidence, "verified": True,
             "qos_enabled": qos_enabled, "queue_actions_verified": queue_actions_ok,
             "queue_ids_seen": sorted(seen_queues),
             "htb_ports_verified": attached}
@@ -880,6 +1123,40 @@ def select_congestion_route(measurements, routes):
             "reason": "Selected the route with the lowest maximum measured egress utilization."}
 
 
+def derive_expected_congestion_route(measurements, routes):
+    """Independently derive M3's expected route for verification evidence.
+
+    This deliberately mirrors the documented scoring policy without calling
+    ``select_congestion_route``: complete candidates are ordered by bottleneck
+    utilization, then route length, then route name.  Any incomplete candidate
+    fails closed to baseline.
+    """
+    scores = {}
+    for row in measurements:
+        name = row.get("mode")
+        score = route_congestion_score(name, routes.get(name, []),
+                                       row.get("path_link_utilization", {}))
+        if not row.get("complete") or score is None:
+            return {"selected_route": "baseline", "complete": False,
+                    "reason_code": "INCOMPLETE_PATH_UTILIZATION",
+                    "scores_pct": scores}
+        scores[name] = score
+    if not scores:
+        return {"selected_route": "baseline", "complete": False,
+                "reason_code": "NO_CANDIDATE_PATHS", "scores_pct": {}}
+    ordered = sorted(scores,
+                     key=lambda name: (scores[name], len(routes[name]), name))
+    return {"selected_route": ordered[0], "complete": True,
+            "reason_code": "MINIMUM_MEASURED_BOTTLENECK_UTILIZATION",
+            "scores_pct": scores}
+
+
+def route_selection_matches(expected_route, actual_route):
+    """Return whether an installed/selected route matches independent evidence."""
+    return bool(expected_route and actual_route and
+                expected_route.get("selected_route") == actual_route)
+
+
 def sample_scenario_traffic(net, scenario, repetition, qos_enabled,
                             heavy_background, evidence_dir, routes, class_config,
                             bottleneck_evidence, workload, bottleneck_congested=None,
@@ -1041,21 +1318,25 @@ def run_braess_repetition(net, repetition, shortcut_link, evidence_dir, routes, 
             "shortcut cost was more than {:.0%} below baseline".format(THRESHOLD)
             if decision["verdict"] == "beneficial" else
             "shortcut cost was within the {:.0%} neutral band".format(THRESHOLD))
+    expected_route = expected_braess_route(decision)
     selected = decision["mode"]
     prevention = measure_route_condition(net, selected, shortcut_link,
                                          evidence_dir, routes, class_config)
-    flows_verified = all(item["flow_evidence"]["verified"]
+    flows_verified = all(item.get("flow_evidence", {}).get("verified")
                          for item in (baseline, shortcut, prevention))
     route_selection_verified = bool(
-        (selected == decision["mode"] or
-         decision["verdict"] == "inconclusive" and selected == "baseline") and flows_verified)
+        route_selection_matches({"selected_route": expected_route}, selected) and
+        flows_verified)
     decision_record = {"repetition": repetition, "verdict": decision["verdict"],
-        "selected_route": selected, "reason": decision["reason"],
+        "expected_route": expected_route, "selected_route": selected,
+        "reason": decision["reason"],
         "threshold_fraction": THRESHOLD,
         "metrics_used": {"baseline": baseline["metrics"], "shortcut": shortcut["metrics"]},
         "prevention_metrics": prevention["metrics"],
-        "prevention_verified": harmful_shortcut_prevented(
-            decision["verdict"], selected, prevention["complete"], flows_verified, True),
+        "prevention_verified": bool(
+            decision["verdict"] == "harmful" and
+            expected_route == "baseline" and selected == "baseline" and
+            prevention.get("complete") and flows_verified),
         "route_selection_verified": route_selection_verified, "flows_verified": flows_verified,
         "sample_timestamps": {"baseline": [x["timestamp"] for x in baseline["samples"]],
             "shortcut": [x["timestamp"] for x in shortcut["samples"]]}}
@@ -1086,7 +1367,12 @@ def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir
         route_rows.append(measure_route_condition(
             net, mode, shortcut_link, evidence_dir, routes, class_config))
     selection = select_congestion_route(route_rows, routes)
-    selected = selection["selected_route"]
+    expected_selection = derive_expected_congestion_route(route_rows, routes)
+    selector_matches = route_selection_matches(
+        expected_selection, selection.get("selected_route"))
+    # Fail closed if the production selector disagrees with the independently
+    # derived policy: install baseline rather than trusting a mismatched route.
+    selected = (selection["selected_route"] if selector_matches else "baseline")
     set_shortcut_link(shortcut_link, selected == "shortcut")
     set_mode(selected, "M3 minimum measured path congestion")
     flow_evidence = verify_flows(
@@ -1098,7 +1384,8 @@ def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir
         all(bool(row.get("complete")) for row in route_rows)
     )
     flows_verified = bool(flow_evidence.get("verified"))
-    route_selection_verified = bool(measurements_complete and flows_verified)
+    route_selection_verified = bool(
+        selector_matches and measurements_complete and flows_verified)
     route_details = {
         row["mode"]: {
             "congestion_score_pct": selection.get("scores_pct", {}).get(row["mode"]),
@@ -1120,6 +1407,13 @@ def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir
         "original_classification": "congestion_selected",
         "selected_route": selected, "reason": selection.get("reason") or "M3 congestion selection",
         "reason_code": selection.get("reason_code"),
+        "expected_route": expected_selection.get("selected_route"),
+        "selector_selected_route": selection.get("selected_route"),
+        "selection_verification": {
+            "expected": expected_selection,
+            "actual": selection,
+            "matches": selector_matches,
+        },
         "metrics_used": metrics_used,
         "path_congestion_scores_pct": selection.get("scores_pct", {}),
         "route_selection_verified": route_selection_verified,
@@ -1132,6 +1426,12 @@ def run_congestion_route_repetition(net, repetition, shortcut_link, evidence_dir
         decision["controller_error"] = type(exc).__name__ + ": " + str(exc)
     record = {"repetition": repetition, "method": "M3",
         "selected_route": selected, "selection": selection,
+        "expected_selection": expected_selection,
+        "selection_verification": {
+            "expected": expected_selection,
+            "actual": selection,
+            "matches": selector_matches,
+        },
         "route_measurements": route_rows,
         "route_selection_verified": route_selection_verified,
         "flow_evidence": flow_evidence,
@@ -1166,6 +1466,114 @@ def _profile_objective_record(row, profile_name, route):
             "route": route, "timestamp": row.get("captured_at", row.get("timestamp")),
             "complete": complete, "metrics": metrics,
             "source": "measured_catalog_service_flow:{}".format(profile_name)}
+
+
+def _protected_critical_classes(policy_config):
+    """Return configured protected classes, with the mandatory safe default."""
+    configured = policy_config.get("protected_critical_classes", ())
+    if isinstance(configured, str) or not isinstance(configured, (list, tuple)):
+        raise ValueError("protected_critical_classes must be a list of class names")
+    unknown = [name for name in configured if name not in policy_config.get("classes", {})]
+    if unknown:
+        raise ValueError("protected_critical_classes contains unknown classes: " +
+                         ", ".join(unknown))
+    return tuple(dict.fromkeys(DEFAULT_PROTECTED_CRITICAL_CLASSES + tuple(configured)))
+
+
+def apply_critical_class_guard(evaluation, policy_config, enabled=True):
+    """Apply the M4 protected-class safety guard after aggregate CBDR evaluation.
+
+    The aggregate objective and its class measurements are preserved.  This
+    function only changes the final route decision when a protected class is
+    harmful or has a hard constraint violation; the guarded decision is then
+    consumed by the existing route installation and controller-recording path.
+    """
+    aggregate_classification = evaluation.get("classification")
+    aggregate_decision = evaluation.get("decision")
+    protected = _protected_critical_classes(policy_config)
+    class_evaluations = evaluation.get("class_evaluations") or {}
+    triggers = []
+    for name in protected:
+        pair = class_evaluations.get(name)
+        if not isinstance(pair, dict):
+            continue
+        violations = pair.get("constraint_violations") or []
+        classification = pair.get("classification")
+        if classification == "harmful" or classification == "constraint_violation" or violations:
+            triggers.append({
+                "traffic_class": name,
+                "classification": classification,
+                "relative_change": pair.get("relative_change"),
+                "degradation_pct": (pair.get("relative_change") * 100
+                                    if isinstance(pair.get("relative_change"), (int, float))
+                                    else None),
+                "baseline_cost": pair.get("baseline_cost"),
+                "candidate_cost": pair.get("candidate_cost"),
+                "constraint_violations": violations,
+                "reason_code": pair.get("reason_code"),
+            })
+    for violation in evaluation.get("candidate_hard_violations", []):
+        name = violation.get("traffic_class") if isinstance(violation, dict) else None
+        if name in protected and not any(item["traffic_class"] == name
+                                         for item in triggers):
+            triggers.append({
+                "traffic_class": name,
+                "classification": "constraint_violation",
+                "relative_change": None,
+                "degradation_pct": None,
+                "baseline_cost": None,
+                "candidate_cost": None,
+                "constraint_violations": [violation],
+                "reason_code": "HARD_CONSTRAINT_VIOLATION",
+            })
+
+    guard = {
+        "enabled": bool(enabled),
+        "protected_classes": list(protected),
+        "triggered": bool(enabled and triggers),
+        "triggering_classes": triggers if enabled else [],
+        "aggregate_classification": aggregate_classification,
+        "aggregate_decision": aggregate_decision,
+        "decision_overridden": False,
+    }
+    evaluation["aggregate_classification"] = aggregate_classification
+    evaluation["aggregate_decision"] = aggregate_decision
+    if not enabled or not triggers:
+        evaluation["critical_class_guard"] = guard
+        evaluation["guarded_classification"] = aggregate_classification
+        evaluation["guarded_decision"] = aggregate_decision
+        return evaluation
+
+    has_hard_violation = any(item["classification"] == "constraint_violation" or
+                             item["constraint_violations"]
+                             for item in triggers)
+    final_classification = "constraint_violation" if has_hard_violation else "harmful"
+    guard["decision_overridden"] = aggregate_decision != "reject_candidate"
+    guard["reason_code"] = ("CRITICAL_CLASS_HARD_CONSTRAINT_VIOLATION"
+                             if has_hard_violation else "CRITICAL_CLASS_DEGRADATION")
+    guard["explanation"] = (
+        "Protected critical class degradation or hard constraint violation requires "
+        "retaining the last verified baseline route: " +
+        ", ".join(item["traffic_class"] for item in triggers))
+    if aggregate_decision == "reject_candidate":
+        # The aggregate policy has already rejected the candidate. Preserve
+        # its established classification/reason while recording that the
+        # protected-class guard independently agrees with the rejection.
+        evaluation["critical_class_guard"] = guard
+        evaluation["guarded_classification"] = aggregate_classification
+        evaluation["guarded_decision"] = aggregate_decision
+        return evaluation
+    evaluation.update({
+        "classification": final_classification,
+        "decision": "reject_candidate",
+        "reason_code": guard["reason_code"],
+        "explanation": guard["explanation"],
+        "controller_action": "retain_last_verified_route",
+        "critical_class_guard": guard,
+        "guarded_classification": final_classification,
+        "guarded_decision": "reject_candidate",
+    })
+    return evaluation
 
 
 def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
@@ -1242,10 +1650,14 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
         config=policy_config, current_fairness=base_fairness,
         candidate_fairness=candidate_fairness, now=time.time(),
         max_age_seconds=CBDR_BATCH_MAX_AGE)
+    evaluation = apply_critical_class_guard(
+        evaluation, policy_config, enabled=ablation != "disable_braess_detection")
     selected = ("shortcut" if evaluation["decision"] == "accept_candidate"
                 else "baseline")
+    expected_selected_route = selected
     if ablation == "disable_braess_detection":
         selected = "shortcut"
+        expected_selected_route = "shortcut"
         evaluation["ablation_override"] = "disabled_rejection_and_accept_shortcut"
     set_shortcut_link(shortcut_link, selected == "shortcut")
     set_mode(selected, "M4 CBDR {} decision".format(evaluation["classification"]))
@@ -1255,6 +1667,8 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
     evaluation["route_installation_verification_status"] = (
         "verified" if final_flows["verified"] else "failed")
     original_classification = evaluation.get("classification")
+    aggregate_classification = evaluation.get(
+        "aggregate_classification", original_classification)
     original_reason_code = evaluation.get("reason_code")
     if original_classification == "constraint_violation":
         controller_verdict = "harmful" if evaluation.get("decision") != "accept_candidate" else "beneficial"
@@ -1297,8 +1711,10 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
         "candidate_hard_violations": evaluation.get("candidate_hard_violations", []),
     }
     flows_verified = bool(final_flows.get("verified"))
-    route_selection_verified = bool(flows_verified and complete)
+    route_selection_verified = bool(
+        selected == expected_selected_route and flows_verified and complete)
     prevention_candidate = bool(
+        evaluation.get("critical_class_guard", {}).get("triggered") and
         original_classification in ("harmful", "constraint_violation") and
         selected == "baseline" and
         evaluation.get("decision") != "accept_candidate" and
@@ -1306,10 +1722,14 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
     )
     decision = {"repetition": repetition, "method": "M4", "verdict": controller_verdict,
         "classification": original_classification,
-        "original_classification": original_classification,
+        "original_classification": aggregate_classification,
+        "aggregate_classification": aggregate_classification,
+        "aggregate_decision": evaluation.get("aggregate_decision"),
         "selected_route": selected, "reason": evaluation.get("explanation") or "M4 CBDR decision",
+        "expected_route": expected_selected_route,
         "reason_code": original_reason_code, "evaluation": evaluation,
         "structured_evaluation": evaluation,
+        "critical_class_guard": evaluation.get("critical_class_guard"),
         "metrics_used": metrics_used,
         "route_selection_verified": route_selection_verified,
         "flows_verified": flows_verified,
@@ -1325,6 +1745,7 @@ def run_cbdr_repetition(net, repetition, shortcut_link, evidence_dir, routes,
     record = {"repetition": repetition, "method": "M4", "complete": bool(
         complete and decision["controller_recorded"] and route_selection_verified),
         "decision": decision, "evaluation": evaluation,
+        "expected_selected_route": expected_selected_route,
         "baseline_profiles": baseline_rows, "candidate_profiles": candidate_rows,
         "final_flow_evidence": final_flows,
         "baseline_fairness": base_fairness,
@@ -1700,6 +2121,20 @@ def classify(baseline, candidate, now=None):
             "structured_evaluation": evaluation}
 
 
+def expected_braess_route(decision):
+    """Derive the older Braess repetition's expected mode independently."""
+    verdict = decision.get("verdict")
+    if verdict == "harmful":
+        return "baseline"
+    if verdict == "beneficial":
+        return "shortcut"
+    if verdict == "neutral":
+        # Preserve classify()'s existing neutral accept-candidate policy.
+        return ("shortcut" if decision.get("structured_evaluation", {}).get("decision") ==
+                "accept_candidate" else "baseline")
+    return "baseline"
+
+
 def run_catalog_profile_matrix(net, traffic_catalog, class_config, evidence_dir,
                                routes, method_qos_enabled=True, route_mode="baseline",
                                shortcut_link=None, profile_rows=None, run_tag="",
@@ -1952,6 +2387,10 @@ def main():
         "records": criticality_trace
     })
     config = {"topology": "4-switch diamond; S2-S3 shortcut physically down at baseline, enabled for candidate and recovery",
+              "topology_profile": args.topology_profile,
+              "topology_profile_parameters": TOPOLOGY_PROFILE_PARAMETERS[args.topology_profile],
+              "topology_structure": {"hosts": 6, "switches": 4, "route_ports_fixed": True,
+                                     "arbitrary_editor_mutation": False},
               "demand": "synthetic iperf3 TCP plus 5 route probes and 50 per-class scenario probes",
               "selected_method": summarize_method_policy(method_id),
               "method_mode": "default" if method_id is None else method_id,

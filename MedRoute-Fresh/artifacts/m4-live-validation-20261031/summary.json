@@ -1,0 +1,1221 @@
+{
+  "live_experiment": "shortcut_not_harmful_under_test",
+  "live_prevention_verified": false,
+  "candidate_decision_aggregate": {
+    "live_experiment": "shortcut_not_harmful_under_test",
+    "aggregate_verdict": "mixed",
+    "passed": true,
+    "harmful_candidate_count": 0,
+    "prevention_verified_count": 0,
+    "verdict_counts": {
+      "neutral": 1,
+      "beneficial": 2
+    },
+    "errors": []
+  },
+  "shortcut_verdict": "mixed",
+  "shortcut_verdict_counts": {
+    "neutral": 1,
+    "beneficial": 2
+  },
+  "method_policy": {
+    "selected_method": "M4",
+    "method_id": "M4",
+    "name": "criticality_aware_braess_detection_routing",
+    "initial_route": "baseline",
+    "qos_enabled": true,
+    "candidate_evaluation_enabled": true,
+    "braess_guard_enabled": true,
+    "available_for_research_comparison": true,
+    "unavailable_reason": null
+  },
+  "failure_recovery": {
+    "enabled": true,
+    "failed_link": [
+      "s1-eth2",
+      "s2-eth1"
+    ],
+    "selected_route": "recovery",
+    "connectivity": {
+      "received": 3,
+      "probe": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\r\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.42 ms\r\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=3.89 ms\r\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=3.62 ms\r\n\r\n--- 10.0.0.2 ping statistics ---\r\n3 packets transmitted, 3 received, 0% packet loss, time 1999ms\r\nrtt min/avg/max/mdev = 3.624/3.976/4.419/0.330 ms\r\n"
+    },
+    "flows_verified": true,
+    "timing_ms": {
+      "failure_detection_signal": 40.94,
+      "route_computation_and_request": 113.586,
+      "rule_installation_to_probe": 3170.117,
+      "end_to_end_recovery_probe": 3324.644
+    },
+    "complete": true
+  },
+  "dataset_used": true,
+  "dataset_profile_version": "unspecified",
+  "dataset_profile_sha256": "a8326b59835916ae3b8f1952dceda56cf7945a6a2ec75f5a6ab167f279471c3c",
+  "all_flow_rules_verified": true,
+  "all_telemetry_complete": true,
+  "required_telemetry_complete": true,
+  "optional_telemetry": {
+    "candidate_evaluation_fairness": true,
+    "scenario_throughput_fairness": true,
+    "queue_occupancy": true
+  },
+  "optional_telemetry_complete": true,
+  "baseline_metrics": {
+    "complete": true,
+    "latency_ms": 162.0,
+    "jitter_ms": 42.455000000000005,
+    "packet_loss_pct": 0.0,
+    "cost": 5.530333333333334
+  },
+  "shortcut_metrics": {
+    "complete": true
+  },
+  "prevention_metrics": null,
+  "route_decision": {
+    "repetition": 3,
+    "method": "M4",
+    "verdict": "beneficial",
+    "classification": "beneficial",
+    "original_classification": "beneficial",
+    "selected_route": "shortcut",
+    "reason": "The criticality-weighted objective improved beyond threshold.",
+    "expected_route": "shortcut",
+    "reason_code": "WEIGHTED_CBDR_OBJECTIVE_IMPROVEMENT",
+    "evaluation": {
+      "algorithm": "CBDR",
+      "classification": "beneficial",
+      "decision": "accept_candidate",
+      "reason_code": "WEIGHTED_CBDR_OBJECTIVE_IMPROVEMENT",
+      "explanation": "The criticality-weighted objective improved beyond threshold.",
+      "current_objective": 0.03577873014228647,
+      "candidate_objective": 0.022346845844048373,
+      "relative_change": -0.3754153443909712,
+      "current_network_cost_pct": 32.96649992645912,
+      "candidate_network_cost_pct": 19.078968146206645,
+      "class_evaluations": {
+        "EMERGENCY_ALARM": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EMERGENCY_ALARM",
+          "criticality_score": 100,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:EMERGENCY_ALARM",
+            "candidate": "measured_catalog_service_flow:EMERGENCY_ALARM"
+          },
+          "measurement_timestamps": {
+            "current": 1793429034.1569679,
+            "candidate": 1793429039.6645465
+          },
+          "measurement_ages_seconds": {
+            "current": 56.43997812271118,
+            "candidate": 50.93239951133728
+          },
+          "baseline_cost": 0.07383333333333336,
+          "candidate_cost": 0.08075,
+          "relative_change": 0.09367945823927726,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.605,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.31000000000000005,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.59,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.2100000000000004,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "CRITICAL_PHYSIOLOGICAL_TELEMETRY",
+          "criticality_score": 90,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:CRITICAL_PHYSIOLOGICAL_TELEMETRY",
+            "candidate": "measured_catalog_service_flow:CRITICAL_PHYSIOLOGICAL_TELEMETRY"
+          },
+          "measurement_timestamps": {
+            "current": 1793429045.2182446,
+            "candidate": 1793429050.6257162
+          },
+          "measurement_ages_seconds": {
+            "current": 45.37870144844055,
+            "candidate": 39.971229791641235
+          },
+          "baseline_cost": 0.06958333333333333,
+          "candidate_cost": 0.08516666666666665,
+          "relative_change": 0.2239520958083831,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.59,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.3799999999999999,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.575,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.1499999999999999,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "REAL_TIME_CLINICAL_VIDEO",
+          "criticality_score": 58,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:REAL_TIME_CLINICAL_VIDEO",
+            "candidate": "measured_catalog_service_flow:REAL_TIME_CLINICAL_VIDEO"
+          },
+          "measurement_timestamps": {
+            "current": 1793429054.1476505,
+            "candidate": 1793429059.7154875
+          },
+          "measurement_ages_seconds": {
+            "current": 36.44929552078247,
+            "candidate": 30.881458520889282
+          },
+          "baseline_cost": 0.06883333333333334,
+          "candidate_cost": 0.06758333333333334,
+          "relative_change": -0.01815980629539953,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 200,
+              "observed": 3.335,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 40,
+              "observed": 0.18000000000000016,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "throughput_mbps",
+              "target": 20,
+              "observed": 20.4,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9999,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 200,
+              "observed": 3.41,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 40,
+              "observed": 0.18000000000000016,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "throughput_mbps",
+              "target": 20,
+              "observed": 20.4,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9999,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "EHR_TRANSACTIONS": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EHR_TRANSACTIONS",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:EHR_TRANSACTIONS",
+            "candidate": "measured_catalog_service_flow:EHR_TRANSACTIONS"
+          },
+          "measurement_timestamps": {
+            "current": 1793429065.319752,
+            "candidate": 1793429070.7696729
+          },
+          "measurement_ages_seconds": {
+            "current": 25.277194023132324,
+            "candidate": 19.82727313041687
+          },
+          "baseline_cost": 0.07041666666666664,
+          "candidate_cost": 0.07775,
+          "relative_change": 0.10414201183431993,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        },
+        "MEDICAL_IMAGING": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "MEDICAL_IMAGING",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:MEDICAL_IMAGING",
+            "candidate": "measured_catalog_service_flow:MEDICAL_IMAGING"
+          },
+          "measurement_timestamps": {
+            "current": 1793429076.2038152,
+            "candidate": 1793429081.5423179
+          },
+          "measurement_ages_seconds": {
+            "current": 14.393130779266357,
+            "candidate": 9.054628133773804
+          },
+          "baseline_cost": 0.06633333333333334,
+          "candidate_cost": 0.06574999999999999,
+          "relative_change": -0.008793969849246517,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        },
+        "CCTV_BACKGROUND": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "CCTV_BACKGROUND",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:CCTV_BACKGROUND",
+            "candidate": "measured_catalog_service_flow:CCTV_BACKGROUND"
+          },
+          "measurement_timestamps": {
+            "current": 1793429084.999499,
+            "candidate": 1793429090.5574794
+          },
+          "measurement_ages_seconds": {
+            "current": 5.597446918487549,
+            "candidate": 0.03946661949157715
+          },
+          "baseline_cost": 0.06941666666666667,
+          "candidate_cost": 0.06741666666666667,
+          "relative_change": -0.02881152460984396,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        }
+      },
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": [],
+      "safe_route_exists": true,
+      "fairness": {
+        "status": "measured",
+        "current": 0.9999948010383881,
+        "candidate": 0.9999920301134086,
+        "drop": 2.770924979467182e-06,
+        "max_drop": 0.1
+      },
+      "route_installation_verified": true,
+      "route_installation_verification_status": "verified"
+    },
+    "structured_evaluation": {
+      "algorithm": "CBDR",
+      "classification": "beneficial",
+      "decision": "accept_candidate",
+      "reason_code": "WEIGHTED_CBDR_OBJECTIVE_IMPROVEMENT",
+      "explanation": "The criticality-weighted objective improved beyond threshold.",
+      "current_objective": 0.03577873014228647,
+      "candidate_objective": 0.022346845844048373,
+      "relative_change": -0.3754153443909712,
+      "current_network_cost_pct": 32.96649992645912,
+      "candidate_network_cost_pct": 19.078968146206645,
+      "class_evaluations": {
+        "EMERGENCY_ALARM": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EMERGENCY_ALARM",
+          "criticality_score": 100,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:EMERGENCY_ALARM",
+            "candidate": "measured_catalog_service_flow:EMERGENCY_ALARM"
+          },
+          "measurement_timestamps": {
+            "current": 1793429034.1569679,
+            "candidate": 1793429039.6645465
+          },
+          "measurement_ages_seconds": {
+            "current": 56.43997812271118,
+            "candidate": 50.93239951133728
+          },
+          "baseline_cost": 0.07383333333333336,
+          "candidate_cost": 0.08075,
+          "relative_change": 0.09367945823927726,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.605,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.31000000000000005,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.59,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.2100000000000004,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "CRITICAL_PHYSIOLOGICAL_TELEMETRY",
+          "criticality_score": 90,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:CRITICAL_PHYSIOLOGICAL_TELEMETRY",
+            "candidate": "measured_catalog_service_flow:CRITICAL_PHYSIOLOGICAL_TELEMETRY"
+          },
+          "measurement_timestamps": {
+            "current": 1793429045.2182446,
+            "candidate": 1793429050.6257162
+          },
+          "measurement_ages_seconds": {
+            "current": 45.37870144844055,
+            "candidate": 39.971229791641235
+          },
+          "baseline_cost": 0.06958333333333333,
+          "candidate_cost": 0.08516666666666665,
+          "relative_change": 0.2239520958083831,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.59,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.3799999999999999,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 500,
+              "observed": 3.575,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 50,
+              "observed": 0.1499999999999999,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "REAL_TIME_CLINICAL_VIDEO",
+          "criticality_score": 58,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:REAL_TIME_CLINICAL_VIDEO",
+            "candidate": "measured_catalog_service_flow:REAL_TIME_CLINICAL_VIDEO"
+          },
+          "measurement_timestamps": {
+            "current": 1793429054.1476505,
+            "candidate": 1793429059.7154875
+          },
+          "measurement_ages_seconds": {
+            "current": 36.44929552078247,
+            "candidate": 30.881458520889282
+          },
+          "baseline_cost": 0.06883333333333334,
+          "candidate_cost": 0.06758333333333334,
+          "relative_change": -0.01815980629539953,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 200,
+              "observed": 3.335,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 40,
+              "observed": 0.18000000000000016,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "throughput_mbps",
+              "target": 20,
+              "observed": 20.4,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9999,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "baseline_objective_checks": [
+            {
+              "metric": "latency_ms",
+              "target": 200,
+              "observed": 3.41,
+              "violated": false
+            },
+            {
+              "metric": "jitter_ms",
+              "target": 40,
+              "observed": 0.18000000000000016,
+              "violated": false
+            },
+            {
+              "metric": "packet_loss_pct",
+              "target": 5,
+              "observed": 0.0,
+              "violated": false
+            },
+            {
+              "metric": "throughput_mbps",
+              "target": 20,
+              "observed": 20.4,
+              "violated": false
+            },
+            {
+              "metric": "reliability_pct",
+              "target": 99.9999,
+              "observed": 100.0,
+              "violated": false
+            }
+          ],
+          "safe_route_exists": true
+        },
+        "EHR_TRANSACTIONS": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "EHR_TRANSACTIONS",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:EHR_TRANSACTIONS",
+            "candidate": "measured_catalog_service_flow:EHR_TRANSACTIONS"
+          },
+          "measurement_timestamps": {
+            "current": 1793429065.319752,
+            "candidate": 1793429070.7696729
+          },
+          "measurement_ages_seconds": {
+            "current": 25.277194023132324,
+            "candidate": 19.82727313041687
+          },
+          "baseline_cost": 0.07041666666666664,
+          "candidate_cost": 0.07775,
+          "relative_change": 0.10414201183431993,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "harmful",
+          "decision": "reject_candidate",
+          "reason_code": "OBSERVED_CANDIDATE_DEGRADATION",
+          "explanation": "Measured candidate cost is more than the configured degradation threshold above baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        },
+        "MEDICAL_IMAGING": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "MEDICAL_IMAGING",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:MEDICAL_IMAGING",
+            "candidate": "measured_catalog_service_flow:MEDICAL_IMAGING"
+          },
+          "measurement_timestamps": {
+            "current": 1793429076.2038152,
+            "candidate": 1793429081.5423179
+          },
+          "measurement_ages_seconds": {
+            "current": 14.393130779266357,
+            "candidate": 9.054628133773804
+          },
+          "baseline_cost": 0.06633333333333334,
+          "candidate_cost": 0.06574999999999999,
+          "relative_change": -0.008793969849246517,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        },
+        "CCTV_BACKGROUND": {
+          "current_topology": "four_switch_diamond",
+          "current_route": "baseline",
+          "candidate_topology": "four_switch_diamond_with_shortcut",
+          "candidate_route": "shortcut",
+          "traffic_class": "CCTV_BACKGROUND",
+          "criticality_score": 10,
+          "measurement_source": {
+            "current": "measured_catalog_service_flow:CCTV_BACKGROUND",
+            "candidate": "measured_catalog_service_flow:CCTV_BACKGROUND"
+          },
+          "measurement_timestamps": {
+            "current": 1793429084.999499,
+            "candidate": 1793429090.5574794
+          },
+          "measurement_ages_seconds": {
+            "current": 5.597446918487549,
+            "candidate": 0.03946661949157715
+          },
+          "baseline_cost": 0.06941666666666667,
+          "candidate_cost": 0.06741666666666667,
+          "relative_change": -0.02881152460984396,
+          "constraint_violations": [],
+          "missing_constraints": [],
+          "fairness": {
+            "status": "unavailable"
+          },
+          "classification": "neutral",
+          "decision": "retain_baseline",
+          "reason_code": "OBSERVED_CHANGE_WITHIN_NEUTRAL_BAND",
+          "explanation": "Measured change is within the configured neutral band; policy is retain_baseline.",
+          "classical_braess_paradox": "not_established_by_measured_route_comparison",
+          "controller_action": "retain_last_verified_route",
+          "route_installation_verified": false,
+          "objective_checks": [],
+          "baseline_objective_checks": [],
+          "safe_route_exists": true
+        }
+      },
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": [],
+      "safe_route_exists": true,
+      "fairness": {
+        "status": "measured",
+        "current": 0.9999948010383881,
+        "candidate": 0.9999920301134086,
+        "drop": 2.770924979467182e-06,
+        "max_drop": 0.1
+      },
+      "route_installation_verified": true,
+      "route_installation_verification_status": "verified"
+    },
+    "metrics_used": {
+      "baseline": {
+        "cost": 0.03577873014228647,
+        "network_cost_pct": 32.96649992645912,
+        "fairness": 0.9999948010383881,
+        "profiles": {
+          "EMERGENCY_ALARM": {
+            "complete": true,
+            "latency_ms": 3.59,
+            "jitter_ms": 0.2100000000000004,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.453,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+            "complete": true,
+            "latency_ms": 3.575,
+            "jitter_ms": 0.1499999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 1.04,
+            "ping_packet_loss_pct": 0.0
+          },
+          "REAL_TIME_CLINICAL_VIDEO": {
+            "complete": true,
+            "latency_ms": 3.41,
+            "jitter_ms": 0.18000000000000016,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 20.4,
+            "ping_packet_loss_pct": 0.0
+          },
+          "EHR_TRANSACTIONS": {
+            "complete": true,
+            "latency_ms": 3.585,
+            "jitter_ms": 0.1599999999999997,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.901,
+            "ping_packet_loss_pct": 0.0
+          },
+          "MEDICAL_IMAGING": {
+            "complete": true,
+            "latency_ms": 3.42,
+            "jitter_ms": 0.14000000000000012,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 18.2,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CCTV_BACKGROUND": {
+            "complete": true,
+            "latency_ms": 3.485,
+            "jitter_ms": 0.16999999999999993,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 7.13,
+            "ping_packet_loss_pct": 0.0
+          }
+        }
+      },
+      "shortcut": {
+        "cost": 0.022346845844048373,
+        "network_cost_pct": 19.078968146206645,
+        "fairness": 0.9999920301134086,
+        "profiles": {
+          "EMERGENCY_ALARM": {
+            "complete": true,
+            "latency_ms": 3.605,
+            "jitter_ms": 0.31000000000000005,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.453,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+            "complete": true,
+            "latency_ms": 3.59,
+            "jitter_ms": 0.3799999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 1.03,
+            "ping_packet_loss_pct": 0.0
+          },
+          "REAL_TIME_CLINICAL_VIDEO": {
+            "complete": true,
+            "latency_ms": 3.335,
+            "jitter_ms": 0.18000000000000016,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 20.4,
+            "ping_packet_loss_pct": 0.0
+          },
+          "EHR_TRANSACTIONS": {
+            "complete": true,
+            "latency_ms": 3.665,
+            "jitter_ms": 0.25,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 0.902,
+            "ping_packet_loss_pct": 0.0
+          },
+          "MEDICAL_IMAGING": {
+            "complete": true,
+            "latency_ms": 3.3449999999999998,
+            "jitter_ms": 0.1499999999999999,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 18.3,
+            "ping_packet_loss_pct": 0.0
+          },
+          "CCTV_BACKGROUND": {
+            "complete": true,
+            "latency_ms": 3.365,
+            "jitter_ms": 0.16999999999999993,
+            "packet_loss_pct": 0.0,
+            "reliability_pct": 100.0,
+            "throughput_mbps": 7.13,
+            "ping_packet_loss_pct": 0.0
+          }
+        }
+      },
+      "current_objective": 0.03577873014228647,
+      "candidate_objective": 0.022346845844048373,
+      "relative_change": -0.3754153443909712,
+      "current_network_cost_pct": 32.96649992645912,
+      "candidate_network_cost_pct": 19.078968146206645,
+      "baseline_fairness": 0.9999948010383881,
+      "candidate_fairness": 0.9999920301134086,
+      "baseline_hard_violations": [],
+      "candidate_hard_violations": []
+    },
+    "route_selection_verified": true,
+    "flows_verified": true,
+    "prevention_verified": false,
+    "controller_recorded": true
+  },
+  "decision_metrics_used": {
+    "baseline": {
+      "cost": 0.03577873014228647,
+      "network_cost_pct": 32.96649992645912,
+      "fairness": 0.9999948010383881,
+      "profiles": {
+        "EMERGENCY_ALARM": {
+          "complete": true,
+          "latency_ms": 3.59,
+          "jitter_ms": 0.2100000000000004,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.453,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "complete": true,
+          "latency_ms": 3.575,
+          "jitter_ms": 0.1499999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 1.04,
+          "ping_packet_loss_pct": 0.0
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "complete": true,
+          "latency_ms": 3.41,
+          "jitter_ms": 0.18000000000000016,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 20.4,
+          "ping_packet_loss_pct": 0.0
+        },
+        "EHR_TRANSACTIONS": {
+          "complete": true,
+          "latency_ms": 3.585,
+          "jitter_ms": 0.1599999999999997,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.901,
+          "ping_packet_loss_pct": 0.0
+        },
+        "MEDICAL_IMAGING": {
+          "complete": true,
+          "latency_ms": 3.42,
+          "jitter_ms": 0.14000000000000012,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 18.2,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CCTV_BACKGROUND": {
+          "complete": true,
+          "latency_ms": 3.485,
+          "jitter_ms": 0.16999999999999993,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 7.13,
+          "ping_packet_loss_pct": 0.0
+        }
+      }
+    },
+    "shortcut": {
+      "cost": 0.022346845844048373,
+      "network_cost_pct": 19.078968146206645,
+      "fairness": 0.9999920301134086,
+      "profiles": {
+        "EMERGENCY_ALARM": {
+          "complete": true,
+          "latency_ms": 3.605,
+          "jitter_ms": 0.31000000000000005,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.453,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CRITICAL_PHYSIOLOGICAL_TELEMETRY": {
+          "complete": true,
+          "latency_ms": 3.59,
+          "jitter_ms": 0.3799999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 1.03,
+          "ping_packet_loss_pct": 0.0
+        },
+        "REAL_TIME_CLINICAL_VIDEO": {
+          "complete": true,
+          "latency_ms": 3.335,
+          "jitter_ms": 0.18000000000000016,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 20.4,
+          "ping_packet_loss_pct": 0.0
+        },
+        "EHR_TRANSACTIONS": {
+          "complete": true,
+          "latency_ms": 3.665,
+          "jitter_ms": 0.25,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 0.902,
+          "ping_packet_loss_pct": 0.0
+        },
+        "MEDICAL_IMAGING": {
+          "complete": true,
+          "latency_ms": 3.3449999999999998,
+          "jitter_ms": 0.1499999999999999,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 18.3,
+          "ping_packet_loss_pct": 0.0
+        },
+        "CCTV_BACKGROUND": {
+          "complete": true,
+          "latency_ms": 3.365,
+          "jitter_ms": 0.16999999999999993,
+          "packet_loss_pct": 0.0,
+          "reliability_pct": 100.0,
+          "throughput_mbps": 7.13,
+          "ping_packet_loss_pct": 0.0
+        }
+      }
+    },
+    "current_objective": 0.03577873014228647,
+    "candidate_objective": 0.022346845844048373,
+    "relative_change": -0.3754153443909712,
+    "current_network_cost_pct": 32.96649992645912,
+    "candidate_network_cost_pct": 19.078968146206645,
+    "baseline_fairness": 0.9999948010383881,
+    "candidate_fairness": 0.9999920301134086,
+    "baseline_hard_violations": [],
+    "candidate_hard_violations": []
+  },
+  "selected_route": "shortcut",
+  "prevention_mode": "shortcut",
+  "cbdr_repetitions": 3,
+  "cbdr_prevention_verified_repetitions": 0,
+  "scenario_repetitions": {
+    "normal_load": 3,
+    "emergency_surge": 3,
+    "mixed_priority_congestion": 3
+  },
+  "catalog_profile_matrix": {
+    "profiles": 6,
+    "complete": true,
+    "file": "profile_matrix.json",
+    "skipped": false,
+    "status": "complete"
+  },
+  "braess_validation": {
+    "status": "not_run",
+    "passed": false,
+    "not_applicable": true
+  },
+  "braess_repetitions": 0,
+  "scenario_validation_passed": true,
+  "scenario_validation_errors": [],
+  "scenario_statistics_file": "scenario_results.json",
+  "final_repeated_route": "shortcut",
+  "final_route_verified": true,
+  "controller_metrics_published": true,
+  "per_class_metrics_complete": true,
+  "link_utilization_complete": true,
+  "final_qos_enabled": true,
+  "final_qos_verified": true,
+  "evidence_database": "evidence.sqlite"
+}

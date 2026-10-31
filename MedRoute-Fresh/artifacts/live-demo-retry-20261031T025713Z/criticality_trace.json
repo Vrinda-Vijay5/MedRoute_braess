@@ -1,0 +1,73 @@
+{
+  "policy": "score = catalog criticality * 20; deterministic class thresholds; no ML",
+  "records": [
+    {
+      "catalog_packet_size_bytes": 256,
+      "catalog_rate_bps": 500000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 100.0,
+      "expected_queue_id": 1,
+      "input_profile": "ECG",
+      "selected_class": "ECG",
+      "service_port": 5001
+    },
+    {
+      "catalog_packet_size_bytes": 512,
+      "catalog_rate_bps": 1000000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 100.0,
+      "expected_queue_id": 1,
+      "input_profile": "ICU",
+      "selected_class": "ECG",
+      "service_port": 5002
+    },
+    {
+      "catalog_packet_size_bytes": 1200,
+      "catalog_rate_bps": 4000000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 80.0,
+      "expected_queue_id": 2,
+      "input_profile": "TELEMEDICINE",
+      "selected_class": "ICU",
+      "service_port": 5003
+    },
+    {
+      "catalog_packet_size_bytes": 1024,
+      "catalog_rate_bps": 1000000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 80.0,
+      "expected_queue_id": 2,
+      "input_profile": "EHR",
+      "selected_class": "ICU",
+      "service_port": 5004
+    },
+    {
+      "catalog_packet_size_bytes": 1200,
+      "catalog_rate_bps": 20000000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 60.0,
+      "expected_queue_id": 3,
+      "input_profile": "IMAGING",
+      "selected_class": "WEARABLE",
+      "service_port": 5005
+    },
+    {
+      "catalog_packet_size_bytes": 1200,
+      "catalog_rate_bps": 8000000,
+      "classification_source": "synthetic_catalog_criticality",
+      "clinical_input": false,
+      "criticality_score": 20.0,
+      "expected_queue_id": 4,
+      "input_profile": "CCTV",
+      "selected_class": "BACKGROUND",
+      "service_port": 5006
+    }
+  ],
+  "source": "data/CICIoMT2024/raw/healthcare_traffic_profiles.csv",
+  "source_sha256": "0c6a465f8111c1f83cf307d9838de9ee4bf566de9a86efe2dbc8a26421a84e48"
+}

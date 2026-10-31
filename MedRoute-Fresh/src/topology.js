@@ -45,7 +45,7 @@ function validateTopology(value) {
       errors.push("each link must be an object");
       continue;
     }
-    const { source, target, capacityMbps = 100, latencyMs = 1, enabled = true } = link;
+    const { source, target, capacityMbps = 100, latencyMs = 1, jitterMs = 0, packetLossPct = 0, enabled = true } = link;
     if (!ids.has(source) || !ids.has(target) || source === target) {
       errors.push(`link endpoints must be distinct existing nodes: ${String(source)}-${String(target)}`);
       continue;
@@ -59,6 +59,12 @@ function validateTopology(value) {
     if (typeof latencyMs !== "number" || !Number.isFinite(latencyMs) || latencyMs < 0) {
       errors.push(`link ${source}-${target} latencyMs must be non-negative`);
     }
+    if (typeof jitterMs !== "number" || !Number.isFinite(jitterMs) || jitterMs < 0) {
+      errors.push(`link ${source}-${target} jitterMs must be non-negative`);
+    }
+    if (typeof packetLossPct !== "number" || !Number.isFinite(packetLossPct) || packetLossPct < 0 || packetLossPct > 100) {
+      errors.push(`link ${source}-${target} packetLossPct must be from 0 to 100`);
+    }
     if (typeof enabled !== "boolean") errors.push(`link ${source}-${target} enabled must be boolean`);
   }
   if (errors.length) return { valid: false, errors, topology: null };
@@ -70,8 +76,8 @@ function validateTopology(value) {
       nodes: [...nodes],
       hosts: (Array.isArray(hosts) ? hosts : []).map(({ id, attachedTo }) => ({ id, attachedTo })),
       disabledNodes: [...new Set(Array.isArray(disabledNodes) ? disabledNodes : [])],
-      links: links.map(({ source, target, capacityMbps = 100, latencyMs = 1, enabled = true }) =>
-        ({ source, target, capacityMbps, latencyMs, enabled }))
+      links: links.map(({ source, target, capacityMbps = 100, latencyMs = 1, jitterMs = 0, packetLossPct = 0, enabled = true }) =>
+        ({ source, target, capacityMbps, latencyMs, jitterMs, packetLossPct, enabled }))
     }
   };
 }

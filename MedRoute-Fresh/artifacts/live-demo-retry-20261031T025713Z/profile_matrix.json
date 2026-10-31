@@ -1,0 +1,1863 @@
+{
+  "all_profiles_complete": true,
+  "all_profiles_executed": true,
+  "mapping_policy": "catalog criticality * 20 mapped to the four queue classes; service profile and source port are recorded",
+  "profiles": [
+    {
+      "captured_at": 1793415661.550938,
+      "catalog": {
+        "criticality": "5",
+        "destination_port": "5001",
+        "destination_role": "clinical gateway",
+        "duration_seconds": "60",
+        "offered_rate_bps": "500000",
+        "packet_size_bytes": "256",
+        "source_role": "bedside monitor",
+        "traffic_type": "ECG",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Steady low-volume waveform metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 100.0,
+      "execution_status": "passed",
+      "expected_queue_id": 1,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.500860691070557,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 0.5238713574667795,
+            "rx_utilization_pct": 0.5238713574667795,
+            "switch": "s1",
+            "tx_mbps": 0.007072425072642843,
+            "tx_utilization_pct": 0.007072425072642844
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007072425072642843,
+            "rx_utilization_pct": 0.007072425072642844,
+            "switch": "s1",
+            "tx_mbps": 0.5238713574667795,
+            "tx_utilization_pct": 0.5238713574667795
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 0.5238713574667795,
+            "rx_utilization_pct": 0.5238713574667795,
+            "switch": "s2",
+            "tx_mbps": 0.007072425072642843,
+            "tx_utilization_pct": 0.007072425072642844
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.007072425072642843,
+            "rx_utilization_pct": 0.007072425072642844,
+            "switch": "s2",
+            "tx_mbps": 0.5238713574667795,
+            "tx_utilization_pct": 0.5238713574667795
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 0.5238713574667795,
+            "rx_utilization_pct": 0.5238713574667795,
+            "switch": "s4",
+            "tx_mbps": 0.007072425072642843,
+            "tx_utilization_pct": 0.007072425072642844
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.007072425072642843,
+            "rx_utilization_pct": 0.007072425072642844,
+            "switch": "s4",
+            "tx_mbps": 0.5238713574667795,
+            "tx_utilization_pct": 0.5238713574667795
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0001244206471688864,
+            "rx_utilization_pct": 0.0001244206471688864,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.21999999999999975,
+        "latency_ms": 4.715,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 0.494
+      },
+      "offered_rate_bps": 500000.0,
+      "policy_dscp": 46,
+      "policy_port": 5101,
+      "profile": "ECG",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t52808,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5101\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:00:57 GMT\",\n\t\t\t\"timesecs\":\t1793415657\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5101\n\t\t},\n\t\t\"cookie\":\t\"jpdxdlqypc4vrhcw5vidn5zhqwe3tlr3fz7o\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t256,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t184\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000239,\n\t\t\t\t\t\"seconds\":\t1.0002390146255493,\n\t\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\t\"bits_per_second\":\t499592.5900641586,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000239,\n\t\t\t\t\"seconds\":\t1.0002390146255493,\n\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\"bits_per_second\":\t499592.5900641586,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000239,\n\t\t\t\t\t\"end\":\t2.000252,\n\t\t\t\t\t\"seconds\":\t1.000012993812561,\n\t\t\t\t\t\"bytes\":\t62720,\n\t\t\t\t\t\"bits_per_second\":\t501753.480309325,\n\t\t\t\t\t\"packets\":\t245,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000239,\n\t\t\t\t\"end\":\t2.000252,\n\t\t\t\t\"seconds\":\t1.000012993812561,\n\t\t\t\t\"bytes\":\t62720,\n\t\t\t\t\"bits_per_second\":\t501753.480309325,\n\t\t\t\t\"packets\":\t245,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000252,\n\t\t\t\t\t\"end\":\t3.000269,\n\t\t\t\t\t\"seconds\":\t1.0000170469284058,\n\t\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\t\"bits_per_second\":\t499703.48159052519,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000252,\n\t\t\t\t\"end\":\t3.000269,\n\t\t\t\t\"seconds\":\t1.0000170469284058,\n\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\"bits_per_second\":\t499703.48159052519,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000269,\n\t\t\t\t\t\"end\":\t4.000285,\n\t\t\t\t\t\"seconds\":\t1.0000159740448,\n\t\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\t\"bits_per_second\":\t499704.01770563453,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000269,\n\t\t\t\t\"end\":\t4.000285,\n\t\t\t\t\"seconds\":\t1.0000159740448,\n\t\t\t\t\"bytes\":\t62464,\n\t\t\t\t\"bits_per_second\":\t499704.01770563453,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000285,\n\t\t\t\t\t\"seconds\":\t4.000285,\n\t\t\t\t\t\"bytes\":\t250112,\n\t\t\t\t\t\"bits_per_second\":\t500188.36157923751,\n\t\t\t\t\t\"jitter_ms\":\t0.059527584871076254,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t977,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.051515,\n\t\t\t\"seconds\":\t4.051515,\n\t\t\t\"bytes\":\t250112,\n\t\t\t\"bits_per_second\":\t500188.36157923751,\n\t\t\t\"jitter_ms\":\t0.059527584871076254,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t977,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.4339488100907,\n\t\t\t\"host_user\":\t0.21058770482992226,\n\t\t\t\"host_system\":\t3.2233611052607767,\n\t\t\t\"remote_total\":\t0.645615832959713,\n\t\t\t\"remote_user\":\t0,\n\t\t\t\"remote_system\":\t0.645592958249078\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 52030\\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 52808\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  58.0 KBytes   475 Kbits/sec  0.072 ms  0/232 (0%)  \\n[  7]   1.00-2.00   sec  61.0 KBytes   500 Kbits/sec  0.115 ms  0/244 (0%)  \\n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.053 ms  0/244 (0%)  \\n[  7]   3.00-4.00   sec  61.2 KBytes   502 Kbits/sec  0.093 ms  0/245 (0%)  \\n[  7]   4.00-4.05   sec  3.00 KBytes   481 Kbits/sec  0.060 ms  0/12 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.060 ms  0/977 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.89 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.69 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.74 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.52 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.68 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=5.17 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.96 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.81 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.84 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.55 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=4.60 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=4.74 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.42 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.57 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.23 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.84 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.58 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.89 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.67 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=5.14 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1909ms\nrtt min/avg/max/mdev = 4.225/4.724/5.173/0.223 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5101\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 52030\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 52808\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  58.0 KBytes   475 Kbits/sec  0.072 ms  0/232 (0%)  \n[  7]   1.00-2.00   sec  61.0 KBytes   500 Kbits/sec  0.115 ms  0/244 (0%)  \n[  7]   2.00-3.00   sec  61.0 KBytes   500 Kbits/sec  0.053 ms  0/244 (0%)  \n[  7]   3.00-4.00   sec  61.2 KBytes   502 Kbits/sec  0.093 ms  0/245 (0%)  \n[  7]   4.00-4.05   sec  3.00 KBytes   481 Kbits/sec  0.060 ms  0/12 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-4.05   sec   244 KBytes   494 Kbits/sec  0.060 ms  0/977 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "ECG"
+    },
+    {
+      "captured_at": 1793415666.6756933,
+      "catalog": {
+        "criticality": "5",
+        "destination_port": "5002",
+        "destination_role": "ICU monitoring station",
+        "duration_seconds": "60",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "512",
+        "source_role": "ICU monitor",
+        "traffic_type": "ICU",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Continuous vital-sign and alarm metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 100.0,
+      "execution_status": "passed",
+      "expected_queue_id": 1,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.516109466552734,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 0.9651599528935163,
+            "rx_utilization_pct": 0.9651599528935163,
+            "switch": "s1",
+            "tx_mbps": 0.007050316259119448,
+            "tx_utilization_pct": 0.007050316259119448
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007050316259119448,
+            "rx_utilization_pct": 0.007050316259119448,
+            "switch": "s1",
+            "tx_mbps": 0.9651599528935163,
+            "tx_utilization_pct": 0.9651599528935163
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 0.9651599528935163,
+            "rx_utilization_pct": 0.9651599528935163,
+            "switch": "s2",
+            "tx_mbps": 0.007050316259119448,
+            "tx_utilization_pct": 0.007050316259119448
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.007050316259119448,
+            "rx_utilization_pct": 0.007050316259119448,
+            "switch": "s2",
+            "tx_mbps": 0.9651599528935163,
+            "tx_utilization_pct": 0.9651599528935163
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 0.9651599528935163,
+            "rx_utilization_pct": 0.9651599528935163,
+            "switch": "s4",
+            "tx_mbps": 0.007050316259119448,
+            "tx_utilization_pct": 0.007050316259119448
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.007050316259119448,
+            "rx_utilization_pct": 0.007050316259119448,
+            "switch": "s4",
+            "tx_mbps": 0.9651599528935163,
+            "tx_utilization_pct": 0.9651599528935163
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.00012400053722069383,
+            "tx_utilization_pct": 0.00012400053722069383
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.3100000000000005,
+        "latency_ms": 4.51,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 0.989
+      },
+      "offered_rate_bps": 1000000.0,
+      "policy_dscp": 46,
+      "policy_port": 5101,
+      "profile": "ICU",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t38375,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5101\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:01:02 GMT\",\n\t\t\t\"timesecs\":\t1793415662\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5101\n\t\t},\n\t\t\"cookie\":\t\"3fqzn5gcxn3qok5gcu3i4bephts7jh5uyrr6\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t512,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t184\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000306,\n\t\t\t\t\t\"seconds\":\t1.0003060102462769,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999118.25957532763,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000306,\n\t\t\t\t\"seconds\":\t1.0003060102462769,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999118.25957532763,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000306,\n\t\t\t\t\t\"end\":\t2.000153,\n\t\t\t\t\t\"seconds\":\t0.99984699487686157,\n\t\t\t\t\t\"bytes\":\t125440,\n\t\t\t\t\t\"bits_per_second\":\t1003673.56719774,\n\t\t\t\t\t\"packets\":\t245,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000306,\n\t\t\t\t\"end\":\t2.000153,\n\t\t\t\t\"seconds\":\t0.99984699487686157,\n\t\t\t\t\"bytes\":\t125440,\n\t\t\t\t\"bits_per_second\":\t1003673.56719774,\n\t\t\t\t\"packets\":\t245,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000153,\n\t\t\t\t\t\"end\":\t3.000263,\n\t\t\t\t\t\"seconds\":\t1.0001100301742554,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999314.04530145961,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000153,\n\t\t\t\t\"end\":\t3.000263,\n\t\t\t\t\"seconds\":\t1.0001100301742554,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999314.04530145961,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000263,\n\t\t\t\t\t\"end\":\t4.00022,\n\t\t\t\t\t\"seconds\":\t0.999957025051117,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999466.95204117429,\n\t\t\t\t\t\"packets\":\t244,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000263,\n\t\t\t\t\"end\":\t4.00022,\n\t\t\t\t\"seconds\":\t0.999957025051117,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999466.95204117429,\n\t\t\t\t\"packets\":\t244,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.00022,\n\t\t\t\t\t\"seconds\":\t4.00022,\n\t\t\t\t\t\"bytes\":\t500224,\n\t\t\t\t\t\"bits_per_second\":\t1000392.9783861889,\n\t\t\t\t\t\"jitter_ms\":\t0.10847040624577012,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t977,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.04691,\n\t\t\t\"seconds\":\t4.04691,\n\t\t\t\"bytes\":\t500224,\n\t\t\t\"bits_per_second\":\t1000392.9783861889,\n\t\t\t\"jitter_ms\":\t0.10847040624577012,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t977,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.3854830824499,\n\t\t\t\"host_user\":\t0.89167813357049053,\n\t\t\t\"host_system\":\t2.4938536664739885,\n\t\t\t\"remote_total\":\t0.65257270570763348,\n\t\t\t\"remote_user\":\t0,\n\t\t\t\"remote_system\":\t0.652595567699846\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 47300\\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 38375\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec   116 KBytes   954 Kbits/sec  0.101 ms  0/233 (0%)  \\n[  7]   1.00-2.00   sec   122 KBytes   999 Kbits/sec  0.204 ms  0/244 (0%)  \\n[  7]   2.00-3.00   sec   122 KBytes   999 Kbits/sec  0.099 ms  0/244 (0%)  \\n[  7]   3.00-4.00   sec   122 KBytes  1.00 Mbits/sec  0.130 ms  0/245 (0%)  \\n[  7]   4.00-4.05   sec  5.50 KBytes   964 Kbits/sec  0.108 ms  0/11 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-4.05   sec   488 KBytes   989 Kbits/sec  0.108 ms  0/977 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.41 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.48 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.48 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.70 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.20 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=4.69 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.58 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.15 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.44 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.96 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=4.80 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=4.27 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.62 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.84 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.43 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.61 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.20 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.65 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.34 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=4.54 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1904ms\nrtt min/avg/max/mdev = 4.146/4.518/4.956/0.217 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5101\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 47300\n[  7] local 10.0.0.2 port 5101 connected to 10.0.0.1 port 38375\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec   116 KBytes   954 Kbits/sec  0.101 ms  0/233 (0%)  \n[  7]   1.00-2.00   sec   122 KBytes   999 Kbits/sec  0.204 ms  0/244 (0%)  \n[  7]   2.00-3.00   sec   122 KBytes   999 Kbits/sec  0.099 ms  0/244 (0%)  \n[  7]   3.00-4.00   sec   122 KBytes  1.00 Mbits/sec  0.130 ms  0/245 (0%)  \n[  7]   4.00-4.05   sec  5.50 KBytes   964 Kbits/sec  0.108 ms  0/11 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-4.05   sec   488 KBytes   989 Kbits/sec  0.108 ms  0/977 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "ECG"
+    },
+    {
+      "captured_at": 1793415670.2353086,
+      "catalog": {
+        "criticality": "4",
+        "destination_port": "5003",
+        "destination_role": "remote clinician endpoint",
+        "duration_seconds": "60",
+        "offered_rate_bps": "4000000",
+        "packet_size_bytes": "1200",
+        "source_role": "consultation endpoint",
+        "traffic_type": "TELEMEDICINE",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Interactive media metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 80.0,
+      "execution_status": "passed",
+      "expected_queue_id": 2,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.495145082473755,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 18.42332171277222,
+            "rx_utilization_pct": 18.42332171277222,
+            "switch": "s1",
+            "tx_mbps": 0.007225573236031283,
+            "tx_utilization_pct": 0.007225573236031284
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007225573236031283,
+            "rx_utilization_pct": 0.007225573236031284,
+            "switch": "s1",
+            "tx_mbps": 18.42332171277222,
+            "tx_utilization_pct": 18.42332171277222
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 18.42332171277222,
+            "rx_utilization_pct": 18.42332171277222,
+            "switch": "s2",
+            "tx_mbps": 0.007225573236031283,
+            "tx_utilization_pct": 0.007225573236031284
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.007225573236031283,
+            "rx_utilization_pct": 0.007225573236031284,
+            "switch": "s2",
+            "tx_mbps": 18.42332171277222,
+            "tx_utilization_pct": 18.42332171277222
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 18.42332171277222,
+            "rx_utilization_pct": 18.42332171277222,
+            "switch": "s4",
+            "tx_mbps": 0.007225573236031283,
+            "tx_utilization_pct": 0.007225573236031284
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.007225573236031283,
+            "rx_utilization_pct": 0.007225573236031284,
+            "switch": "s4",
+            "tx_mbps": 18.42332171277222,
+            "tx_utilization_pct": 18.42332171277222
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.1999999999999993,
+        "latency_ms": 4.38,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 19.8
+      },
+      "offered_rate_bps": 20000000.0,
+      "policy_dscp": 34,
+      "policy_port": 5102,
+      "profile": "TELEMEDICINE",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t53476,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5102\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:01:06 GMT\",\n\t\t\t\"timesecs\":\t1793415666\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5102\n\t\t},\n\t\t\"cookie\":\t\"bfbg7krjmeqyh7klusny5hhbhr42lj2onsy4\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t1200,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t136\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000145,\n\t\t\t\t\t\"seconds\":\t1.0001449584960938,\n\t\t\t\t\t\"bytes\":\t2498400,\n\t\t\t\t\t\"bits_per_second\":\t19984303.10547635,\n\t\t\t\t\t\"packets\":\t2082,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000145,\n\t\t\t\t\"seconds\":\t1.0001449584960938,\n\t\t\t\t\"bytes\":\t2498400,\n\t\t\t\t\"bits_per_second\":\t19984303.10547635,\n\t\t\t\t\"packets\":\t2082,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000145,\n\t\t\t\t\t\"end\":\t2.000223,\n\t\t\t\t\t\"seconds\":\t1.0000779628753662,\n\t\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\t\"bits_per_second\":\t19995241.113509148,\n\t\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000145,\n\t\t\t\t\"end\":\t2.000223,\n\t\t\t\t\"seconds\":\t1.0000779628753662,\n\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\"bits_per_second\":\t19995241.113509148,\n\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000223,\n\t\t\t\t\t\"end\":\t3.000267,\n\t\t\t\t\t\"seconds\":\t1.0000439882278442,\n\t\t\t\t\t\"bytes\":\t2500800,\n\t\t\t\t\t\"bits_per_second\":\t20005519.992628422,\n\t\t\t\t\t\"packets\":\t2084,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000223,\n\t\t\t\t\"end\":\t3.000267,\n\t\t\t\t\"seconds\":\t1.0000439882278442,\n\t\t\t\t\"bytes\":\t2500800,\n\t\t\t\t\"bits_per_second\":\t20005519.992628422,\n\t\t\t\t\"packets\":\t2084,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000267,\n\t\t\t\t\t\"end\":\t4.00021,\n\t\t\t\t\t\"seconds\":\t0.99994301795959473,\n\t\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\t\"bits_per_second\":\t19997939.523397945,\n\t\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000267,\n\t\t\t\t\"end\":\t4.00021,\n\t\t\t\t\"seconds\":\t0.99994301795959473,\n\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\"bits_per_second\":\t19997939.523397945,\n\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.00021,\n\t\t\t\t\t\"seconds\":\t4.00021,\n\t\t\t\t\t\"bytes\":\t9998400,\n\t\t\t\t\t\"bits_per_second\":\t19995750.223113287,\n\t\t\t\t\t\"jitter_ms\":\t0.026056293356598054,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t8332,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.043905,\n\t\t\t\"seconds\":\t4.043905,\n\t\t\t\"bytes\":\t9998400,\n\t\t\t\"bits_per_second\":\t19995750.223113287,\n\t\t\t\"jitter_ms\":\t0.026056293356598054,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t8332,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t4.0876820654945316,\n\t\t\t\"host_user\":\t0.54058290653920571,\n\t\t\t\"host_system\":\t3.547099158955326,\n\t\t\t\"remote_total\":\t1.9185067114785022,\n\t\t\t\"remote_user\":\t0.24392063289395585,\n\t\t\t\"remote_system\":\t1.67456319672405\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 50272\\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53476\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  2.28 MBytes  19.1 Mbits/sec  0.027 ms  0/1993 (0%)  \\n[  7]   1.00-2.00   sec  2.38 MBytes  20.0 Mbits/sec  0.027 ms  0/2083 (0%)  \\n[  7]   2.00-3.00   sec  2.38 MBytes  20.0 Mbits/sec  0.037 ms  0/2083 (0%)  \\n[  7]   3.00-4.00   sec  2.38 MBytes  20.0 Mbits/sec  0.055 ms  0/2084 (0%)  \\n[  7]   4.00-4.04   sec   104 KBytes  19.6 Mbits/sec  0.026 ms  0/89 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[SUM]  0.0- 4.0 sec  2 datagrams received out-of-order\\n[  7]   0.00-4.04   sec  9.54 MBytes  19.8 Mbits/sec  0.026 ms  0/8332 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=5.78 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.49 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.29 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.38 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.30 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=4.33 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.89 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.38 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.58 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.13 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=4.22 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=4.40 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.62 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.33 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.49 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.41 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.15 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.35 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.41 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=4.34 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1903ms\nrtt min/avg/max/mdev = 4.129/4.462/5.780/0.344 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5102\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 50272\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53476\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  2.28 MBytes  19.1 Mbits/sec  0.027 ms  0/1993 (0%)  \n[  7]   1.00-2.00   sec  2.38 MBytes  20.0 Mbits/sec  0.027 ms  0/2083 (0%)  \n[  7]   2.00-3.00   sec  2.38 MBytes  20.0 Mbits/sec  0.037 ms  0/2083 (0%)  \n[  7]   3.00-4.00   sec  2.38 MBytes  20.0 Mbits/sec  0.055 ms  0/2084 (0%)  \n[  7]   4.00-4.04   sec   104 KBytes  19.6 Mbits/sec  0.026 ms  0/89 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[SUM]  0.0- 4.0 sec  2 datagrams received out-of-order\n[  7]   0.00-4.04   sec  9.54 MBytes  19.8 Mbits/sec  0.026 ms  0/8332 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "ICU"
+    },
+    {
+      "captured_at": 1793415675.300621,
+      "catalog": {
+        "criticality": "4",
+        "destination_port": "5004",
+        "destination_role": "EHR service",
+        "duration_seconds": "30",
+        "offered_rate_bps": "1000000",
+        "packet_size_bytes": "1024",
+        "source_role": "clinical workstation",
+        "traffic_type": "EHR",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Transactional record-transfer metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 80.0,
+      "execution_status": "passed",
+      "expected_queue_id": 2,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.502500295639038,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 0.9325751747461126,
+            "rx_utilization_pct": 0.9325751747461126,
+            "switch": "s1",
+            "tx_mbps": 0.007107162220731904,
+            "tx_utilization_pct": 0.007107162220731904
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007107162220731904,
+            "rx_utilization_pct": 0.007107162220731904,
+            "switch": "s1",
+            "tx_mbps": 0.9325751747461126,
+            "tx_utilization_pct": 0.9325751747461126
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 0.9325751747461126,
+            "rx_utilization_pct": 0.9325751747461126,
+            "switch": "s2",
+            "tx_mbps": 0.007107162220731904,
+            "tx_utilization_pct": 0.007107162220731904
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.007107162220731904,
+            "rx_utilization_pct": 0.007107162220731904,
+            "switch": "s2",
+            "tx_mbps": 0.9325751747461126,
+            "tx_utilization_pct": 0.9325751747461126
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 0.9325751747461126,
+            "rx_utilization_pct": 0.9325751747461126,
+            "switch": "s4",
+            "tx_mbps": 0.007107162220731904,
+            "tx_utilization_pct": 0.007107162220731904
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.007107162220731904,
+            "rx_utilization_pct": 0.007107162220731904,
+            "switch": "s4",
+            "tx_mbps": 0.9325751747461126,
+            "tx_utilization_pct": 0.9325751747461126
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.21999999999999975,
+        "latency_ms": 4.645,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 0.989
+      },
+      "offered_rate_bps": 1000000.0,
+      "policy_dscp": 34,
+      "policy_port": 5102,
+      "profile": "EHR",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t53153,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5102\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:01:11 GMT\",\n\t\t\t\"timesecs\":\t1793415671\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5102\n\t\t},\n\t\t\"cookie\":\t\"ezljepvvohd3ynkxnpavkah3nc27hjtko4ee\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t1024,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t136\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000229,\n\t\t\t\t\t\"seconds\":\t1.0002290010452271,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999195.183258648,\n\t\t\t\t\t\"packets\":\t122,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000229,\n\t\t\t\t\"seconds\":\t1.0002290010452271,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999195.183258648,\n\t\t\t\t\"packets\":\t122,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000229,\n\t\t\t\t\t\"end\":\t2.000289,\n\t\t\t\t\t\"seconds\":\t1.000059962272644,\n\t\t\t\t\t\"bytes\":\t125952,\n\t\t\t\t\t\"bits_per_second\":\t1007555.5846773275,\n\t\t\t\t\t\"packets\":\t123,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000229,\n\t\t\t\t\"end\":\t2.000289,\n\t\t\t\t\"seconds\":\t1.000059962272644,\n\t\t\t\t\"bytes\":\t125952,\n\t\t\t\t\"bits_per_second\":\t1007555.5846773275,\n\t\t\t\t\"packets\":\t123,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000289,\n\t\t\t\t\t\"end\":\t3.000218,\n\t\t\t\t\t\"seconds\":\t0.99992901086807251,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999494.95327909919,\n\t\t\t\t\t\"packets\":\t122,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000289,\n\t\t\t\t\"end\":\t3.000218,\n\t\t\t\t\"seconds\":\t0.99992901086807251,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999494.95327909919,\n\t\t\t\t\"packets\":\t122,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000218,\n\t\t\t\t\t\"end\":\t4.000271,\n\t\t\t\t\t\"seconds\":\t1.00005304813385,\n\t\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\t\"bits_per_second\":\t999370.98523420934,\n\t\t\t\t\t\"packets\":\t122,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000218,\n\t\t\t\t\"end\":\t4.000271,\n\t\t\t\t\"seconds\":\t1.00005304813385,\n\t\t\t\t\"bytes\":\t124928,\n\t\t\t\t\"bits_per_second\":\t999370.98523420934,\n\t\t\t\t\"packets\":\t122,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000271,\n\t\t\t\t\t\"seconds\":\t4.000271,\n\t\t\t\t\t\"bytes\":\t500736,\n\t\t\t\t\t\"bits_per_second\":\t1001404.1548685078,\n\t\t\t\t\t\"jitter_ms\":\t0.092615735537765961,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t489,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.048903,\n\t\t\t\"seconds\":\t4.048903,\n\t\t\t\"bytes\":\t500736,\n\t\t\t\"bits_per_second\":\t1001404.1548685078,\n\t\t\t\"jitter_ms\":\t0.092615735537765961,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t489,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.3029642417393648,\n\t\t\t\"host_user\":\t0.707357338975382,\n\t\t\t\"host_system\":\t2.5956069027639823,\n\t\t\t\"remote_total\":\t0.39692338040042918,\n\t\t\t\"remote_user\":\t0.14231573956242544,\n\t\t\t\"remote_system\":\t0.25460764083800375\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 60278\\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53153\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec   117 KBytes   958 Kbits/sec  0.107 ms  0/117 (0%)  \\n[  7]   1.00-2.00   sec   122 KBytes   999 Kbits/sec  0.079 ms  0/122 (0%)  \\n[  7]   2.00-3.00   sec   122 KBytes   999 Kbits/sec  0.112 ms  0/122 (0%)  \\n[  7]   3.00-4.00   sec   122 KBytes   999 Kbits/sec  0.062 ms  0/122 (0%)  \\n[  7]   4.00-4.05   sec  6.00 KBytes  1.01 Mbits/sec  0.093 ms  0/6 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-4.05   sec   489 KBytes   989 Kbits/sec  0.093 ms  0/489 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.85 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.82 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.43 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.53 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.37 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=4.93 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.71 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.32 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.92 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.77 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=5.01 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=5.03 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.70 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.40 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.21 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.53 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.57 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.64 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.65 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=4.33 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1901ms\nrtt min/avg/max/mdev = 4.209/4.636/5.025/0.237 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5102\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 60278\n[  7] local 10.0.0.2 port 5102 connected to 10.0.0.1 port 53153\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec   117 KBytes   958 Kbits/sec  0.107 ms  0/117 (0%)  \n[  7]   1.00-2.00   sec   122 KBytes   999 Kbits/sec  0.079 ms  0/122 (0%)  \n[  7]   2.00-3.00   sec   122 KBytes   999 Kbits/sec  0.112 ms  0/122 (0%)  \n[  7]   3.00-4.00   sec   122 KBytes   999 Kbits/sec  0.062 ms  0/122 (0%)  \n[  7]   4.00-4.05   sec  6.00 KBytes  1.01 Mbits/sec  0.093 ms  0/6 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-4.05   sec   489 KBytes   989 Kbits/sec  0.093 ms  0/489 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "ICU"
+    },
+    {
+      "captured_at": 1793415680.5805774,
+      "catalog": {
+        "criticality": "3",
+        "destination_port": "5005",
+        "destination_role": "image archive",
+        "duration_seconds": "30",
+        "offered_rate_bps": "20000000",
+        "packet_size_bytes": "1200",
+        "source_role": "imaging modality",
+        "traffic_type": "IMAGING",
+        "transport_protocol": "UDP",
+        "workload_rationale": "High-rate bulk-transfer metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 60.0,
+      "execution_status": "passed",
+      "expected_queue_id": 3,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.4856250286102295,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 18.46242418208963,
+            "rx_utilization_pct": 18.46242418208963,
+            "switch": "s1",
+            "tx_mbps": 0.0072694440110396075,
+            "tx_utilization_pct": 0.0072694440110396075
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007144600762567386,
+            "rx_utilization_pct": 0.007144600762567386,
+            "switch": "s1",
+            "tx_mbps": 18.46242418208963,
+            "tx_utilization_pct": 18.46242418208963
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.00012484324847222093,
+            "tx_utilization_pct": 0.00012484324847222093
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 18.46242418208963,
+            "rx_utilization_pct": 18.46242418208963,
+            "switch": "s2",
+            "tx_mbps": 0.007144600762567386,
+            "tx_utilization_pct": 0.007144600762567386
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.0072694440110396075,
+            "rx_utilization_pct": 0.0072694440110396075,
+            "switch": "s2",
+            "tx_mbps": 18.46242418208963,
+            "tx_utilization_pct": 18.46242418208963
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.00012484324847222093,
+            "rx_utilization_pct": 0.00012484324847222093,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 18.46242418208963,
+            "rx_utilization_pct": 18.46242418208963,
+            "switch": "s4",
+            "tx_mbps": 0.0072694440110396075,
+            "tx_utilization_pct": 0.0072694440110396075
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.00012484324847222093,
+            "tx_utilization_pct": 0.00012484324847222093
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.0072694440110396075,
+            "rx_utilization_pct": 0.0072694440110396075,
+            "switch": "s4",
+            "tx_mbps": 18.46242418208963,
+            "tx_utilization_pct": 18.46242418208963
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.08000000000000007,
+        "latency_ms": 4.35,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 19.8
+      },
+      "offered_rate_bps": 20000000.0,
+      "policy_dscp": 18,
+      "policy_port": 5103,
+      "profile": "IMAGING",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t40292,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5103\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:01:16 GMT\",\n\t\t\t\"timesecs\":\t1793415676\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5103\n\t\t},\n\t\t\"cookie\":\t\"57cchfqv4mhlmw3oc7tozm426a44thgfhk4b\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t1200,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t72\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000264,\n\t\t\t\t\t\"seconds\":\t1.000264048576355,\n\t\t\t\t\t\"bytes\":\t2498400,\n\t\t\t\t\t\"bits_per_second\":\t19981923.801467389,\n\t\t\t\t\t\"packets\":\t2082,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000264,\n\t\t\t\t\"seconds\":\t1.000264048576355,\n\t\t\t\t\"bytes\":\t2498400,\n\t\t\t\t\"bits_per_second\":\t19981923.801467389,\n\t\t\t\t\"packets\":\t2082,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000264,\n\t\t\t\t\t\"end\":\t2.000191,\n\t\t\t\t\t\"seconds\":\t0.99992698431015,\n\t\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\t\"bits_per_second\":\t19998260.186763335,\n\t\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000264,\n\t\t\t\t\"end\":\t2.000191,\n\t\t\t\t\"seconds\":\t0.99992698431015,\n\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\"bits_per_second\":\t19998260.186763335,\n\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000191,\n\t\t\t\t\t\"end\":\t3.000179,\n\t\t\t\t\t\"seconds\":\t0.9999880194664,\n\t\t\t\t\t\"bytes\":\t2500800,\n\t\t\t\t\t\"bits_per_second\":\t20006639.69021903,\n\t\t\t\t\t\"packets\":\t2084,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000191,\n\t\t\t\t\"end\":\t3.000179,\n\t\t\t\t\"seconds\":\t0.9999880194664,\n\t\t\t\t\"bytes\":\t2500800,\n\t\t\t\t\"bits_per_second\":\t20006639.69021903,\n\t\t\t\t\"packets\":\t2084,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000179,\n\t\t\t\t\t\"end\":\t4.000183,\n\t\t\t\t\t\"seconds\":\t1.0000040531158447,\n\t\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\t\"bits_per_second\":\t19996718.950981576,\n\t\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000179,\n\t\t\t\t\"end\":\t4.000183,\n\t\t\t\t\"seconds\":\t1.0000040531158447,\n\t\t\t\t\"bytes\":\t2499600,\n\t\t\t\t\"bits_per_second\":\t19996718.950981576,\n\t\t\t\t\"packets\":\t2083,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000183,\n\t\t\t\t\t\"seconds\":\t4.000183,\n\t\t\t\t\t\"bytes\":\t9998400,\n\t\t\t\t\t\"bits_per_second\":\t19995885.188252639,\n\t\t\t\t\t\"jitter_ms\":\t0.038038931207442242,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t8332,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.044322,\n\t\t\t\"seconds\":\t4.044322,\n\t\t\t\"bytes\":\t9998400,\n\t\t\t\"bits_per_second\":\t19995885.188252639,\n\t\t\t\"jitter_ms\":\t0.038038931207442242,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t8332,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t5.6490434157378786,\n\t\t\t\"host_user\":\t0.45974970591872261,\n\t\t\t\"host_system\":\t5.1892693199143327,\n\t\t\t\"remote_total\":\t2.1890119366665175,\n\t\t\t\"remote_user\":\t0.43003650149824713,\n\t\t\t\"remote_system\":\t1.7589295646081107\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 42864\\n[  7] local 10.0.0.2 port 5103 connected to 10.0.0.1 port 40292\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec  2.28 MBytes  19.1 Mbits/sec  0.057 ms  0/1991 (0%)  \\n[  7]   1.00-2.00   sec  2.38 MBytes  20.0 Mbits/sec  0.048 ms  0/2083 (0%)  \\n[  7]   2.00-3.00   sec  2.38 MBytes  20.0 Mbits/sec  0.033 ms  0/2083 (0%)  \\n[  7]   3.00-4.00   sec  2.38 MBytes  20.0 Mbits/sec  0.036 ms  0/2084 (0%)  \\n[  7]   4.00-4.04   sec   107 KBytes  19.8 Mbits/sec  0.038 ms  0/91 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-4.04   sec  9.54 MBytes  19.8 Mbits/sec  0.038 ms  0/8332 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=4.99 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.62 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.46 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.44 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.32 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=4.40 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.48 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.30 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.24 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.39 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=4.33 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=4.42 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.36 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.19 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.43 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.20 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.27 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.28 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.26 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=4.34 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1904ms\nrtt min/avg/max/mdev = 4.190/4.386/4.985/0.171 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5103\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 42864\n[  7] local 10.0.0.2 port 5103 connected to 10.0.0.1 port 40292\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec  2.28 MBytes  19.1 Mbits/sec  0.057 ms  0/1991 (0%)  \n[  7]   1.00-2.00   sec  2.38 MBytes  20.0 Mbits/sec  0.048 ms  0/2083 (0%)  \n[  7]   2.00-3.00   sec  2.38 MBytes  20.0 Mbits/sec  0.033 ms  0/2083 (0%)  \n[  7]   3.00-4.00   sec  2.38 MBytes  20.0 Mbits/sec  0.036 ms  0/2084 (0%)  \n[  7]   4.00-4.04   sec   107 KBytes  19.8 Mbits/sec  0.038 ms  0/91 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-4.04   sec  9.54 MBytes  19.8 Mbits/sec  0.038 ms  0/8332 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "WEARABLE"
+    },
+    {
+      "captured_at": 1793415685.7847152,
+      "catalog": {
+        "criticality": "1",
+        "destination_port": "5006",
+        "destination_role": "video recorder",
+        "duration_seconds": "60",
+        "offered_rate_bps": "8000000",
+        "packet_size_bytes": "1200",
+        "source_role": "surveillance camera",
+        "traffic_type": "CCTV",
+        "transport_protocol": "UDP",
+        "workload_rationale": "Routine video-stream metadata workload assumption"
+      },
+      "complete": true,
+      "criticality_score": 20.0,
+      "execution_status": "passed",
+      "expected_queue_id": 4,
+      "flow_evidence": {
+        "htb_ports_verified": 16,
+        "mode": "baseline",
+        "qos_enabled": true,
+        "queue_actions_verified": true,
+        "queue_ids_seen": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "s2_h1_egress": 2,
+        "verified": true
+      },
+      "link_utilization": {
+        "capacity_mbps": 100,
+        "complete": true,
+        "interval_seconds": 4.4954352378845215,
+        "links": [
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth1 <-> h1",
+            "peer": "h1",
+            "port": 1,
+            "rx_mbps": 7.3732393519248935,
+            "rx_utilization_pct": 7.373239351924893,
+            "switch": "s1",
+            "tx_mbps": 0.007118331887049646,
+            "tx_utilization_pct": 0.007118331887049645
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth2 <-> s2-eth1",
+            "peer": "s2-eth1",
+            "port": 2,
+            "rx_mbps": 0.007118331887049646,
+            "rx_utilization_pct": 0.007118331887049645,
+            "switch": "s1",
+            "tx_mbps": 7.37311478111687,
+            "tx_utilization_pct": 7.37311478111687
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth3 <-> s3-eth1",
+            "peer": "s3-eth1",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth6 <-> h3",
+            "peer": "h3",
+            "port": 6,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s1-eth7 <-> h4",
+            "peer": "h4",
+            "port": 7,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s1",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth1 <-> s1-eth2",
+            "peer": "s1-eth2",
+            "port": 1,
+            "rx_mbps": 7.37311478111687,
+            "rx_utilization_pct": 7.37311478111687,
+            "switch": "s2",
+            "tx_mbps": 0.007118331887049646,
+            "tx_utilization_pct": 0.007118331887049645
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth2 <-> s4-eth1",
+            "peer": "s4-eth1",
+            "port": 2,
+            "rx_mbps": 0.007118331887049646,
+            "rx_utilization_pct": 0.007118331887049645,
+            "switch": "s2",
+            "tx_mbps": 7.37311478111687,
+            "tx_utilization_pct": 7.37311478111687
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s2-eth3 <-> s3-eth3",
+            "peer": "s3-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s2",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth1 <-> s1-eth3",
+            "peer": "s1-eth3",
+            "port": 1,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth2 <-> s4-eth2",
+            "peer": "s4-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s3-eth3 <-> s2-eth3",
+            "peer": "s2-eth3",
+            "port": 3,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s3",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth1 <-> s2-eth2",
+            "peer": "s2-eth2",
+            "port": 1,
+            "rx_mbps": 7.37311478111687,
+            "rx_utilization_pct": 7.37311478111687,
+            "switch": "s4",
+            "tx_mbps": 0.007118331887049646,
+            "tx_utilization_pct": 0.007118331887049645
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth2 <-> s3-eth2",
+            "peer": "s3-eth2",
+            "port": 2,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth3 <-> h2",
+            "peer": "h2",
+            "port": 3,
+            "rx_mbps": 0.007118331887049646,
+            "rx_utilization_pct": 0.007118331887049645,
+            "switch": "s4",
+            "tx_mbps": 7.37311478111687,
+            "tx_utilization_pct": 7.37311478111687
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth4 <-> h5",
+            "peer": "h5",
+            "port": 4,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          },
+          {
+            "capacity_mbps": 100,
+            "complete": true,
+            "name": "s4-eth5 <-> h6",
+            "peer": "h6",
+            "port": 5,
+            "rx_mbps": 0.0,
+            "rx_utilization_pct": 0.0,
+            "switch": "s4",
+            "tx_mbps": 0.0,
+            "tx_utilization_pct": 0.0
+          }
+        ]
+      },
+      "metrics": {
+        "complete": true,
+        "jitter_ms": 0.25,
+        "latency_ms": 4.475,
+        "packet_loss_pct": 0.0,
+        "ping_packet_loss_pct": 0.0,
+        "reliability_pct": 100.0,
+        "throughput_mbps": 7.91
+      },
+      "offered_rate_bps": 8000000.0,
+      "policy_dscp": 0,
+      "policy_port": 5104,
+      "profile": "CCTV",
+      "queue_occupancy": {
+        "class_count": 6,
+        "classes": [
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:1",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:2",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:3",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:4",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:5",
+            "peak_observed_backlog_bytes": 0
+          },
+          {
+            "after_backlog_bytes": 0,
+            "after_backlog_packets": 0,
+            "before_backlog_bytes": 0,
+            "before_backlog_packets": 0,
+            "class_id": "1:fffe",
+            "peak_observed_backlog_bytes": 0
+          }
+        ],
+        "complete": true,
+        "port": "s1-eth2",
+        "reason": null
+      },
+      "raw_process_output": {
+        "client": "{\n\t\"start\":\t{\n\t\t\"connected\":\t[{\n\t\t\t\t\"socket\":\t7,\n\t\t\t\t\"local_host\":\t\"10.0.0.1\",\n\t\t\t\t\"local_port\":\t53553,\n\t\t\t\t\"remote_host\":\t\"10.0.0.2\",\n\t\t\t\t\"remote_port\":\t5104\n\t\t\t}],\n\t\t\"version\":\t\"iperf 3.9\",\n\t\t\"system_info\":\t\"Linux IdeaPad5 6.18.33.2-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Thu Jun 18 21:54:43 UTC 2026 x86_64\",\n\t\t\"timestamp\":\t{\n\t\t\t\"time\":\t\"Sat, 31 Oct 2026 03:01:21 GMT\",\n\t\t\t\"timesecs\":\t1793415681\n\t\t},\n\t\t\"connecting_to\":\t{\n\t\t\t\"host\":\t\"10.0.0.2\",\n\t\t\t\"port\":\t5104\n\t\t},\n\t\t\"cookie\":\t\"dmlwejwzgwcvuczdiingkxt3tkm4n6mfs2t6\",\n\t\t\"sock_bufsize\":\t0,\n\t\t\"sndbuf_actual\":\t212992,\n\t\t\"rcvbuf_actual\":\t212992,\n\t\t\"test_start\":\t{\n\t\t\t\"protocol\":\t\"UDP\",\n\t\t\t\"num_streams\":\t1,\n\t\t\t\"blksize\":\t1200,\n\t\t\t\"omit\":\t0,\n\t\t\t\"duration\":\t4,\n\t\t\t\"bytes\":\t0,\n\t\t\t\"blocks\":\t0,\n\t\t\t\"reverse\":\t0,\n\t\t\t\"tos\":\t0\n\t\t}\n\t},\n\t\"intervals\":\t[{\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t1.000224,\n\t\t\t\t\t\"seconds\":\t1.0002239942550659,\n\t\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\t\"bits_per_second\":\t7995009.1638780916,\n\t\t\t\t\t\"packets\":\t833,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t0,\n\t\t\t\t\"end\":\t1.000224,\n\t\t\t\t\"seconds\":\t1.0002239942550659,\n\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\"bits_per_second\":\t7995009.1638780916,\n\t\t\t\t\"packets\":\t833,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t1.000224,\n\t\t\t\t\t\"end\":\t2.000125,\n\t\t\t\t\t\"seconds\":\t0.999900996685028,\n\t\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\t\"bits_per_second\":\t7997591.788098814,\n\t\t\t\t\t\"packets\":\t833,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t1.000224,\n\t\t\t\t\"end\":\t2.000125,\n\t\t\t\t\"seconds\":\t0.999900996685028,\n\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\"bits_per_second\":\t7997591.788098814,\n\t\t\t\t\"packets\":\t833,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t2.000125,\n\t\t\t\t\t\"end\":\t3.000136,\n\t\t\t\t\t\"seconds\":\t1.0000109672546387,\n\t\t\t\t\t\"bytes\":\t1000800,\n\t\t\t\t\t\"bits_per_second\":\t8006312.1927354652,\n\t\t\t\t\t\"packets\":\t834,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t2.000125,\n\t\t\t\t\"end\":\t3.000136,\n\t\t\t\t\"seconds\":\t1.0000109672546387,\n\t\t\t\t\"bytes\":\t1000800,\n\t\t\t\t\"bits_per_second\":\t8006312.1927354652,\n\t\t\t\t\"packets\":\t834,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}, {\n\t\t\t\"streams\":\t[{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t3.000136,\n\t\t\t\t\t\"end\":\t4.000255,\n\t\t\t\t\t\"seconds\":\t1.0001189708709717,\n\t\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\t\"bits_per_second\":\t7995848.7269128,\n\t\t\t\t\t\"packets\":\t833,\n\t\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}],\n\t\t\t\"sum\":\t{\n\t\t\t\t\"start\":\t3.000136,\n\t\t\t\t\"end\":\t4.000255,\n\t\t\t\t\"seconds\":\t1.0001189708709717,\n\t\t\t\t\"bytes\":\t999600,\n\t\t\t\t\"bits_per_second\":\t7995848.7269128,\n\t\t\t\t\"packets\":\t833,\n\t\t\t\t\"omitted\":\tfalse,\n\t\t\t\t\"sender\":\ttrue\n\t\t\t}\n\t\t}],\n\t\"end\":\t{\n\t\t\"streams\":\t[{\n\t\t\t\t\"udp\":\t{\n\t\t\t\t\t\"socket\":\t7,\n\t\t\t\t\t\"start\":\t0,\n\t\t\t\t\t\"end\":\t4.000255,\n\t\t\t\t\t\"seconds\":\t4.000255,\n\t\t\t\t\t\"bytes\":\t3999600,\n\t\t\t\t\t\"bits_per_second\":\t7998690.0835071765,\n\t\t\t\t\t\"jitter_ms\":\t0.098012231599679672,\n\t\t\t\t\t\"lost_packets\":\t0,\n\t\t\t\t\t\"packets\":\t3333,\n\t\t\t\t\t\"lost_percent\":\t0,\n\t\t\t\t\t\"out_of_order\":\t0,\n\t\t\t\t\t\"sender\":\ttrue\n\t\t\t\t}\n\t\t\t}],\n\t\t\"sum\":\t{\n\t\t\t\"start\":\t0,\n\t\t\t\"end\":\t4.043597,\n\t\t\t\"seconds\":\t4.043597,\n\t\t\t\"bytes\":\t3999600,\n\t\t\t\"bits_per_second\":\t7998690.0835071765,\n\t\t\t\"jitter_ms\":\t0.098012231599679672,\n\t\t\t\"lost_packets\":\t0,\n\t\t\t\"packets\":\t3333,\n\t\t\t\"lost_percent\":\t0,\n\t\t\t\"sender\":\ttrue\n\t\t},\n\t\t\"cpu_utilization_percent\":\t{\n\t\t\t\"host_total\":\t3.771439941827035,\n\t\t\t\"host_user\":\t0.25377517085382284,\n\t\t\t\"host_system\":\t3.5176403859274874,\n\t\t\t\"remote_total\":\t1.3631299800927905,\n\t\t\t\"remote_user\":\t0.47896787401668528,\n\t\t\t\"remote_system\":\t0.884162106076105\n\t\t}\n\t},\n\t\"server_output_text\":\t\"Accepted connection from 10.0.0.1, port 59280\\n[  7] local 10.0.0.2 port 5104 connected to 10.0.0.1 port 53553\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-1.00   sec   934 KBytes  7.65 Mbits/sec  0.048 ms  0/797 (0%)  \\n[  7]   1.00-2.00   sec   977 KBytes  8.01 Mbits/sec  0.041 ms  0/834 (0%)  \\n[  7]   2.00-3.00   sec   976 KBytes  8.00 Mbits/sec  0.096 ms  0/833 (0%)  \\n[  7]   3.00-4.00   sec   976 KBytes  8.00 Mbits/sec  0.056 ms  0/833 (0%)  \\n[  7]   4.00-4.04   sec  42.2 KBytes  8.00 Mbits/sec  0.098 ms  0/36 (0%)  \\n- - - - - - - - - - - - - - - - - - - - - - - - -\\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\\n[  7]   0.00-4.04   sec  3.81 MBytes  7.91 Mbits/sec  0.098 ms  0/3333 (0%)  receiver\\n\"\n}\n",
+        "ping": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=5.53 ms\n64 bytes from 10.0.0.2: icmp_seq=2 ttl=64 time=4.29 ms\n64 bytes from 10.0.0.2: icmp_seq=3 ttl=64 time=4.67 ms\n64 bytes from 10.0.0.2: icmp_seq=4 ttl=64 time=4.42 ms\n64 bytes from 10.0.0.2: icmp_seq=5 ttl=64 time=4.60 ms\n64 bytes from 10.0.0.2: icmp_seq=6 ttl=64 time=4.51 ms\n64 bytes from 10.0.0.2: icmp_seq=7 ttl=64 time=4.31 ms\n64 bytes from 10.0.0.2: icmp_seq=8 ttl=64 time=4.36 ms\n64 bytes from 10.0.0.2: icmp_seq=9 ttl=64 time=4.62 ms\n64 bytes from 10.0.0.2: icmp_seq=10 ttl=64 time=4.19 ms\n64 bytes from 10.0.0.2: icmp_seq=11 ttl=64 time=4.63 ms\n64 bytes from 10.0.0.2: icmp_seq=12 ttl=64 time=4.41 ms\n64 bytes from 10.0.0.2: icmp_seq=13 ttl=64 time=4.80 ms\n64 bytes from 10.0.0.2: icmp_seq=14 ttl=64 time=4.26 ms\n64 bytes from 10.0.0.2: icmp_seq=15 ttl=64 time=4.54 ms\n64 bytes from 10.0.0.2: icmp_seq=16 ttl=64 time=4.58 ms\n64 bytes from 10.0.0.2: icmp_seq=17 ttl=64 time=4.44 ms\n64 bytes from 10.0.0.2: icmp_seq=18 ttl=64 time=4.38 ms\n64 bytes from 10.0.0.2: icmp_seq=19 ttl=64 time=4.16 ms\n64 bytes from 10.0.0.2: icmp_seq=20 ttl=64 time=4.84 ms\n\n--- 10.0.0.2 ping statistics ---\n20 packets transmitted, 20 received, 0% packet loss, time 1905ms\nrtt min/avg/max/mdev = 4.159/4.525/5.526/0.293 ms\n",
+        "server": "-----------------------------------------------------------\nServer listening on 5104\n-----------------------------------------------------------\nAccepted connection from 10.0.0.1, port 59280\n[  7] local 10.0.0.2 port 5104 connected to 10.0.0.1 port 53553\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-1.00   sec   934 KBytes  7.65 Mbits/sec  0.048 ms  0/797 (0%)  \n[  7]   1.00-2.00   sec   977 KBytes  8.01 Mbits/sec  0.041 ms  0/834 (0%)  \n[  7]   2.00-3.00   sec   976 KBytes  8.00 Mbits/sec  0.096 ms  0/833 (0%)  \n[  7]   3.00-4.00   sec   976 KBytes  8.00 Mbits/sec  0.056 ms  0/833 (0%)  \n[  7]   4.00-4.04   sec  42.2 KBytes  8.00 Mbits/sec  0.098 ms  0/36 (0%)  \n- - - - - - - - - - - - - - - - - - - - - - - - -\n[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams\n[  7]   0.00-4.04   sec  3.81 MBytes  7.91 Mbits/sec  0.098 ms  0/3333 (0%)  receiver\n"
+      },
+      "route": "baseline",
+      "seed_rate_factor": 1.0,
+      "selected_class": "BACKGROUND"
+    }
+  ],
+  "source": "data/CICIoMT2024/raw/healthcare_traffic_profiles.csv",
+  "source_sha256": "0c6a465f8111c1f83cf307d9838de9ee4bf566de9a86efe2dbc8a26421a84e48"
+}

@@ -54,15 +54,18 @@ function pathStats(route, profile, loadMbps) {
   const capacity = route.links.length ? Math.min(...route.links.map(link => Number(link.capacityMbps))) : 0;
   const utilization = capacity > 0 ? loadMbps / capacity : Infinity;
   const overflow = Math.max(0, utilization - 1);
-  const loss = Math.min(100, overflow * 100);
-  const jitter = route.links.length ? latency * 0.15 + Math.abs(utilization - 0.5) * 2 : 0;
-  const throughput = Math.max(0, Math.min(loadMbps, capacity * 0.95));
+  const linkDelivery = route.links.reduce((product, link) => product * (1 - Math.min(100, Math.max(0, Number(link.packetLossPct || 0))) / 100), 1);
+  const loss = Math.min(100, 100 * (1 - linkDelivery * (1 - Math.min(1, overflow))));
+  const linkJitter = Math.sqrt(route.links.reduce((sum, link) => sum + Math.pow(Number(link.jitterMs || 0), 2), 0));
+  const jitter = route.links.length ? linkJitter + Math.abs(utilization - 0.5) * 2 : 0;
+  const throughput = Math.max(0, Math.min(loadMbps, capacity) * linkDelivery);
   const samples = Array.from({ length: 20 }, (_, i) => Math.max(0, latency + jitter * deterministicJitter(route.nodes.length + profile.criticality, i)));
   const sorted = [...samples].sort((a, b) => a - b);
   const percentile = p => sorted[Math.min(sorted.length - 1, Math.ceil(sorted.length * p) - 1)];
   const average = samples.reduce((a, b) => a + b, 0) / samples.length;
   const deadlineViolations = samples.filter(value => value > profile.deadlineMs).length / samples.length * 100;
-  return { averageLatencyMs: average, p95LatencyMs: percentile(.95), p99LatencyMs: percentile(.99), packetLossPct: loss, jitterMs: jitter, throughputMbps: throughput, deadlineViolationPct: deadlineViolations, capacityMbps: capacity, utilizationPct: utilization * 100 };
+  const routeCostValue = (average / 20 + jitter / 5 + loss / 1) / 3;
+  return { averageLatencyMs: average, p95LatencyMs: percentile(.95), p99LatencyMs: percentile(.99), packetLossPct: loss, jitterMs: jitter, throughputMbps: throughput, deadlineViolationPct: deadlineViolations, capacityMbps: capacity, utilizationPct: utilization * 100, hopCount: route.links.length, routeCost: routeCostValue, congestion: utilization > 1 ? "congested" : utilization >= .8 ? "elevated" : "normal", qosViolations: deadlineViolations > 0 ? 1 : 0 };
 }
 function chooseRoute(method, candidates, profile, loadMbps) {
   if (!candidates.length) return null;
@@ -86,31 +89,62 @@ function chooseRoute(method, candidates, profile, loadMbps) {
   return scored.sort((a, b) => method === "M3" ? a.congestionScore - b.congestionScore : (a.metrics.averageLatencyMs * (1 + profile.criticality / 100) + a.metrics.packetLossPct * 10) - (b.metrics.averageLatencyMs * (1 + profile.criticality / 100) + b.metrics.packetLossPct * 10))[0].route;
 }
 function routeCost(metrics, profile) {
-  return (metrics.averageLatencyMs / profile.deadlineMs + metrics.jitterMs / profile.deadlineMs + metrics.packetLossPct / 100) * (1 + profile.criticality / 100);
+  return (metrics.averageLatencyMs / 20 + metrics.jitterMs / 5 + metrics.packetLossPct / 1) / 3;
+}
+function classifyChange(before, after, threshold = .05) {
+  if (!Number.isFinite(before) || !Number.isFinite(after)) return "inconclusive";
+  if (after > before * (1 + threshold)) return "harmful";
+  if (after < before * (1 - threshold)) return "beneficial";
+  return "neutral";
+}
+function criticalEvaluations(baseline, candidate, loadMbps) {
+  const protectedClasses = [
+    { name: "EMERGENCY_ALARM", criticality: 100, demand: Math.max(1, loadMbps * .25), deadlineMs: 50 },
+    { name: "CRITICAL_PHYSIOLOGICAL_TELEMETRY", criticality: 100, demand: Math.max(1, loadMbps * .5), deadlineMs: 75 }
+  ];
+  return protectedClasses.map(item => {
+    const base = pathStats(baseline, item, item.demand);
+    const next = pathStats(candidate, item, item.demand);
+    const verdict = classifyChange(routeCost(base, item), routeCost(next, item));
+    const hardConstraintViolation = next.deadlineViolationPct > 0 || next.packetLossPct > 0;
+    return { className: item.name, baselineCost: routeCost(base, item), candidateCost: routeCost(next, item), degradationPct: base.averageLatencyMs ? ((next.averageLatencyMs - base.averageLatencyMs) / base.averageLatencyMs) * 100 : null, verdict, hardConstraintViolation };
+  });
 }
 function runMethod(method, topology, options) {
   const profile = PROFILES[options.profile] || PROFILES.ECG;
   const candidates = paths(topology, options.source, options.target);
-  const baseline = chooseRoute(method, candidates, profile, options.loadMbps);
+  const baseline = chooseRoute(method === "M4" ? "M1" : method, candidates, profile, options.loadMbps);
   if (!baseline) return { method, status: "inconclusive", reason: "No available route", route: null, metrics: null, simulated: true };
-  let selected = baseline, decision = "baseline", reason = method === "M4" ? "No candidate route exceeded the CBDR threshold" : `${method} route policy selected`;
+  let selected = baseline, decision = "baseline", reason = method === "M4" ? "No candidate route exceeded the CBDR threshold" : `${method} route policy selected`, aggregateEvaluation = null, criticalClassEvaluations = [];
   if (method === "M4" && candidates.length > 1) {
     const candidate = chooseRoute("M3", candidates.filter(route => route !== baseline), profile, options.loadMbps);
     if (candidate) {
       const baseMetrics = pathStats(baseline, profile, options.loadMbps);
       const candidateMetrics = pathStats(candidate, profile, options.loadMbps);
       const baseCost = routeCost(baseMetrics, profile), candidateCost = routeCost(candidateMetrics, profile);
-      if (candidateCost <= baseCost * 1.05) { selected = candidate; decision = "accept"; reason = "Candidate cost is within the configured 5% CBDR threshold"; }
+      aggregateEvaluation = { baselineCost: baseCost, candidateCost, verdict: classifyChange(baseCost, candidateCost) };
+      criticalClassEvaluations = criticalEvaluations(baseline, candidate, options.loadMbps);
+      const guardTrigger = criticalClassEvaluations.find(item => item.verdict === "harmful" || item.hardConstraintViolation);
+      if (candidateCost <= baseCost * 1.05 && !options.disableCriticalGuard && !guardTrigger) { selected = candidate; decision = "accept"; reason = "Candidate cost is within the configured 5% CBDR threshold and protected critical classes are safe"; }
+      else if (guardTrigger) reason = `CRITICAL_CLASS_DEGRADATION: ${guardTrigger.className} rejected the candidate (${guardTrigger.degradationPct == null ? "unavailable" : guardTrigger.degradationPct.toFixed(2) + "%"} latency change)`;
       else reason = "Candidate cost exceeds the configured 5% CBDR threshold; baseline retained";
     }
   }
   const metrics = pathStats(selected, profile, options.loadMbps);
   const nonCriticalMbps = Math.max(0, metrics.throughputMbps * (1 - profile.criticality / 200));
-  return { method, status: "simulated", simulated: true, route: selected.nodes, decision, reason, metrics: { ...metrics, nonCriticalThroughputMbps: nonCriticalMbps, fairnessIndex: metrics.throughputMbps ? Math.min(1, (1 + profile.criticality / 100) / 2) : null, routeChanges: selected === baseline ? 0 : 1, recoveryTimeMs: options.failure ? 10 + selected.nodes.length * 2 : null, controllerOverheadMs: method === "M4" ? 2 + candidates.length : method === "M3" ? 1 + candidates.length : 1 } };
+  return { method, status: "simulated", simulated: true, route: selected.nodes, decision, reason, aggregateEvaluation, criticalClassEvaluations, availableRoutes: candidates.map(route => route.nodes), metrics: { ...metrics, nonCriticalThroughputMbps: nonCriticalMbps, fairnessIndex: metrics.throughputMbps ? Math.min(1, (1 + profile.criticality / 100) / 2) : null, routeChanges: selected === baseline ? 0 : 1, recoveryTimeMs: options.failure ? 10 + selected.nodes.length * 2 : null, controllerOverheadMs: method === "M4" ? 2 + candidates.length : method === "M3" ? 1 + candidates.length : 1 } };
 }
 function runComparison(topology, options = {}) {
   const conditions = { source: options.source || "h1", target: options.target || "h2", profile: options.profile || "ECG", loadMbps: Number(options.loadMbps) || 10, failure: Boolean(options.failure) };
-  return { source: conditions.source, target: conditions.target, profile: conditions.profile, loadMbps: conditions.loadMbps, simulated: true, generatedAt: new Date().toISOString(), methods: Object.fromEntries(METHODS.map(method => [method, runMethod(method, topology, conditions)])) };
+  const methods = Object.fromEntries(METHODS.map(method => [method, runMethod(method, topology, conditions)]));
+  const allRoutes = paths(topology, conditions.source, conditions.target).map(route => ({ path: route.nodes, metrics: pathStats(route, PROFILES[conditions.profile] || PROFILES.ECG, conditions.loadMbps) }));
+  allRoutes.forEach(row => {
+    const users = METHODS.filter(method => methods[method].route && JSON.stringify(methods[method].route) === JSON.stringify(row.path));
+    row.status = users.length ? "selected" : "alternative";
+    row.selectedBy = users;
+    row.reason = users.length ? users.map(method => `${method}: ${methods[method].reason}`).join("; ") : "Available but not selected by the current method policies";
+  });
+  return { source: conditions.source, target: conditions.target, profile: conditions.profile, loadMbps: conditions.loadMbps, simulated: true, generatedAt: new Date().toISOString(), routeOptions: allRoutes, methods };
 }
 function compareBeforeAfter(before, after, options = {}) {
   const oldResult = runComparison(before, options), newResult = runComparison(after, options);
@@ -118,9 +152,9 @@ function compareBeforeAfter(before, after, options = {}) {
   for (const method of METHODS) {
     const beforeCost = oldResult.methods[method].metrics && routeCost(oldResult.methods[method].metrics, PROFILES[options.profile || "ECG"]);
     const afterCost = newResult.methods[method].metrics && routeCost(newResult.methods[method].metrics, PROFILES[options.profile || "ECG"]);
-    changes[method] = { before: beforeCost, after: afterCost, verdict: beforeCost == null || afterCost == null ? "inconclusive" : afterCost > beforeCost * 1.05 ? "harmful" : afterCost < beforeCost * .95 ? "beneficial" : "neutral" };
+    changes[method] = { before: beforeCost, after: afterCost, verdict: classifyChange(beforeCost, afterCost) };
   }
   return { before: oldResult, after: newResult, changes, simulated: true };
 }
-return { METHODS, PROFILES, clone, paths, pathStats, runMethod, runComparison, compareBeforeAfter };
+return { METHODS, PROFILES, clone, paths, pathStats, routeCost, classifyChange, runMethod, runComparison, compareBeforeAfter };
 }));
